@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#F36B50</color>
+    <dimen name="splash_screen_value">50dp</dimen>
 </resources>
