@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/lazy_pizza_logo"
+    android:insetLeft="@dimen/splash_screen_value"
+    android:insetTop="@dimen/splash_screen_value"
+    android:insetRight="@dimen/splash_screen_value"
+    android:insetBottom="@dimen/splash_screen_value">
+</inset>

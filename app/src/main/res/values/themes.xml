@@ -2,4 +2,15 @@
 <resources>
 
     <style name="Theme.LazyPizza" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/lazy_pizza_splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.LazyPizza</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Prevent Action Bar from showing -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>
