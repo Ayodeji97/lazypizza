@@ -2,4 +2,6 @@
     <string name="app_name">LazyPizza</string>
     <string name="lazy_pizza">LazyPizza</string>
     <string name="phone_icon_description">Phone call</string>
+    <string name="search_placeholder">Search for delicious food...</string>
+    <string name="search_icon">Search</string>
 </resources>
