@@ -2,7 +2,6 @@
 
 package com.danzucker.lazypizza.core.presentation.designsystem.components
 
-import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.PhoneFilledIcon
-import com.danzucker.lazypizza.core.presentation.designsystem.PhoneIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeExtraSmall4
+import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeMedium16
+import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeSmallMedium12
 
 @Composable
 fun LazyPizzaTopAppBar(
@@ -49,7 +50,7 @@ fun LazyPizzaTopAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 startContent?.invoke()
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(sizeExtraSmall4))
                 if (!title.isNullOrEmpty()) {
                     Text(
                         text = title,
@@ -61,7 +62,7 @@ fun LazyPizzaTopAppBar(
                 if (!customerPhoneNumber.isNullOrEmpty()) {
                     IconButton(
                         onClick = onCustomerPhoneNumberClick,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.size(sizeSmallMedium12)
                     ) {
                         Icon(
                             imageVector = PhoneFilledIcon,
@@ -78,7 +79,7 @@ fun LazyPizzaTopAppBar(
                                 onClick = onCustomerPhoneNumberClick
                             )
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(sizeMedium16))
                 }
             }
         },
