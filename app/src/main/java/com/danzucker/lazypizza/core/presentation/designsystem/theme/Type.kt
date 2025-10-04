@@ -13,12 +13,35 @@ import com.danzucker.lazypizza.R
 
 val InstrumentSans = FontFamily(
     Font(
-        resId = R.font.instrument_sans,
-        style = FontStyle.Normal
+        resId = R.font.instrument_sans_regular,
+        style = FontStyle.Normal,
+        weight = FontWeight.Normal
+    ),
+    Font(
+        resId = R.font.instrument_sans_medium,
+        style = FontStyle.Normal,
+        weight = FontWeight.Medium
+    ),
+    Font(
+        resId = R.font.instrument_sans_semi_bold,
+        style = FontStyle.Normal,
+        weight = FontWeight.SemiBold
+    ),
+    Font(
+        resId = R.font.instrument_sans_bold,
+        style = FontStyle.Normal,
+        weight = FontWeight.Bold
     )
 )
 
 val Typography = Typography(
+    headlineMedium = TextStyle(
+        fontFamily = InstrumentSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.sp
+    ),
     titleLarge = TextStyle(
         fontFamily = InstrumentSans,
         fontWeight = FontWeight.SemiBold,

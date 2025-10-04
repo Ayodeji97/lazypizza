@@ -22,6 +22,10 @@ val PhoneIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.phone)
 
+val PhoneFilledIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.phone_filled)
+
 val SearchIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.search)
