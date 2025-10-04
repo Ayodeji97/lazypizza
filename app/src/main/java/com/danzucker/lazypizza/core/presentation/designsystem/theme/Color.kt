@@ -20,6 +20,8 @@ val LazyPizzaOutlineColor50 = Color(0x80E6E7ED)
 val LazyPizzaOutlineColorAlpha50 = LazyPizzaBackgroundColor.copy(alpha = 0.5f)
 val LazyPizzaGradientSolidColor = Color(0xFFB23A24)
 val LazyPizzaGradientLightColor = Color(0xFFF36B50)
+val LazyPizzaShadowColor = Color(0x0F03131F)
+
 
 
 val ColorScheme.LazyPizzaButtonGradient: Brush
