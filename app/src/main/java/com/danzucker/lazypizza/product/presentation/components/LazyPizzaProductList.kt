@@ -75,7 +75,7 @@ private fun LazyPizzaListProductListPreview() {
                     isFavorite = it % 2 == 0
                 )
             },
-            deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
+            deviceScreenType = MOBILE_PORTRAIT,
             onPizzaClick = {}
         )
     }
