@@ -77,8 +77,7 @@ fun LazyPizzaOtherProductCard(
                     .size(120.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .padding(8.dp),
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
