@@ -54,6 +54,10 @@ dependencies {
     // Splashscreen for managing app launch screens
     implementation(libs.androidx.core.splashscreen)
 
+    // Window size classes for responsive design
+    implementation(libs.androidx.material3.window.size)
+    implementation(libs.androidx.adaptive.android)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

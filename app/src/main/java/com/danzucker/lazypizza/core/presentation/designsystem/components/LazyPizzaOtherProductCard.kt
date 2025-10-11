@@ -36,17 +36,19 @@ import com.danzucker.lazypizza.core.presentation.designsystem.PlusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaListUi
 import java.util.Locale
 
 @Composable
 fun LazyPizzaOtherProductCard(
-    lazyPizzaUi: LazyPizzaUi,
+    lazyPizzaUi: LazyPizzaListUi,
+    quantity: Int,
     onClick: () -> Unit,
     onAddToCart: () -> Unit,
     onQuantityChange: (Int) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-    quantity: Int,
+    isMobilePortrait: Boolean = true,
 ) {
     Surface(
         onClick = onClick,
@@ -68,16 +70,17 @@ fun LazyPizzaOtherProductCard(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
-                .size(120.dp)
+                .size(if (isMobilePortrait) 120.dp else 140.dp)
                 .fillMaxWidth()
         ) {
             Box(
                 modifier = Modifier
                     .wrapContentHeight()
-                    .size(120.dp)
+                    .size(if (isMobilePortrait) 120.dp else 140.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant
-                    ),
+                    )
+                    .padding(2.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -275,8 +278,8 @@ private fun ProductQuantitySection(
 private fun LazyPizzaOtherProductCardPreview() {
     LazyPizzaTheme {
         LazyPizzaOtherProductCard(
-            lazyPizzaUi = LazyPizzaUi(
-                id = 1,
+            lazyPizzaUi = LazyPizzaListUi(
+                id = "1",
                 name = "Coca Cola",
                 description = "Refreshing beverage",
                 price = "$1.99",
