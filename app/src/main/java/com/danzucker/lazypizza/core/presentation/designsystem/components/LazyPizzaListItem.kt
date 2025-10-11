@@ -6,18 +6,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaListUi
 
 
 @Composable
 fun LazyPizzaListItem(
-    lazyPizzaUi: LazyPizzaUi,
+    lazyPizzaUi: LazyPizzaListUi,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isMobilePortrait: Boolean = true,
 ) {
     when (lazyPizzaUi.cardType) {
         LazyPizzaCardType.PIZZA -> {
             LazyPizzaCard(
                 lazyPizzaUi = lazyPizzaUi,
+                isMobilePortrait = isMobilePortrait,
                 onClick = onClick,
                 modifier = modifier
             )
@@ -26,6 +29,7 @@ fun LazyPizzaListItem(
         LazyPizzaCardType.OTHERS -> {
             LazyPizzaOtherProductCard(
                 lazyPizzaUi = lazyPizzaUi,
+                isMobilePortrait = isMobilePortrait,
                 onClick = onClick,
                 onAddToCart = {},
                 onQuantityChange = {},
@@ -41,27 +45,13 @@ enum class LazyPizzaCardType {
     PIZZA, OTHERS
 }
 
-data class LazyPizzaUi(
-    val id: Int,
-    val name: String,
-    val description: String,
-    val price: String,
-    val imageUrl: String,
-    val isAvailable: Boolean,
-    val category: String,
-    val rating: Float,
-    val reviewsCount: Int,
-    val isFavorite: Boolean,
-    val cardType: LazyPizzaCardType = LazyPizzaCardType.OTHERS
-)
-
 @Preview
 @Composable
 private fun LazyPizzaListItemPreview() {
     LazyPizzaTheme {
         LazyPizzaListItem(
-            lazyPizzaUi = LazyPizzaUi(
-                id = 1,
+            lazyPizzaUi = LazyPizzaListUi(
+                id = "1",
                 name = "Margherita",
                 description = "Classic delight with 100% real mozzarella cheese",
                 price = "$5.99",

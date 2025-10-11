@@ -22,18 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaListUi
 
 @Composable
 fun LazyPizzaCard(
-    lazyPizzaUi: LazyPizzaUi,
+    lazyPizzaUi: LazyPizzaListUi,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isMobilePortrait: Boolean = true
 ) {
     Surface(
         onClick = onClick,
@@ -56,16 +59,17 @@ fun LazyPizzaCard(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
-                .size(120.dp)
+                .size(if (isMobilePortrait) 120.dp else 140.dp)
                 .fillMaxWidth()
         ) {
             Box(
                 modifier = Modifier
                     .wrapContentHeight()
-                    .size(120.dp)
+                    .size(if (isMobilePortrait) 120.dp else 140.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant
-                    ),
+                    )
+                    .padding(2.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -95,7 +99,9 @@ fun LazyPizzaCard(
                     Text(
                         text = lazyPizzaUi.description,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceTint
+                        color = MaterialTheme.colorScheme.surfaceTint,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 Text(
@@ -114,12 +120,12 @@ fun LazyPizzaCard(
 private fun LazyPizzaCardPreview() {
     LazyPizzaTheme {
         LazyPizzaCard(
-            lazyPizzaUi = LazyPizzaUi(
-                id = 1,
+            lazyPizzaUi = LazyPizzaListUi(
+                id = "1",
                 name = "Coca Cola",
                 description = "Refreshing beverage",
                 price = "$1.99",
-                cardType = LazyPizzaCardType.OTHERS,
+                cardType = LazyPizzaCardType.PIZZA,
                 imageUrl = "",
                 isAvailable = true,
                 category = "Vegetarian",
