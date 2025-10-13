@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.core.presentation.designsystem.components
+package com.danzucker.lazypizza.product.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -33,15 +33,16 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.DeleteIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.MinusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.PlusIcon
+import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShell
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
-import com.danzucker.lazypizza.product.presentation.models.LazyPizzaListUi
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 import java.util.Locale
 
 @Composable
 fun LazyPizzaOtherProductCard(
-    lazyPizzaUi: LazyPizzaListUi,
+    lazyPizzaUi: LazyPizzaProductListUi,
     quantity: Int,
     onClick: () -> Unit,
     onAddToCart: () -> Unit,
@@ -278,7 +279,7 @@ private fun ProductQuantitySection(
 private fun LazyPizzaOtherProductCardPreview() {
     LazyPizzaTheme {
         LazyPizzaOtherProductCard(
-            lazyPizzaUi = LazyPizzaListUi(
+            lazyPizzaUi = LazyPizzaProductListUi(
                 id = "1",
                 name = "Coca Cola",
                 description = "Refreshing beverage",
