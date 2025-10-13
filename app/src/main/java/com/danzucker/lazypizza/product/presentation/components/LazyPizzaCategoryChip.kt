@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.core.presentation.designsystem.components
+package com.danzucker.lazypizza.product.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box

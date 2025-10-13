@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.core.presentation.designsystem.components
+package com.danzucker.lazypizza.product.presentation.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -6,12 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
-import com.danzucker.lazypizza.product.presentation.models.LazyPizzaListUi
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 
 @Composable
 fun LazyPizzaListItem(
-    lazyPizzaUi: LazyPizzaListUi,
+    lazyPizzaUi: LazyPizzaProductListUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isMobilePortrait: Boolean = true,
@@ -25,7 +25,6 @@ fun LazyPizzaListItem(
                 modifier = modifier
             )
         }
-
         LazyPizzaCardType.OTHERS -> {
             LazyPizzaOtherProductCard(
                 lazyPizzaUi = lazyPizzaUi,
@@ -50,7 +49,7 @@ enum class LazyPizzaCardType {
 private fun LazyPizzaListItemPreview() {
     LazyPizzaTheme {
         LazyPizzaListItem(
-            lazyPizzaUi = LazyPizzaListUi(
+            lazyPizzaUi = LazyPizzaProductListUi(
                 id = "1",
                 name = "Margherita",
                 description = "Classic delight with 100% real mozzarella cheese",

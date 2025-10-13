@@ -1,7 +1,7 @@
 package com.danzucker.lazypizza.product.presentation.models
 
-import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaCardType
-data class LazyPizzaListUi(
+import com.danzucker.lazypizza.product.presentation.components.LazyPizzaCardType
+data class LazyPizzaProductListUi(
     val id: String,
     val name: String,
     val description: String,

@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // DI - Koin
+    implementation(libs.bundles.koin)
+
 
     // Splashscreen for managing app launch screens
     implementation(libs.androidx.core.splashscreen)

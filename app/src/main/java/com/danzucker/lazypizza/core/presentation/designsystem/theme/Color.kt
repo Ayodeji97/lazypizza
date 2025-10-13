@@ -12,7 +12,7 @@ val LazyPizzaTextOnPrimaryColor = Color(0xFFFFFFFF)
 val LazyPizzaTextSecondaryColor = Color(0xFF627686)
 val LazyPizzaTextSecondaryColor8 = Color(0x14627666)
 val LazyPizzaTextSecondaryColorAlpha8 = LazyPizzaTextSecondaryColor.copy(alpha = 0.8f)
-val LazyPizzaBackgroundColor = Color(0xFFE6E7ED)
+val LazyPizzaBackgroundColor = Color(0xFFFAFBFC)
 
 val LazyPizzaSurfaceHigherColor = Color(0xFFFFFFFF)
 val LazyPizzaSurfaceHighestColor = Color(0xFFF0F3F6)
