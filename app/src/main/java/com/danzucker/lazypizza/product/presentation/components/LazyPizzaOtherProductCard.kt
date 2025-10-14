@@ -218,40 +218,9 @@ private fun ProductQuantitySection(
                 end = 16.dp
             )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            CardShell(
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = MinusIcon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.surfaceTint,
-                    modifier = Modifier
-                        .size(14.dp)
-                )
-            }
-
-            Text(
-                text = quantity,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-
-            CardShell(
-                onClick = {},
-            ) {
-                Icon(
-                    imageVector = PlusIcon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.surfaceTint,
-                    modifier = Modifier
-                        .size(14.dp)
-                )
-            }
-        }
+        ProductSelectionSection(
+            quantity = quantity,
+        )
 
         Column(
             horizontalAlignment = Alignment.End,
@@ -268,9 +237,7 @@ private fun ProductQuantitySection(
                 color = MaterialTheme.colorScheme.surfaceTint,
             )
         }
-
     }
-    
 }
 
 
