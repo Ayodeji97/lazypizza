@@ -57,7 +57,8 @@ fun ProductDetailScreen(
             LazyPizzaTopAppBar(
                 navigationIcon = {
                     BackButton(
-                        onClick = {}
+                        onClick = {},
+                        modifier = Modifier.padding(16.dp)
                     )
                 },
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -86,7 +87,7 @@ fun ProductDetailScreen(
                         contentDescription = stringResource(R.string.lazy_pizza),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
+                            .height(240.dp)
                     )
                 }
 

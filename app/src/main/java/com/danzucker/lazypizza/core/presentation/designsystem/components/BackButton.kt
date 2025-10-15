@@ -26,7 +26,7 @@ fun BackButton(
         modifier = modifier
             .size(32.dp)
             .background(
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                color = MaterialTheme.colorScheme.inverseSurface,
                 shape = CircleShape
             )
     ) {
