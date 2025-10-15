@@ -22,7 +22,8 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = LazyPizzaSurfaceHighestColor,
     surfaceTint = LazyPizzaTextSecondaryColor,
     outline = LazyPizzaBackgroundColor,
-    outlineVariant = LazyPizzaOutlineColor50
+    outlineVariant = LazyPizzaOutlineColor50,
+    inverseSurface = LazyPizzaGrayColor
 )
 
 @Composable
