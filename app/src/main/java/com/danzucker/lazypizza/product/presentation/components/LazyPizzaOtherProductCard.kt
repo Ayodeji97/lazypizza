@@ -37,6 +37,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShe
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 import java.util.Locale
 
@@ -115,10 +116,7 @@ fun LazyPizzaOtherProductCard(
                     )
 
                     if (quantity != 0) {
-                        CardShell(
-                            onClick = onDelete,
-                            modifier = Modifier
-                        ) {
+                        CardShell(onClick = onDelete) {
                             Icon(
                                 imageVector = DeleteIcon,
                                 contentDescription = null,
@@ -146,6 +144,16 @@ fun LazyPizzaOtherProductCard(
                             quantity * lazyPizzaUi.price.removePrefix("$").toDouble(),
                         ),
                         price = lazyPizzaUi.price,
+                        onDecreaseClick = {
+                            if (quantity > 1) {
+                                onQuantityChange(quantity - 1)
+                            } else {
+                                onDelete()
+                            }
+                        },
+                        onIncreaseClick = {
+                           onQuantityChange(quantity + 1)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                     )
@@ -155,90 +163,6 @@ fun LazyPizzaOtherProductCard(
     }
 }
 
-
-@Composable
-fun ProductAddToCardSection(
-    price: String,
-    onAddToCart: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = 12.dp,
-                end = 16.dp
-            )
-    ) {
-        Text(
-            text = price,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        TextButton(
-            onClick = onAddToCart,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.01f),
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.secondary
-            ),
-            contentPadding = PaddingValues(
-                horizontal = 24.dp,
-                vertical = 8.dp
-            )
-        ) {
-            Text(
-                text = stringResource(R.string.add_to_cart),
-            )
-        }
-    }
-}
-
-
-@Composable
-private fun ProductQuantitySection(
-    quantity: String,
-    totalAmount: String,
-    price: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = 12.dp,
-                end = 16.dp
-            )
-    ) {
-        ProductSelectionSection(
-            quantity = quantity,
-        )
-
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = totalAmount,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = "$quantity x $price",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.surfaceTint,
-            )
-        }
-    }
-}
 
 
 @Preview
@@ -291,6 +215,8 @@ private fun ProductQuantitySectionPreview() {
             quantity = "2",
             totalAmount = "$24.99",
             price = "$12.49",
+            onDecreaseClick = {},
+            onIncreaseClick = {},
             modifier = Modifier
                 .padding(16.dp)
         )

@@ -37,8 +37,11 @@ import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elev
 @Composable
 fun LazyPizzaMiniCard(
     miniCardInfo: MiniCardInfo,
+    quantity: String,
     selected: Boolean,
     onClick: () -> Unit,
+    onDecreaseClick: () -> Unit,
+    onIncreaseClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -95,7 +98,9 @@ fun LazyPizzaMiniCard(
 
             if (selected) {
                 ProductSelectionSection(
-                    quantity = "1",
+                    quantity = quantity,
+                    onDecreaseClick = onDecreaseClick,
+                    onIncreaseClick = onIncreaseClick
                 )
             } else {
                 Text(
@@ -130,6 +135,9 @@ private fun LazyPizzaMiniCardPreview() {
             ),
             selected = true,
             onClick = {},
+            quantity = "1",
+            onDecreaseClick = {},
+            onIncreaseClick = {},
             modifier = Modifier
                 .padding(20.dp)
         )

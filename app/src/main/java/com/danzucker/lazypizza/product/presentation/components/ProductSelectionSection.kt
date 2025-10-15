@@ -17,14 +17,17 @@ import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShe
 @Composable
 fun ProductSelectionSection(
     quantity: String,
+    onDecreaseClick: () -> Unit,
+    onIncreaseClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
     ) {
         CardShell(
-            onClick = {},
+            onClick = onDecreaseClick,
         ) {
             Icon(
                 imageVector = MinusIcon,
@@ -42,7 +45,7 @@ fun ProductSelectionSection(
         )
 
         CardShell(
-            onClick = {},
+            onClick = onIncreaseClick,
         ) {
             Icon(
                 imageVector = PlusIcon,

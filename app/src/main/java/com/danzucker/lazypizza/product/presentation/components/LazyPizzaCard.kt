@@ -29,6 +29,7 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 @Composable

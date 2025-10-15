@@ -35,6 +35,9 @@ fun LazyPizzaMiniGridList(
                 onClick = {
                     onToppingClick(miniTopping.id)
                 },
+                onDecreaseClick = {},
+                onIncreaseClick = {},
+                quantity = "0",
                 selected = false
             )
         }

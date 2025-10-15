@@ -3,6 +3,7 @@
 package com.danzucker.lazypizza.product.presentation.productlist
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +15,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +37,7 @@ import com.danzucker.lazypizza.product.presentation.components.LazyPizzaListProd
 
 @Composable
 fun ProductListRoot(
-    viewModel: ProductViewModel = viewModel()
+    viewModel: ProductListViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -57,8 +60,9 @@ fun ProductListScreen(
             LazyPizzaTopAppBar(
                 title = stringResource(R.string.lazy_pizza),
                 customerPhoneNumber = state.customerPhoneNumber.asString(),
-                onCustomerPhoneNumberClick = {},
-                modifier = Modifier
+                onCustomerPhoneNumberClick = {
+                    onAction(ProductListAction.OnPhoneNumberClick)
+                }
             )
         }
     ) { innerPadding ->
@@ -78,17 +82,20 @@ fun ProductListScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
             SearchBar(
-                searchText = "",
-                onSearchTextChange = { /* TODO */ },
-                modifier = Modifier
-                    .fillMaxWidth()
+                searchText = state.searchQuery,
+                onSearchTextChange = { query ->
+                    onAction(ProductListAction.OnSearchQueryChange(query))
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyPizzaCategoryChipList(
-                categories = state.categories.map { it.asString() },
-                modifier = Modifier
+                categories = state.categories,
+                selectedCategories = state.selectedCategories,
+                onCategorySelected = { category ->
+                    onAction(ProductListAction.OnCategorySelected(category))
+                }
             )
 
             when {
@@ -100,13 +107,35 @@ fun ProductListScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-
-                !state.hasProducts -> {}
+                !state.hasProducts -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No products found",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
                 else -> {
                     LazyPizzaListProductList(
-                        lazyPizzas = state.products,
+                        lazyPizzas = state.filteredProducts,
                         deviceScreenType = DeviceScreenType.fromWindowSizeClass(windowClass),
-                        onPizzaClick = { pizzaId -> }
+                        onProductClick = { pizzaId ->
+                            onAction(ProductListAction.OnProductClick(pizzaId))
+                        },
+                        onAddToCartClick = { productId ->
+                            onAction(ProductListAction.OnAddToCart(productId))
+                        },
+                        onQuantityChange = { productId, quantity ->
+                            onAction(ProductListAction.OnQuantityChange(productId, quantity))
+                        },
+                        onDeleteClick = { productId ->
+                            onAction(ProductListAction.OnDeleteFromCart(productId))
+                        }
                     )
                 }
             }

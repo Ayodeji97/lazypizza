@@ -14,6 +14,8 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 @Composable
 fun LazyPizzaCategoryChipList(
     categories: List<String>,
+    selectedCategories: Set<String>,
+    onCategorySelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -28,8 +30,10 @@ fun LazyPizzaCategoryChipList(
         ) { category ->
             LazyPizzaCategoryChip(
                 text = category,
-                onClick = {},
-                selected = false
+                onClick = {
+                    onCategorySelected(category)
+                },
+                selected = category in selectedCategories
             )
         }
     }
@@ -44,6 +48,8 @@ private fun LazyPizzaCategoryChipListPreview() {
             categories = listOf(
                 "All", "Vegetarian", "Non-Vegetarian", "Vegan", "Gluten-Free"
             ),
+            selectedCategories = setOf("Pizza"),
+            onCategorySelected = {},
             modifier = Modifier.padding(vertical = 16.dp)
         )
     }

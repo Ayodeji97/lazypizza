@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -19,13 +18,17 @@ import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.MOBILE_PORTRAIT
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 @Composable
 fun LazyPizzaListProductList(
     lazyPizzas: List<LazyPizzaProductListUi>,
     deviceScreenType: DeviceScreenType,
-    onPizzaClick: (String) -> Unit,
+    onProductClick: (String) -> Unit,
+    onAddToCartClick: (String) -> Unit,
+    onQuantityChange: (String, Int) -> Unit,
+    onDeleteClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val columnCount = when (deviceScreenType) {
@@ -65,16 +68,19 @@ fun LazyPizzaListProductList(
                 LazyPizzaListItem(
                     lazyPizzaUi = lazyPizzaUi,
                     isMobilePortrait = deviceScreenType == MOBILE_PORTRAIT,
-                    onClick = {
-                        onPizzaClick(lazyPizzaUi.id)
+                    onClick = { onProductClick(lazyPizzaUi.id) },
+                    onAddToCart = { onAddToCartClick(lazyPizzaUi.id) },
+                    onQuantityChange = { quantity ->
+                        onQuantityChange(lazyPizzaUi.id, quantity)
                     },
+                    onDelete = { onDeleteClick(lazyPizzaUi.id) },
                     modifier = Modifier
                 )
             }
         }
     }
-
 }
+
 
 @Preview
 @Composable
@@ -97,7 +103,12 @@ private fun LazyPizzaListProductListPreview() {
                 )
             },
             deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
-            onPizzaClick = {}
+            onProductClick = {},
+            onAddToCartClick = {},
+            onQuantityChange = { _, _ ->
+            },
+            onDeleteClick = {},
+            modifier = Modifier
         )
     }
 }
