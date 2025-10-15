@@ -18,8 +18,8 @@ val LazyPizzaSurfaceHigherColor = Color(0xFFFFFFFF)
 val LazyPizzaSurfaceHighestColor = Color(0xFFF0F3F6)
 val LazyPizzaOutlineColor50 = Color(0x80E6E7ED)
 val LazyPizzaOutlineColorAlpha50 = LazyPizzaBackgroundColor.copy(alpha = 0.5f)
-val LazyPizzaGradientSolidColor = Color(0xFFB23A24)
-val LazyPizzaGradientLightColor = Color(0xFFF36B50)
+val LazyPizzaGradientSolidColor = Color(0xFFF36B50)
+val LazyPizzaGradientLightColor = Color(0xFFF9966F)
 val LazyPizzaShadowColor = Color(0x0F03131F)
 
 
@@ -29,5 +29,13 @@ val ColorScheme.LazyPizzaButtonGradient: Brush
         colors = listOf(
             LazyPizzaGradientSolidColor,
             LazyPizzaGradientLightColor
+        )
+    )
+
+val ColorScheme.LazyPizzaButtonTransparentGradient: Brush
+    get() = Brush.linearGradient(
+        colors = listOf(
+            Color.Transparent,
+            Color.Transparent
         )
     )

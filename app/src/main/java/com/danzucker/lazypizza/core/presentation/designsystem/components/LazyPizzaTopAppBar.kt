@@ -39,6 +39,7 @@ fun LazyPizzaTopAppBar(
     customerPhoneNumber: String? = null,
     onCustomerPhoneNumberClick: () -> Unit = {},
     titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     startContent: (@Composable () -> Unit)? = null,
     navigationIcon: (@Composable () -> Unit)? = null,
@@ -88,7 +89,7 @@ fun LazyPizzaTopAppBar(
             navigationIcon?.invoke()
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = containerColor,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         scrollBehavior = scrollBehavior
