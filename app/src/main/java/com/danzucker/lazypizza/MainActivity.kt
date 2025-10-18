@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +35,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LazyPizzaTheme {
-                ProductListRoot()
+               // ProductListRoot()
+                ProductDetailRoot()
             }
         }
     }

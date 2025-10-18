@@ -11,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.product.presentation.models.MiniCardInfo
 
 @Composable
 fun LazyPizzaMiniGridList(
     miniToppings: List<MiniCardInfo>,
     onToppingClick: (String) -> Unit,
+    onQuantityChange: (String, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -35,10 +37,9 @@ fun LazyPizzaMiniGridList(
                 onClick = {
                     onToppingClick(miniTopping.id)
                 },
-                onDecreaseClick = {},
-                onIncreaseClick = {},
-                quantity = "0",
-                selected = false
+                onQuantityChange = { newQuantity ->
+                    onQuantityChange(miniTopping.id, newQuantity)
+                },
             )
         }
     }
@@ -58,7 +59,8 @@ private fun LazyPizzaMiniGridListPreview() {
                     imageUrl = "",
                 )
             },
-            onToppingClick = {}
+            onToppingClick = {},
+            onQuantityChange = { _, _ -> }
         )
     }
 }

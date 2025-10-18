@@ -19,7 +19,9 @@ fun ProductSelectionSection(
     quantity: String,
     onDecreaseClick: () -> Unit,
     onIncreaseClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enableIncreaseButton: Boolean = true,
+    enableDecreaseButton: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -28,11 +30,16 @@ fun ProductSelectionSection(
     ) {
         CardShell(
             onClick = onDecreaseClick,
+            enabled = enableDecreaseButton
         ) {
             Icon(
                 imageVector = MinusIcon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = if (enableDecreaseButton) {
+                    MaterialTheme.colorScheme.surfaceTint
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 modifier = Modifier
                     .size(14.dp)
             )
@@ -46,11 +53,16 @@ fun ProductSelectionSection(
 
         CardShell(
             onClick = onIncreaseClick,
+            enabled = enableIncreaseButton
         ) {
             Icon(
                 imageVector = PlusIcon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = if (enableIncreaseButton) {
+                    MaterialTheme.colorScheme.surfaceTint
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 modifier = Modifier
                     .size(14.dp)
             )

@@ -3,6 +3,7 @@ package com.danzucker.lazypizza.product.presentation.util
 
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
+import com.danzucker.lazypizza.product.presentation.models.ToppingUi
 
 object SampleProductProvider {
 
@@ -160,4 +161,91 @@ object SampleProductProvider {
     )
 
     fun getCategories(): List<String> = listOf("Pizza", "Drinks", "Sauces", "Ice Cream")
+
+    fun getToppings(): List<ToppingUi> = listOf(
+        ToppingUi(
+            id = "1",
+            name = "Bacon",
+            price = "$1.00",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "2",
+            name = "Extra Cheese",
+            price = "$1.00",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "3",
+            name = "Corn",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "4",
+            name = "Tomato",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "5",
+            name = "Olives",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "6",
+            name = "Pepperoni",
+            price = "$1.00",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "7",
+            name = "Mushrooms",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "8",
+            name = "Basil",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "9",
+            name = "Pineapple",
+            price = "$1.00",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "10",
+            name = "Onion",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "11",
+            name = "Chili Peppers",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        ),
+        ToppingUi(
+            id = "12",
+            name = "Spinach",
+            price = "$0.50",
+            imageUrl = "",
+            maxQuantity = 3
+        )
+    )
 }

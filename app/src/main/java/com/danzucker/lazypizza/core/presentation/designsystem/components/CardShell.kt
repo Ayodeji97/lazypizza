@@ -28,6 +28,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun CardShell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
@@ -35,14 +36,25 @@ fun CardShell(
             .size(22.dp)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                color = if (enabled) {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 shape = RoundedCornerShape(8.dp)
             )
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(
+                color = if (enabled) {
+                    MaterialTheme.colorScheme.surface
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
+                }
+            )
     ) {
         IconButton(
             onClick = onClick,
+            enabled = enabled,
             modifier = Modifier.fillMaxSize()
         ) {
             content()
