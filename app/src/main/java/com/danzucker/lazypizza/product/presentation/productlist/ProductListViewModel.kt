@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,6 +21,9 @@ class ProductListViewModel : ViewModel() {
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(ProductListState())
+
+    private val eventChannel = Channel<ProductListEvent>()
+    val events = eventChannel.receiveAsFlow()
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
@@ -42,19 +48,17 @@ class ProductListViewModel : ViewModel() {
                 addToCart(action.productId)
             }
             is ProductListAction.OnCategorySelected -> {
-               // _state.update { it.copy(selectedCategories = action.category) }
                 toggleCategory(action.category)
-               // filterProducts()
             }
             is ProductListAction.OnDeleteFromCart -> {
                 removeFromCart(action.productId)
             }
             ProductListAction.OnPhoneNumberClick -> {
-                // Handle phone number click, e.g., open dialer
+                viewModelScope.launch {
+                    eventChannel.send(ProductListEvent.OpenPhoneDialer("+15553217890"))
+                }
             }
-            is ProductListAction.OnProductClick -> {
-                // Handle product click, e.g., navigate to product details
-            }
+            is ProductListAction.OnProductClick -> {} // This is handled in the root composable (ProductListScreen)
             is ProductListAction.OnQuantityChange -> {
                 updateQuantity(action.productId, action.quantity)
             }
@@ -67,7 +71,7 @@ class ProductListViewModel : ViewModel() {
             _state.update { it.copy(isLoadingData = true) }
 
             // Simulate network delay
-            kotlinx.coroutines.delay(500)
+            delay(500)
 
             val products = SampleProductProvider.getProducts()
             val categories = SampleProductProvider.getCategories()

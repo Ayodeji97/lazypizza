@@ -47,10 +47,8 @@ fun LazyPizzaListProductList(
         contentPadding = PaddingValues(16.dp)
     ) {
         groupedPizzas.entries.forEachIndexed { sectionIndex, (category, lazyPizzaItems) ->
-            stickyHeader(key = "header_$category") {
-                if (sectionIndex > 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = category.uppercase(),
                     style = MaterialTheme.typography.labelSmall,

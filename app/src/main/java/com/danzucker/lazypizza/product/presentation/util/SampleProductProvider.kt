@@ -1,6 +1,6 @@
 package com.danzucker.lazypizza.product.presentation.util
 
-
+import com.danzucker.lazypizza.core.domain.ImageUrlProvider
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 import com.danzucker.lazypizza.product.presentation.models.ToppingUi
@@ -14,7 +14,7 @@ object SampleProductProvider {
             name = "Margherita",
             description = "Tomato sauce, mozzarella, fresh basil, olive oil",
             price = "$8.99",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Margherita.png"),
             isAvailable = true,
             category = "Pizza",
             rating = 4.5f,
@@ -27,7 +27,7 @@ object SampleProductProvider {
             name = "Pepperoni",
             description = "Tomato sauce, mozzarella, pepperoni",
             price = "$9.99",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Pepperoni.png"),
             isAvailable = true,
             category = "Pizza",
             rating = 4.8f,
@@ -40,7 +40,7 @@ object SampleProductProvider {
             name = "Hawaiian",
             description = "Tomato sauce, mozzarella, ham, pineapple",
             price = "$10.49",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Hawaiian.png"),
             isAvailable = true,
             category = "Pizza",
             rating = 4.2f,
@@ -53,7 +53,7 @@ object SampleProductProvider {
             name = "Veggie Delight",
             description = "Tomato sauce, mozzarella, mushrooms, olives, bell pepper, onion",
             price = "$9.79",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Veggie Delight.png"),
             isAvailable = true,
             category = "Pizza",
             rating = 4.6f,
@@ -68,7 +68,7 @@ object SampleProductProvider {
             name = "Mineral Water",
             description = "Refreshing mineral water",
             price = "$1.49",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("mineral water.png"),
             isAvailable = true,
             category = "Drinks",
             rating = 4.0f,
@@ -81,7 +81,7 @@ object SampleProductProvider {
             name = "Pepsi",
             description = "Classic Pepsi cola",
             price = "$1.99",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("pepsi.png"),
             isAvailable = true,
             category = "Drinks",
             rating = 4.3f,
@@ -94,7 +94,7 @@ object SampleProductProvider {
             name = "Orange Juice",
             description = "Fresh orange juice",
             price = "$2.49",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("orange juice.png"),
             isAvailable = true,
             category = "Drinks",
             rating = 4.5f,
@@ -109,7 +109,7 @@ object SampleProductProvider {
             name = "Garlic Sauce",
             description = "Creamy garlic dipping sauce",
             price = "$0.59",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getSauceImageUrl("Garlic Sauce.png"),
             isAvailable = true,
             category = "Sauces",
             rating = 4.7f,
@@ -122,7 +122,7 @@ object SampleProductProvider {
             name = "BBQ Sauce",
             description = "Smoky BBQ dipping sauce",
             price = "$0.59",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getSauceImageUrl("BBQ Sauce.png"),
             isAvailable = true,
             category = "Sauces",
             rating = 4.6f,
@@ -137,7 +137,7 @@ object SampleProductProvider {
             name = "Vanilla Ice Cream",
             description = "Classic vanilla ice cream",
             price = "$3.99",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("vanilla.png"),
             isAvailable = true,
             category = "Ice Cream",
             rating = 4.8f,
@@ -150,7 +150,7 @@ object SampleProductProvider {
             name = "Chocolate Ice Cream",
             description = "Rich chocolate ice cream",
             price = "$3.99",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("chocolate.png"),
             isAvailable = true,
             category = "Ice Cream",
             rating = 4.9f,
@@ -167,84 +167,84 @@ object SampleProductProvider {
             id = "1",
             name = "Bacon",
             price = "$1.00",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("bacon.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "2",
             name = "Extra Cheese",
             price = "$1.00",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("cheese.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "3",
             name = "Corn",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("corn.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "4",
             name = "Tomato",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("tomato.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "5",
             name = "Olives",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("olive.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "6",
             name = "Pepperoni",
             price = "$1.00",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("pepperoni.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "7",
             name = "Mushrooms",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("mashroom.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "8",
             name = "Basil",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("basil.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "9",
             name = "Pineapple",
             price = "$1.00",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("pineapple.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "10",
             name = "Onion",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("onion.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "11",
             name = "Chili Peppers",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("chilli.png"),
             maxQuantity = 3
         ),
         ToppingUi(
             id = "12",
             name = "Spinach",
             price = "$0.50",
-            imageUrl = "",
+            imageUrl = ImageUrlProvider.getToppingImageUrl("spinach.png"),
             maxQuantity = 3
         )
     )

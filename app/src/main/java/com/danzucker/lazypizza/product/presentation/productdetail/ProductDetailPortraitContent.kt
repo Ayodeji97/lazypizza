@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.productdetail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,12 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBackground
+import com.danzucker.lazypizza.core.presentation.designsystem.components.RemoteImage
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaMiniGridList
+import com.danzucker.lazypizza.product.presentation.components.StickyBottomBar
 import com.danzucker.lazypizza.product.presentation.models.MiniCardInfo
 
 @Composable
@@ -43,12 +44,12 @@ fun ProductDetailPortraitContent(
                 .weight(1f),
             contentAlignment = Alignment.Center,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.margherita),
-                contentDescription = stringResource(R.string.lazy_pizza),
+            RemoteImage(
+                imageUrl = state.pizzaDetail?.imageUrl ?: "",
+                contentDescription = state.pizzaDetail?.name,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             )
         }
 
@@ -98,6 +99,15 @@ fun ProductDetailPortraitContent(
                 }
             )
         }
+        StickyBottomBar(
+            buttonText = stringResource(
+                R.string.add_to_cart_button_text,
+                state.formattedTotalPrice
+            ),
+            onButtonClick = {
+                onAction(ProductDetailAction.OnAddToCartClick)
+            }
+        )
     }
 }
 

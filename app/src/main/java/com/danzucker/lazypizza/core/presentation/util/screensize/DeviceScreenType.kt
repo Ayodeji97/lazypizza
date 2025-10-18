@@ -14,7 +14,7 @@ enum class DeviceScreenType {
 
 
     fun isTablet() = this == TABLET_PORTRAIT || this == TABLET_LANDSCAPE
-    fun isPortrait() = this == MOBILE_PORTRAIT || this == TABLET_PORTRAIT
+    fun isPortrait() = this == MOBILE_PORTRAIT
     fun isDesktop() = this == DESKTOP
 
     companion object {

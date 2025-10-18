@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimaryButton
@@ -27,12 +28,13 @@ fun StickyBottomBar(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.onPrimary,
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                        Color.Transparent,
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                         MaterialTheme.colorScheme.surface
                     ),
                     startY = 0f,
-                    endY = 150f
+                    endY = 200f
                 )
             )
             .padding(16.dp)
