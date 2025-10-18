@@ -10,6 +10,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,14 +18,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danzucker.lazypizza.core.presentation.designsystem.components.BackButton
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
 
 @Composable
 fun ProductDetailRoot(
+    onNavigateBack: () -> Unit,
     viewModel: ProductDetailViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is ProductDetailEvent.NavigateBack -> onNavigateBack()
+        }
+    }
 
     ProductDetailScreen(
         state = state,

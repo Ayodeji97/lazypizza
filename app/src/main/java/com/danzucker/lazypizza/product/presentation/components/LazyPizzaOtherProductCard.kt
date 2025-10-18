@@ -34,6 +34,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.DeleteIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.MinusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.PlusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShell
+import com.danzucker.lazypizza.core.presentation.designsystem.components.RemoteImage
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
@@ -85,9 +86,9 @@ fun LazyPizzaOtherProductCard(
                     .padding(2.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(R.drawable.margherita),
-                    contentDescription = null,
+                RemoteImage(
+                    imageUrl = lazyPizzaUi.imageUrl,
+                    contentDescription = lazyPizzaUi.name,
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentScale = ContentScale.Crop

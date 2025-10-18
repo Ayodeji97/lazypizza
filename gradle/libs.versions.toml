@@ -8,10 +8,14 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2025.10.00"
-koin = "4.0.0"
+koin = "4.1.1"
+coil = "2.4.0"
 
 material3WindowSizeClass = "1.4.0"
 adaptiveAndroid = "1.1.0"
+
+kotlinSerialization = "1.8.1"
+navigationCompose = "2.8.9"
 
 splashscreen = "1.0.1"
 
@@ -39,6 +43,10 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 androidx-material3-window-size = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
 androidx-adaptive-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-android", version.ref = "adaptiveAndroid" }
 
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref= "navigationCompose"}
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
 [bundles]
 koin = [
     "koin-core",
@@ -50,4 +58,5 @@ koin = [
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 

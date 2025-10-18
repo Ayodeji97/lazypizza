@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -60,6 +61,11 @@ dependencies {
     // Window size classes for responsive design
     implementation(libs.androidx.material3.window.size)
     implementation(libs.androidx.adaptive.android)
+
+    // Kotlin Serialization for navigation
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.compose.navigation)
+    implementation(libs.coil.compose)
 
 
     testImplementation(libs.junit)
