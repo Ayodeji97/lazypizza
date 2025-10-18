@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.models
 
-import com.danzucker.lazypizza.product.presentation.components.LazyPizzaCardType
 data class LazyPizzaProductListUi(
     val id: String,
     val name: String,
@@ -12,5 +11,10 @@ data class LazyPizzaProductListUi(
     val rating: Float,
     val reviewsCount: Int,
     val isFavorite: Boolean,
-    val cardType: LazyPizzaCardType = LazyPizzaCardType.PIZZA
+    val cardType: LazyPizzaCardType,
+    val quantityInCart: Int = 0
 )
+
+enum class LazyPizzaCardType {
+    PIZZA, OTHERS
+}

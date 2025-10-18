@@ -11,4 +11,6 @@
     <string name="sauces">Sauces</string>
     <string name="ice_cream">Ice Cream</string>
     <string name="back">Back</string>
+    <string name="topping_extras">ADD EXTRA TOPPINGS</string>
+    <string name="add_to_cart_button_text">Add to Cart for %1$s</string>
 </resources>

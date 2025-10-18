@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 
@@ -13,6 +14,9 @@ import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListU
 fun LazyPizzaListItem(
     lazyPizzaUi: LazyPizzaProductListUi,
     onClick: () -> Unit,
+    onAddToCart: () -> Unit,
+    onQuantityChange: (Int) -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     isMobilePortrait: Boolean = true,
 ) {
@@ -30,18 +34,14 @@ fun LazyPizzaListItem(
                 lazyPizzaUi = lazyPizzaUi,
                 isMobilePortrait = isMobilePortrait,
                 onClick = onClick,
-                onAddToCart = {},
-                onQuantityChange = {},
-                onDelete = {},
-                quantity = 0,
+                onAddToCart = onAddToCart,
+                onQuantityChange = onQuantityChange,
+                onDelete = onDelete,
+                quantity = lazyPizzaUi.quantityInCart,
                 modifier = modifier
             )
         }
     }
-}
-
-enum class LazyPizzaCardType {
-    PIZZA, OTHERS
 }
 
 @Preview
@@ -59,9 +59,14 @@ private fun LazyPizzaListItemPreview() {
                 category = "Vegetarian",
                 rating = 4.5f,
                 reviewsCount = 150,
-                isFavorite = false
+                isFavorite = false,
+                cardType = LazyPizzaCardType.PIZZA
             ),
             onClick = {},
+            onAddToCart = {},
+            onQuantityChange = {},
+            onDelete = {},
+            isMobilePortrait = true,
             modifier = Modifier
                 .padding(30.dp)
         )

@@ -17,19 +17,29 @@ import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShe
 @Composable
 fun ProductSelectionSection(
     quantity: String,
-    modifier: Modifier = Modifier
+    onDecreaseClick: () -> Unit,
+    onIncreaseClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enableIncreaseButton: Boolean = true,
+    enableDecreaseButton: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
     ) {
         CardShell(
-            onClick = {},
+            onClick = onDecreaseClick,
+            enabled = enableDecreaseButton
         ) {
             Icon(
                 imageVector = MinusIcon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = if (enableDecreaseButton) {
+                    MaterialTheme.colorScheme.surfaceTint
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 modifier = Modifier
                     .size(14.dp)
             )
@@ -42,12 +52,17 @@ fun ProductSelectionSection(
         )
 
         CardShell(
-            onClick = {},
+            onClick = onIncreaseClick,
+            enabled = enableIncreaseButton
         ) {
             Icon(
                 imageVector = PlusIcon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = if (enableIncreaseButton) {
+                    MaterialTheme.colorScheme.surfaceTint
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 modifier = Modifier
                     .size(14.dp)
             )

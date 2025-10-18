@@ -1,6 +1,7 @@
 package com.danzucker.lazypizza.product.presentation.productdetail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,8 +32,8 @@ import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPiz
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBackground
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaMiniGridList
-import com.danzucker.lazypizza.product.presentation.components.MiniCardInfo
 import com.danzucker.lazypizza.product.presentation.components.StickyBottomBar
+import com.danzucker.lazypizza.product.presentation.models.MiniCardInfo
 
 @Composable
 fun ProductDetailRoot(
@@ -52,12 +55,13 @@ fun ProductDetailScreen(
 ) {
     val windowClass = currentWindowAdaptiveInfo().windowSizeClass
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         topBar = {
             LazyPizzaTopAppBar(
                 navigationIcon = {
                     BackButton(
-                        onClick = {},
+                        onClick = {
+                            onAction(ProductDetailAction.OnBackClick)
+                        },
                         modifier = Modifier.padding(16.dp)
                     )
                 },
@@ -79,6 +83,12 @@ fun ProductDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(
+                                bottomEnd = 12.dp
+                            )
+                        )
                         .weight(1f),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -95,92 +105,59 @@ fun ProductDetailScreen(
                     modifier = Modifier.weight(2f)
                 ) {
                     Text(
-                        text = "Margherita",
+                        text = state.pizzaDetail?.name.orEmpty(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Tomato sauce, Mozzarella, Fresh basil, Olive oil",
+                        text = state.pizzaDetail?.ingredients.orEmpty(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.surfaceTint,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Add Extra Toppings",
+                        text = stringResource(R.string.topping_extras),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.surfaceTint
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     // Toppings list
                     LazyPizzaMiniGridList(
-                        miniToppings = listOf(
+                        miniToppings = state.availableToppings.map { topping ->
                             MiniCardInfo(
-                                id = "1",
-                                title = "Corn",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "2",
-                                title = "Mushrooms",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "3",
-                                title = "Pepperoni",
-                                price = "$1.00",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "4",
-                                title = "Olives",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "5",
-                                title = "Onions",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "6",
-                                title = "Bell Peppers",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "7",
-                                title = "Bacon",
-                                price = "$1.00",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "8",
-                                title = "Spinach",
-                                price = "$0.50",
-                                imageUrl = ""
-                            ),
-                            MiniCardInfo(
-                                id = "9",
-                                title = "Pineapple",
-                                price = "$1.00",
-                                imageUrl = ""
+                                id = topping.id,
+                                title = topping.name,
+                                price = topping.price,
+                                imageUrl = topping.imageUrl,
+                                quantity = state.selectedToppings[topping.id] ?: 0
                             )
-                        ),
-                        onToppingClick = { }
+                        },
+                        onToppingClick = { toppingId ->
+                            onAction(ProductDetailAction.OnToppingClick(toppingId))
+                        },
+                        onQuantityChange = { toppingId, quantity ->
+                            onAction(
+                                ProductDetailAction.OnToppingQuantityChange(
+                                    toppingId,
+                                    quantity
+                                )
+                            )
+                        }
                     )
                 }
                 StickyBottomBar(
-                    buttonText = "Add to Cart for \$12.99",
-                    onButtonClick = {}
+                    buttonText = stringResource(
+                        R.string.add_to_cart_button_text,
+                        state.formattedTotalPrice
+                    ),
+                    onButtonClick = {
+                        onAction(ProductDetailAction.OnAddToCartClick)
+                    }
                 )
             }
         }
-
     }
 }
 

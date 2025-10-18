@@ -24,7 +24,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun LazyPizzaBackground(
     modifier: Modifier = Modifier,
     topStartCornerRadius: Dp = 16.dp,
-    topEndCornerRadius: Dp = 16.dp,
+    topEndCornerRadius: Dp = 0.dp,
     bottomStartCornerRadius: Dp = 0.dp,
     bottomEndCornerRadius: Dp = 0.dp,
     topPadding: Dp = 20.dp,

@@ -35,7 +35,7 @@ fun LazyPizzaCategoryChip(
         border = BorderStroke(
             width = 1.dp,
             color = if (selected) {
-                MaterialTheme.colorScheme.primary
+                MaterialTheme.colorScheme.onPrimary
             } else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
         ),
         modifier = modifier
@@ -50,6 +50,7 @@ fun LazyPizzaCategoryChip(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
+
             )
         }
     }
@@ -63,7 +64,7 @@ private fun LazyPizzaCategoryListItemPreview() {
         LazyPizzaCategoryChip(
             text = "Pizza",
             onClick = { },
-            selected = false,
+            selected = true,
             modifier = Modifier.padding(30.dp)
         )
     }
