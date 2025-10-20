@@ -9,7 +9,7 @@ data class ProductListState(
     val searchQuery: String = "",
     val allProducts: List<LazyPizzaProductListUi> = emptyList(),
     val filteredProducts: List<LazyPizzaProductListUi> = emptyList(),
-    val selectedCategories: Set<String> = emptySet(),
+    val selectedCategory: String? = null,
     val categories: List<String> = emptyList(),
     val error: UiText? = null
 ) {

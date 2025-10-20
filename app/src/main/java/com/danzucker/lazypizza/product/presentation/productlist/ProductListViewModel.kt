@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.util.UiText
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.*
 import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -48,20 +49,21 @@ class ProductListViewModel : ViewModel() {
                 addToCart(action.productId)
             }
             is ProductListAction.OnCategorySelected -> {
-                toggleCategory(action.category)
+                _state.update { it.copy(selectedCategory = action.category) }
             }
             is ProductListAction.OnDeleteFromCart -> {
                 removeFromCart(action.productId)
             }
             ProductListAction.OnPhoneNumberClick -> {
                 viewModelScope.launch {
-                    eventChannel.send(ProductListEvent.OpenPhoneDialer("+15553217890"))
+                    eventChannel.send(OpenPhoneDialer("+15553217890"))
                 }
             }
             is ProductListAction.OnProductClick -> {} // This is handled in the root composable (ProductListScreen)
             is ProductListAction.OnQuantityChange -> {
                 updateQuantity(action.productId, action.quantity)
             }
+            is ProductListAction.OnScrollToCategoryComplete -> onScrollComplete()
         }
     }
 
@@ -83,47 +85,29 @@ class ProductListViewModel : ViewModel() {
                     customerPhoneNumber = UiText.StringResourceWithArgs(R.string.customer_phone_number),
                     filteredProducts = products,
                     categories = categories,
-                    selectedCategories = emptySet()
+                    selectedCategory = null
                 )
             }
         }
     }
 
-    private fun toggleCategory(category: String) {
-        _state.update { currentState ->
-            val newSelectedCategories = if (category in currentState.selectedCategories) {
-                // Deselect category
-                currentState.selectedCategories - category
-            } else {
-                // Select category
-                currentState.selectedCategories + category
-            }
-            currentState.copy(selectedCategories = newSelectedCategories)
-        }
-        filterProducts()
-    }
-
     private fun filterProducts() {
         val currentState = _state.value
         val query = currentState.searchQuery.lowercase()
-        val selectedCategories = currentState.selectedCategories
 
         val filtered = currentState.allProducts.filter { product ->
-            val matchesSearch = if (query.isBlank()) {
+            if (query.isBlank()) {
                 true
             } else {
                 product.name.lowercase().contains(query) ||
                         product.description.lowercase().contains(query)
             }
-
-            val matchesCategory = if (selectedCategories.isEmpty()) {
-                true
-            } else {
-                product.category in selectedCategories
-            }
-            matchesSearch && matchesCategory
         }
         _state.update { it.copy(filteredProducts = filtered) }
+    }
+
+    fun onScrollComplete() {
+        _state.update { it.copy(selectedCategory = null) }
     }
 
     private fun addToCart(productId: String) {
@@ -159,5 +143,4 @@ class ProductListViewModel : ViewModel() {
     private fun removeFromCart(productId: String) {
         updateQuantity(productId, 0)
     }
-
 }

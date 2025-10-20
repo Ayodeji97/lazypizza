@@ -136,7 +136,7 @@ fun ProductListScreen(
 
             LazyPizzaCategoryChipList(
                 categories = state.categories,
-                selectedCategories = state.selectedCategories,
+                selectedCategories = state.selectedCategory?.let { setOf(it) } ?: emptySet(),
                 onCategorySelected = { category ->
                     onAction(ProductListAction.OnCategorySelected(category))
                 }
@@ -168,6 +168,10 @@ fun ProductListScreen(
                     LazyPizzaListProductList(
                         lazyPizzas = state.filteredProducts,
                         deviceScreenType = DeviceScreenType.fromWindowSizeClass(windowClass),
+                        scrollToCategory = state.selectedCategory,
+                        onScrollComplete = {
+                            onAction(ProductListAction.OnScrollToCategoryComplete)
+                        },
                         onProductClick = { pizzaId ->
                             onAction(ProductListAction.OnProductClick(pizzaId))
                         },

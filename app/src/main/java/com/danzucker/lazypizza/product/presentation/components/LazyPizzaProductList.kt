@@ -7,11 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +34,9 @@ fun LazyPizzaListProductList(
     onAddToCartClick: (String) -> Unit,
     onQuantityChange: (String, Int) -> Unit,
     onDeleteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollToCategory: String? = null,
+    onScrollComplete: () -> Unit = {}
 ) {
     val columnCount = when (deviceScreenType) {
         MOBILE_PORTRAIT -> 1
@@ -37,9 +44,26 @@ fun LazyPizzaListProductList(
     }
 
     val groupedPizzas = lazyPizzas.groupBy { it.category }
+    val lazyGridState = rememberLazyGridState()
+
+    LaunchedEffect(scrollToCategory) {
+        if (scrollToCategory != null) {
+            val sectionIndex = groupedPizzas.keys.indexOfFirst { it == scrollToCategory }
+            if (sectionIndex != -1) {
+                // Calculate the item index to scroll to
+                val itemIndex = groupedPizzas.entries
+                    .take(sectionIndex)
+                    .sumOf { it.value.size + 1 } // +1 for the header
+
+                lazyGridState.animateScrollToItem(itemIndex)
+                onScrollComplete()
+            }
+        }
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columnCount),
+        state = lazyGridState,
         modifier = modifier
             .fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -47,7 +71,9 @@ fun LazyPizzaListProductList(
         contentPadding = PaddingValues(16.dp)
     ) {
         groupedPizzas.entries.forEachIndexed { sectionIndex, (category, lazyPizzaItems) ->
-            item {
+            item(
+                span = { GridItemSpan(maxLineSpan) }
+            ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = category.uppercase(),
