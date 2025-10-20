@@ -8,7 +8,7 @@ import com.danzucker.lazypizza.product.presentation.models.ToppingUi
 object SampleProductProvider {
 
     fun getProducts(): List<LazyPizzaProductListUi> = listOf(
-        // PIZZAS
+        // ============ PIZZAS ============
         LazyPizzaProductListUi(
             id = "1",
             name = "Margherita",
@@ -50,8 +50,34 @@ object SampleProductProvider {
         ),
         LazyPizzaProductListUi(
             id = "4",
+            name = "BBQ Chicken",
+            description = "BBQ sauce, mozzarella, grilled chicken, onion, corn",
+            price = "$11.49",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("BBQ Chicken.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.7f,
+            reviewsCount = 190,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+        LazyPizzaProductListUi(
+            id = "5",
+            name = "Four Cheese",
+            description = "Mozzarella, gorgonzola, parmesan, ricotta",
+            price = "$11.99",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Four Cheese.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.6f,
+            reviewsCount = 165,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+        LazyPizzaProductListUi(
+            id = "6",
             name = "Veggie Delight",
-            description = "Tomato sauce, mozzarella, mushrooms, olives, bell pepper, onion",
+            description = "Tomato sauce, mozzarella, mushrooms, olives, bell pepper, onion, corn",
             price = "$9.79",
             imageUrl = ImageUrlProvider.getPizzaImageUrl("Veggie Delight.png"),
             isAvailable = true,
@@ -61,10 +87,62 @@ object SampleProductProvider {
             isFavorite = false,
             cardType = LazyPizzaCardType.PIZZA
         ),
-
-        // DRINKS
         LazyPizzaProductListUi(
-            id = "5",
+            id = "7",
+            name = "Meat Lovers",
+            description = "Tomato sauce, mozzarella, pepperoni, ham, bacon, sausage",
+            price = "$12.49",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Meat Lovers.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.9f,
+            reviewsCount = 250,
+            isFavorite = true,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+        LazyPizzaProductListUi(
+            id = "8",
+            name = "Spicy Inferno",
+            description = "Tomato sauce, mozzarella, spicy salami, jalapeños, red chili pepper, garlic",
+            price = "$11.29",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Spicy Inferno.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.4f,
+            reviewsCount = 140,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+        LazyPizzaProductListUi(
+            id = "9",
+            name = "Seafood Special",
+            description = "Tomato sauce, mozzarella, shrimp, mussels, squid, parsley",
+            price = "$13.99",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Seafood Special.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.3f,
+            reviewsCount = 110,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+        LazyPizzaProductListUi(
+            id = "10",
+            name = "Truffle Mushroom",
+            description = "Cream sauce, mozzarella, mushrooms, truffle oil, parmesan",
+            price = "$12.99",
+            imageUrl = ImageUrlProvider.getPizzaImageUrl("Truffle Mushroom.png"),
+            isAvailable = true,
+            category = "Pizza",
+            rating = 4.8f,
+            reviewsCount = 175,
+            isFavorite = true,
+            cardType = LazyPizzaCardType.PIZZA
+        ),
+
+        // ============ DRINKS ============
+        LazyPizzaProductListUi(
+            id = "11",
             name = "Mineral Water",
             description = "Refreshing mineral water",
             price = "$1.49",
@@ -77,7 +155,20 @@ object SampleProductProvider {
             cardType = LazyPizzaCardType.OTHERS
         ),
         LazyPizzaProductListUi(
-            id = "6",
+            id = "12",
+            name = "7-Up",
+            description = "Lemon-lime soda",
+            price = "$1.89",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("7-up.png"),
+            isAvailable = true,
+            category = "Drinks",
+            rating = 4.2f,
+            reviewsCount = 75,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "13",
             name = "Pepsi",
             description = "Classic Pepsi cola",
             price = "$1.99",
@@ -90,7 +181,7 @@ object SampleProductProvider {
             cardType = LazyPizzaCardType.OTHERS
         ),
         LazyPizzaProductListUi(
-            id = "7",
+            id = "14",
             name = "Orange Juice",
             description = "Fresh orange juice",
             price = "$2.49",
@@ -102,10 +193,36 @@ object SampleProductProvider {
             isFavorite = false,
             cardType = LazyPizzaCardType.OTHERS
         ),
-
-        // SAUCES
         LazyPizzaProductListUi(
-            id = "8",
+            id = "15",
+            name = "Apple Juice",
+            description = "Fresh apple juice",
+            price = "$2.29",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("apple juice.png"),
+            isAvailable = true,
+            category = "Drinks",
+            rating = 4.4f,
+            reviewsCount = 55,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "16",
+            name = "Iced Tea (Lemon)",
+            description = "Refreshing lemon iced tea",
+            price = "$2.19",
+            imageUrl = ImageUrlProvider.getDrinkImageUrl("iced tea.png"),
+            isAvailable = true,
+            category = "Drinks",
+            rating = 4.3f,
+            reviewsCount = 65,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+
+        // ============ SAUCES ============
+        LazyPizzaProductListUi(
+            id = "17",
             name = "Garlic Sauce",
             description = "Creamy garlic dipping sauce",
             price = "$0.59",
@@ -118,7 +235,7 @@ object SampleProductProvider {
             cardType = LazyPizzaCardType.OTHERS
         ),
         LazyPizzaProductListUi(
-            id = "9",
+            id = "18",
             name = "BBQ Sauce",
             description = "Smoky BBQ dipping sauce",
             price = "$0.59",
@@ -130,13 +247,39 @@ object SampleProductProvider {
             isFavorite = false,
             cardType = LazyPizzaCardType.OTHERS
         ),
-
-        // ICE CREAM
         LazyPizzaProductListUi(
-            id = "10",
+            id = "19",
+            name = "Cheese Sauce",
+            description = "Rich and creamy cheese sauce",
+            price = "$0.89",
+            imageUrl = ImageUrlProvider.getSauceImageUrl("Cheese Sauce.png"),
+            isAvailable = true,
+            category = "Sauces",
+            rating = 4.8f,
+            reviewsCount = 130,
+            isFavorite = true,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "20",
+            name = "Spicy Chili Sauce",
+            description = "Hot and spicy chili sauce",
+            price = "$0.59",
+            imageUrl = ImageUrlProvider.getSauceImageUrl("Spicy Chili Sauce.png"),
+            isAvailable = true,
+            category = "Sauces",
+            rating = 4.5f,
+            reviewsCount = 95,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+
+        // ============ ICE CREAM ============
+        LazyPizzaProductListUi(
+            id = "21",
             name = "Vanilla Ice Cream",
             description = "Classic vanilla ice cream",
-            price = "$3.99",
+            price = "$2.49",
             imageUrl = ImageUrlProvider.getIceCreamImageUrl("vanilla.png"),
             isAvailable = true,
             category = "Ice Cream",
@@ -146,16 +289,68 @@ object SampleProductProvider {
             cardType = LazyPizzaCardType.OTHERS
         ),
         LazyPizzaProductListUi(
-            id = "11",
+            id = "22",
             name = "Chocolate Ice Cream",
             description = "Rich chocolate ice cream",
-            price = "$3.99",
+            price = "$2.49",
             imageUrl = ImageUrlProvider.getIceCreamImageUrl("chocolate.png"),
             isAvailable = true,
             category = "Ice Cream",
             rating = 4.9f,
             reviewsCount = 180,
             isFavorite = true,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "23",
+            name = "Strawberry Ice Cream",
+            description = "Sweet strawberry ice cream",
+            price = "$2.49",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("strawberry.png"),
+            isAvailable = true,
+            category = "Ice Cream",
+            rating = 4.7f,
+            reviewsCount = 140,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "24",
+            name = "Cookies Ice Cream",
+            description = "Vanilla ice cream with cookie chunks",
+            price = "$2.79",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("cookies.png"),
+            isAvailable = true,
+            category = "Ice Cream",
+            rating = 4.8f,
+            reviewsCount = 160,
+            isFavorite = true,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "25",
+            name = "Pistachio Ice Cream",
+            description = "Creamy pistachio ice cream",
+            price = "$2.99",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("pistachio.png"),
+            isAvailable = true,
+            category = "Ice Cream",
+            rating = 4.6f,
+            reviewsCount = 125,
+            isFavorite = false,
+            cardType = LazyPizzaCardType.OTHERS
+        ),
+        LazyPizzaProductListUi(
+            id = "26",
+            name = "Mango Sorbet",
+            description = "Refreshing mango sorbet",
+            price = "$2.69",
+            imageUrl = ImageUrlProvider.getIceCreamImageUrl("mango sorbet.png"),
+            isAvailable = true,
+            category = "Ice Cream",
+            rating = 4.7f,
+            reviewsCount = 135,
+            isFavorite = false,
             cardType = LazyPizzaCardType.OTHERS
         )
     )
