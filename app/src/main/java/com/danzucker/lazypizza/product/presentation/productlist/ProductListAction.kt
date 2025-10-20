@@ -8,4 +8,5 @@ sealed interface ProductListAction {
     data class OnQuantityChange(val productId: String, val quantity: Int) : ProductListAction
     data class OnDeleteFromCart(val productId: String) : ProductListAction
     data object OnPhoneNumberClick : ProductListAction
+    data object OnScrollToCategoryComplete : ProductListAction
 }
