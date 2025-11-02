@@ -33,3 +33,15 @@ val SearchIcon: ImageVector
 val BackIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.back_arrow)
+
+val MenuIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_product_list)
+
+val CartIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_cart)
+
+val HistoryIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_history)
