@@ -1,18 +1,16 @@
 package com.danzucker.lazypizza.core.presentation.designsystem.button
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +24,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.padd
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.paddingSmallMedium12
 
 @Composable
-fun PrimaryButton(
+fun PrimarySmallButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -36,7 +34,6 @@ fun PrimaryButton(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .background(
                 brush = if (enabled && !isLoading) {
                     MaterialTheme.colorScheme.LazyPizzaButtonGradient
@@ -49,8 +46,7 @@ fun PrimaryButton(
         Button(
             onClick = onClick,
             enabled = enabled && !isLoading,
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -92,9 +88,9 @@ fun PrimaryButton(
 
 @Preview
 @Composable
-private fun PrimaryButtonPreview() {
+private fun PrimarySmallButtonPreview() {
     LazyPizzaTheme {
-        PrimaryButton(
+        PrimarySmallButton(
             text = "",
             onClick = {},
             enabled = true,
