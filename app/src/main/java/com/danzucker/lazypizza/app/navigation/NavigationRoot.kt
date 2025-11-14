@@ -17,7 +17,7 @@ fun NavigationRoot(
         startDestination = NavigationRoute.ProductList
     ) {
         composable<NavigationRoute.ProductList> {
-            ProductListRoot(
+            MainScaffold(
                 onNavigateToProductDetails = { productId ->
                     navController.navigate(
                         NavigationRoute.ProductDetails(
