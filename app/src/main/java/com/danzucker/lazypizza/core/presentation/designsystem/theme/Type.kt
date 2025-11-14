@@ -91,6 +91,13 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.sp
     ),
+    displayLarge = TextStyle(
+        fontFamily = InstrumentSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 24.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
     displayMedium = TextStyle(
         fontFamily = InstrumentSans,
         fontWeight = FontWeight.Medium,

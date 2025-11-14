@@ -13,4 +13,12 @@
     <string name="back">Back</string>
     <string name="topping_extras">ADD EXTRA TOPPINGS</string>
     <string name="add_to_cart_button_text">Add to Cart for %1$s</string>
+    <string name="not_signed_in_title">Not Signed In</string>
+    <string name="not_signed_in_subtitle">Please sign in to view your order history.</string>
+    <string name="signed_in_button">Sign In</string>
+    <string name="back_to_menu_button">Back to Menu</string>
+    <string name="cart_empty_title">Your Cart is Empty</string>
+    <string name="cart_empty_subtitle">Head back to the menu and grab a pizza you love.</string>
+    <string name="cart_title">Cart</string>
+    <string name="order_history_title">Order History</string>
 </resources>

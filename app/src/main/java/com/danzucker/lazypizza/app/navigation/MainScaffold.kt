@@ -18,7 +18,9 @@ import com.danzucker.lazypizza.core.presentation.designsystem.HistoryIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.MenuIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.components.BottomNavItem
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBottomNavigationBar
+import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaCenteredTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaNavigationRail
+import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
 import com.danzucker.lazypizza.product.presentation.cart.CartRoot
