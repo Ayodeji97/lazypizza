@@ -10,4 +10,10 @@ sealed interface NavigationRoute {
 
     @Serializable
     data class ProductDetails(val productId: String) : NavigationRoute
+
+    @Serializable
+    data object Cart : NavigationRoute
+
+    @Serializable
+    data object History : NavigationRoute
 }
