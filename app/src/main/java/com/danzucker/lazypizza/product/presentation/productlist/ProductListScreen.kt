@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.components.SearchBar
@@ -44,11 +43,12 @@ import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenTyp
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaCategoryChipList
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaListProductList
 import androidx.core.net.toUri
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductListRoot(
     onNavigateToProductDetails: (String) -> Unit,
-    viewModel: ProductListViewModel = viewModel()
+    viewModel: ProductListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -62,6 +62,9 @@ fun ProductListRoot(
                 }
                 context.startActivity(intent)
             }
+
+            ProductListEvent.FailedToAddToCart -> {}
+            ProductListEvent.ItemAddedToCart -> {}
         }
     }
 

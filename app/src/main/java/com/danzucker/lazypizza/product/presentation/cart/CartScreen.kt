@@ -25,11 +25,12 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.product.presentation.cart.model.CartItemUi
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun CartRoot(
-    viewModel: CartViewModel = viewModel()
+    viewModel: CartViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 

@@ -4,14 +4,15 @@ import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 data class ProductListState(
-    val isLoadingData: Boolean = false,
-    val customerPhoneNumber: UiText = UiText.DynamicString(""),
-    val searchQuery: String = "",
     val allProducts: List<LazyPizzaProductListUi> = emptyList(),
     val filteredProducts: List<LazyPizzaProductListUi> = emptyList(),
-    val selectedCategory: String? = null,
     val categories: List<String> = emptyList(),
-    val error: UiText? = null
+    val selectedCategory: String? = null,
+    val searchQuery: String = "",
+    val isLoadingData: Boolean = false,
+    val customerPhoneNumber: UiText = UiText.DynamicString(""),
+    val error: UiText? = null,
+    val cartItemsCount: Int = 0
 ) {
     val hasProducts: Boolean
         get() = filteredProducts.isNotEmpty()

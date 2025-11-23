@@ -30,7 +30,7 @@ import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
 @Composable
 fun MainScaffold(
     onNavigateToProductDetails: (String) -> Unit,
-    cartItemCount: Int = 0 // TODO: Will be connected to actual cart state later
+    cartItemCount: Int
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 

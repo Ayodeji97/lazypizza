@@ -21,17 +21,20 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductDetailRoot(
     onNavigateBack: () -> Unit,
-    viewModel: ProductDetailViewModel = viewModel()
+    viewModel: ProductDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is ProductDetailEvent.NavigateBack -> onNavigateBack()
+            ProductDetailEvent.FailedToAddToCart -> {}
+            ProductDetailEvent.NavigateBackToMenu -> {}
         }
     }
 

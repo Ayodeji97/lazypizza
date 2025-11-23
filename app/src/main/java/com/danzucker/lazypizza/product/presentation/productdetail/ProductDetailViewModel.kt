@@ -1,11 +1,21 @@
 package com.danzucker.lazypizza.product.presentation.productdetail
 
+import android.R.attr.category
+import android.R.attr.name
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
+import com.danzucker.lazypizza.core.domain.util.Result
+import com.danzucker.lazypizza.product.domain.cart.CartRepository
+import com.danzucker.lazypizza.product.domain.mappers.toCartTopping
+import com.danzucker.lazypizza.product.domain.model.CartItem
+import com.danzucker.lazypizza.product.domain.model.ToppingData
+import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
+import com.danzucker.lazypizza.product.presentation.mappers.toToppingData
 import com.danzucker.lazypizza.product.presentation.models.PizzaDetailUi
 import com.danzucker.lazypizza.product.presentation.models.ToppingUi
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.FailedToAddToCart
 import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +28,7 @@ import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
     private val savedStateHandle: SavedStateHandle,
+    private val cartRepository: CartRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -48,7 +59,7 @@ class ProductDetailViewModel(
                 }
             }
             is ProductDetailAction.OnAddToCartClick -> {
-                addToCart()
+                addPizzaToCart()
             }
             is ProductDetailAction.OnToppingClick -> {
                 toggleTopping(action.toppingId)
@@ -62,7 +73,7 @@ class ProductDetailViewModel(
     private fun loadProductDetail() {
         // Load product detail logic here
         val productId = savedStateHandle.get<String>("productId") ?: "1"
-        val product = SampleProductProvider.getProducts().find { it.id == productId }
+        val product = SampleProductProvider.getProductById(productId)
 
         if (product == null) {
             _state.update { it.copy(isLoadingData = false) }
@@ -74,7 +85,8 @@ class ProductDetailViewModel(
             id = product.id,
             name = product.name,
             description = product.description,
-            basePrice = product.price.removePrefix("$").toDoubleOrNull() ?: 0.0,
+            basePrice = product.getPriceAsDouble(),
+                //product.price.removePrefix("$").toDoubleOrNull() ?: 0.0,
             imageUrl = product.imageUrl, // Use the actual imageUrl from the product
             imageResId = R.drawable.margherita, // Keep as fallback if needed
             ingredients = product.description, // Or create a separate ingredients field
@@ -146,12 +158,40 @@ class ProductDetailViewModel(
         return total
     }
 
-    private fun addToCart() {
-        // TODO: Implement cart functionality in future milestone
-        val currentState = _state.value
-        println("Adding to cart: ${currentState.pizzaDetail?.name}")
-        println("Selected toppings: ${currentState.selectedToppings}")
-        println("Total price: ${currentState.formattedTotalPrice}")
+    private fun addPizzaToCart() {
+        viewModelScope.launch {
+            val currentState = _state.value
+            val pizza = currentState.pizzaDetail ?: return@launch
+
+            val toppingsData = currentState.selectedToppings.mapNotNull { (toppingId, quantity) ->
+                val topping = currentState.availableToppings.find { it.id == toppingId }
+                topping?.let { toppingUi ->
+                    toppingId to toppingUi.toToppingData(quantity)
+                }
+            }.toMap()
+
+            val cartToppings = toppingsData.map { (toppingId, toppingData) ->
+                toppingData.toCartTopping(toppingId)
+            }
+
+            val cartItemId = CartItem.generateId(productId = pizza.id, cartToppings)
+
+            val cartItem = CartItem(
+                id = cartItemId,
+                productId = pizza.id,
+                name = pizza.name,
+                imageUrl = pizza.imageUrl,
+                basePrice = pizza.basePrice,
+                quantity = 1, // adding one quantity at a time
+                toppings = cartToppings,
+                category = pizza.category
+            )
+
+            when(cartRepository.addToCart(item = cartItem)) {
+                is Result.Success-> eventChannel.send(ProductDetailEvent.NavigateBackToMenu)
+                is Result.Error -> eventChannel.send(ProductDetailEvent.FailedToAddToCart)
+            }
+        }
     }
 
 }
