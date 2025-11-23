@@ -2,6 +2,7 @@
 
 package com.danzucker.lazypizza.product.presentation.cart
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,14 +15,15 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaCenteredTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaEmptyScreen
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.product.presentation.cart.model.CartItemUi
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
@@ -30,10 +32,23 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CartRoot(
+    onNavigateToMenu: () -> Unit,
     viewModel: CartViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            is CartEvent.NavigateBack -> onNavigateToMenu()
+            is CartEvent.ShowErrorMessage -> {
+                Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
+            }
+            is CartEvent.ShowMessage -> {
+                Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     CartScreen(
         state = state,
         onAction = viewModel::onAction

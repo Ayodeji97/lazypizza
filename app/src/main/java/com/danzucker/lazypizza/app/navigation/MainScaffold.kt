@@ -64,7 +64,7 @@ fun MainScaffold(
                         onNavigateToProductDetails = onNavigateToProductDetails
                     )
                     1 -> CartRoot(
-                        //onNavigateToMenu = { selectedTabIndex = 0 }
+                        onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                     2 -> OrderHistoryRoot()
                 }
@@ -94,7 +94,7 @@ fun MainScaffold(
                         onNavigateToProductDetails = onNavigateToProductDetails
                     )
                     1 -> CartRoot(
-                        //onNavigateToMenu = { selectedTabIndex = 0 }
+                        onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                     2 -> OrderHistoryRoot()
                 }

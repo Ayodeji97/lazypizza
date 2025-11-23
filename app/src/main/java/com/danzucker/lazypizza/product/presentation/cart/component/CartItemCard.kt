@@ -144,6 +144,7 @@ fun CartItemCard(
                     onIncreaseClick = {
                         onQuantityChange(cartItem.quantity + 1)
                     },
+                    enableDecreaseButton = cartItem.quantity > 1,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
