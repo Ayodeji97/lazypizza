@@ -37,6 +37,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -66,6 +67,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.coil.compose)
+
+    // Logging
+    implementation(libs.timber)
 
 
     testImplementation(libs.junit)

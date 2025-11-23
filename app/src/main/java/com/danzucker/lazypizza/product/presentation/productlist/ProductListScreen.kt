@@ -19,10 +19,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.components.SearchBar
@@ -44,15 +47,19 @@ import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenTyp
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaCategoryChipList
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaListProductList
 import androidx.core.net.toUri
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductListRoot(
     onNavigateToProductDetails: (String) -> Unit,
-    viewModel: ProductListViewModel = viewModel()
+    viewModel: ProductListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -61,6 +68,23 @@ fun ProductListRoot(
                     data = "tel:${event.phoneNumber}".toUri()
                 }
                 context.startActivity(intent)
+            }
+
+            is ProductListEvent.ShowErrorMessage -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = event.message.asString(context),
+                        duration = SnackbarDuration.Long
+                    )
+                }
+            }
+            ProductListEvent.ItemAddedToCart -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.item_added_to_cart),
+                        duration = SnackbarDuration.Long
+                    )
+                }
             }
         }
     }

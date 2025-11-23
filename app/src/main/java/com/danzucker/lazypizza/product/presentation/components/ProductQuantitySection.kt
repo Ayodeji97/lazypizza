@@ -19,7 +19,9 @@ fun ProductQuantitySection(
     price: String,
     onDecreaseClick: () -> Unit,
     onIncreaseClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enableIncreaseButton: Boolean = true,
+    enableDecreaseButton: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -34,7 +36,9 @@ fun ProductQuantitySection(
         ProductSelectionSection(
             quantity = quantity,
             onDecreaseClick = onDecreaseClick,
-            onIncreaseClick = onIncreaseClick
+            onIncreaseClick = onIncreaseClick,
+            enableIncreaseButton = enableIncreaseButton,
+            enableDecreaseButton = enableDecreaseButton
         )
 
         Column(

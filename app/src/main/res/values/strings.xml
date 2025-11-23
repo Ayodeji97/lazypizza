@@ -23,4 +23,10 @@
     <string name="order_history_title">Order History</string>
     <string name="recommended_to_add_to_your_order">Recommended to add to your order</string>
     <string name="proceed_to_checkout">Proceed to Checkout (%s)</string>
+    <string name="failed_to_update_quantity">Failed to update quantity</string>
+    <string name="failed_to_remove_item">Failed to remove item</string>
+    <string name="checkout_coming_soon">Checkout coming soon!</string>
+    <string name="failed_to_add_to_cart">Couldn\'t add Item, Try again!</string>
+    <string name="item_added_to_cart">Great, Item added to cart!</string>
+    <string name="failed_to_add_item">Failed to add item. Try again!</string>
 </resources>

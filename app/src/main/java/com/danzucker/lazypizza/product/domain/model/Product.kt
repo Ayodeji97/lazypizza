@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.product.domain
+package com.danzucker.lazypizza.product.domain.model
 
 data class Product(
     val id: String = "",
