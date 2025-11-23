@@ -1,21 +1,18 @@
 package com.danzucker.lazypizza.product.presentation.productdetail
 
-import android.R.attr.category
-import android.R.attr.name
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
+import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.mappers.toCartTopping
 import com.danzucker.lazypizza.product.domain.model.CartItem
-import com.danzucker.lazypizza.product.domain.model.ToppingData
 import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
 import com.danzucker.lazypizza.product.presentation.mappers.toToppingData
 import com.danzucker.lazypizza.product.presentation.models.PizzaDetailUi
 import com.danzucker.lazypizza.product.presentation.models.ToppingUi
-import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.FailedToAddToCart
 import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,12 +55,15 @@ class ProductDetailViewModel(
                     eventChannel.send(ProductDetailEvent.NavigateBack)
                 }
             }
+
             is ProductDetailAction.OnAddToCartClick -> {
                 addPizzaToCart()
             }
+
             is ProductDetailAction.OnToppingClick -> {
                 toggleTopping(action.toppingId)
             }
+
             is ProductDetailAction.OnToppingQuantityChange -> {
                 updateToppingQuantity(action.toppingId, action.quantity)
             }
@@ -86,7 +86,7 @@ class ProductDetailViewModel(
             name = product.name,
             description = product.description,
             basePrice = product.getPriceAsDouble(),
-                //product.price.removePrefix("$").toDoubleOrNull() ?: 0.0,
+            //product.price.removePrefix("$").toDoubleOrNull() ?: 0.0,
             imageUrl = product.imageUrl, // Use the actual imageUrl from the product
             imageResId = R.drawable.margherita, // Keep as fallback if needed
             ingredients = product.description, // Or create a separate ingredients field
@@ -187,9 +187,20 @@ class ProductDetailViewModel(
                 category = pizza.category
             )
 
-            when(cartRepository.addToCart(item = cartItem)) {
-                is Result.Success-> eventChannel.send(ProductDetailEvent.NavigateBackToMenu)
-                is Result.Error -> eventChannel.send(ProductDetailEvent.FailedToAddToCart)
+            when (cartRepository.addToCart(item = cartItem)) {
+                is Result.Success -> eventChannel.send(
+                    ProductDetailEvent.ShowMessage(
+                        UiText.StringResourceWithArgs(
+                            R.string.item_added_to_cart
+                        )
+                    )
+                )
+
+                is Result.Error -> eventChannel.send(
+                    ProductDetailEvent.ShowErrorMessage(
+                        UiText.StringResourceWithArgs(R.string.failed_to_add_to_cart)
+                    )
+                )
             }
         }
     }

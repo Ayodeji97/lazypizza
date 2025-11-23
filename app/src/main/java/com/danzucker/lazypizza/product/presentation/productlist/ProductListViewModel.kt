@@ -164,7 +164,7 @@ class ProductListViewModel(
                     eventChannel.send(ItemAddedToCart)
                 }
 
-                is Result.Error -> eventChannel.send(FailedToAddToCart)
+                is Result.Error -> eventChannel.send(ShowErrorMessage(UiText.StringResourceWithArgs(R.string.failed_to_add_to_cart)))
             }
         }
     }
