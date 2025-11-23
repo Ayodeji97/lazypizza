@@ -1,6 +1,4 @@
-package com.danzucker.notemark.core.domain.util
-
-import com.danzucker.lazypizza.core.domain.util.Error
+package com.danzucker.lazypizza.core.domain.util
 
 sealed interface DataError: Error {
     enum class Network: DataError {

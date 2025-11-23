@@ -5,7 +5,7 @@ import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.CartSummary
-import com.danzucker.notemark.core.domain.util.DataError
+import com.danzucker.lazypizza.core.domain.util.DataError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map

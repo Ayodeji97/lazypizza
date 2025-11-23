@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.cart
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlin.collections.map
 
 class CartViewModel(
-    private val savedStateHandle: SavedStateHandle,
     private val cartRepository: CartRepository
 ) : ViewModel() {
 
@@ -207,8 +205,10 @@ class CartViewModel(
                     )
                 }
                 is Result.Error-> {
-                    CartEvent.ShowErrorMessage(
-                        UiText.StringResourceWithArgs(R.string.failed_to_add_item)
+                    eventChannel.send(
+                        CartEvent.ShowErrorMessage(
+                            UiText.StringResourceWithArgs(R.string.failed_to_add_item)
+                        )
                     )
                 }
             }

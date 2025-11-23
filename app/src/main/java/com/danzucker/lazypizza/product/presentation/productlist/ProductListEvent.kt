@@ -1,7 +1,6 @@
 package com.danzucker.lazypizza.product.presentation.productlist
 
 import com.danzucker.lazypizza.core.presentation.util.UiText
-import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailEvent
 
 sealed interface ProductListEvent {
     data class OpenPhoneDialer(val phoneNumber: String) : ProductListEvent

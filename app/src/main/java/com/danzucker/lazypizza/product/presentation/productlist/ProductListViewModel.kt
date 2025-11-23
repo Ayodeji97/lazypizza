@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.productlist
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R

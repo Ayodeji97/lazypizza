@@ -86,7 +86,6 @@ class ProductDetailViewModel(
             name = product.name,
             description = product.description,
             basePrice = product.getPriceAsDouble(),
-            //product.price.removePrefix("$").toDoubleOrNull() ?: 0.0,
             imageUrl = product.imageUrl, // Use the actual imageUrl from the product
             imageResId = R.drawable.margherita, // Keep as fallback if needed
             ingredients = product.description, // Or create a separate ingredients field

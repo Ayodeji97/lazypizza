@@ -3,7 +3,7 @@ package com.danzucker.lazypizza.product.domain.cart
 import com.danzucker.lazypizza.core.domain.util.EmptyResult
 import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.CartSummary
-import com.danzucker.notemark.core.domain.util.DataError
+import com.danzucker.lazypizza.core.domain.util.DataError
 import kotlinx.coroutines.flow.Flow
 
 interface CartRepository {
