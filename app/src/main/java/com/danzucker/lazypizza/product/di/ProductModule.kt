@@ -13,7 +13,6 @@ import org.koin.dsl.module
 
 val productModule = module {
     singleOf(::InMemoryCartRepository).bind<CartRepository>()
-    //viewModel { ProductListViewModel(get()) }
     viewModelOf(::ProductListViewModel)
     viewModelOf(::ProductDetailViewModel)
     viewModelOf(::CartViewModel)

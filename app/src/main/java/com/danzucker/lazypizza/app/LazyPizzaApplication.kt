@@ -1,6 +1,7 @@
 package com.danzucker.lazypizza.app
 
 import android.app.Application
+import com.danzucker.lazypizza.BuildConfig
 import com.danzucker.lazypizza.app.di.appModule
 import com.danzucker.lazypizza.product.di.productModule
 import kotlinx.coroutines.CoroutineScope
@@ -16,9 +17,9 @@ class LazyPizzaApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         // Initialize any libraries or components here if needed
-//        if (BuildConfig.DEBUG) {
-//            Timber.plant(Timber.DebugTree())
-//        }
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
 
         startKoin {
             androidContext(this@LazyPizzaApplication)
