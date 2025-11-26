@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.core.data
 
-import androidx.credentials.exceptions.domerrors.NetworkError
 import com.danzucker.lazypizza.core.domain.ImageUrlProvider
 import com.danzucker.lazypizza.core.domain.util.DataError
 import com.danzucker.lazypizza.core.domain.util.EmptyResult
@@ -8,6 +7,7 @@ import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.product.domain.model.ProductCategory
 import com.danzucker.lazypizza.product.domain.model.ProductType
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -34,8 +34,14 @@ class FirestoreDataSeeder(
             seedProducts()
             seedToppings()
             Result.Success(Unit)
+        } catch (e: FirebaseFirestoreException) {
+            when (e.code) {
+                FirebaseFirestoreException.Code.PERMISSION_DENIED ->
+                    Result.Error(DataError.Network.PERMISSION_DENIED)
+                else -> Result.Error(DataError.Network.UNKNOWN)
+            }
         } catch (e: Exception) {
-            Result.Error(DataError.Network.PERMISSION_DENIED)
+            Result.Error(DataError.Network.UNKNOWN)
         }
     }
 
