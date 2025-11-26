@@ -29,4 +29,5 @@
     <string name="failed_to_add_to_cart">Couldn\'t add Item, Try again!</string>
     <string name="item_added_to_cart">Great, Item added to cart!</string>
     <string name="failed_to_add_item">Failed to add item. Try again!</string>
+    <string name="failed_to_load_products">Failed to load products</string>
 </resources>

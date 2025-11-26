@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.mappers.toCartItemUi
 import com.danzucker.lazypizza.product.domain.model.CartItem
+import com.danzucker.lazypizza.product.domain.model.Product
+import com.danzucker.lazypizza.product.domain.model.ProductCategory
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
-import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
-import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,10 +23,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.collections.map
 
 class CartViewModel(
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -37,6 +40,9 @@ class CartViewModel(
 
     // Track all available add-ons (sauces and drinks)
     private val allAvailableAddOns = mutableListOf<RecommendedAddOnUi>()
+
+    // Cache all products
+    private var allProducts = listOf<Product>()
 
     val state = _state
         .onStart {
@@ -80,22 +86,36 @@ class CartViewModel(
      * Load all available sauces and drinks that can be recommended
      */
     private fun loadAllAvailableAddOns() {
-        val allProducts = SampleProductProvider.getProducts()
+        productRepository.getProducts()
+            .onEach { result ->
+                when (result) {
+                    is Result.Success -> {
+                        allProducts = result.data
 
-        // Get all sauces and drinks
-        val addOns = allProducts
-            .filter { it.category == "Sauces" || it.category == "Drinks" }
-            .map { product ->
-                RecommendedAddOnUi(
-                    id = product.id,
-                    name = product.name,
-                    price = product.getPriceAsDouble(),
-                    imageUrl = product.imageUrl
-                )
-            }
+                        // Filter sauces and drinks
+                        val addOns = result.data
+                            .filter {
+                                it.category == ProductCategory.SAUCES ||
+                                        it.category == ProductCategory.DRINKS
+                            }
+                            .map { product ->
+                                RecommendedAddOnUi(
+                                    id = product.id,
+                                    name = product.name,
+                                    price = product.price,
+                                    imageUrl = product.imageUrl
+                                )
+                            }
 
-        allAvailableAddOns.clear()
-        allAvailableAddOns.addAll(addOns)
+                        allAvailableAddOns.clear()
+                        allAvailableAddOns.addAll(addOns)
+                    }
+                    is Result.Error -> {
+                        // Handle error silently or show message
+                        Timber.w("Failed to load add-ons: ${result.error}")
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun observeCart() {
@@ -180,7 +200,7 @@ class CartViewModel(
             // Find the item in our available add-ons
             val addOn = allAvailableAddOns.find { it.id == itemId } ?: return@launch
             // Get full product details to get category
-            val product = SampleProductProvider.getProductById(itemId) ?: return@launch
+            val product = allProducts.find { it.id == itemId } ?: return@launch
             val cartItem = CartItem(
                 id = itemId,
                 productId = itemId,
@@ -189,7 +209,7 @@ class CartViewModel(
                 basePrice = addOn.price,
                 quantity = 1,
                 toppings = emptyList(),
-                category = product.category
+                category = product.category.displayName
             )
 
             when (cartRepository.addToCart(cartItem)) {

@@ -6,17 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.mappers.toCartTopping
 import com.danzucker.lazypizza.product.domain.model.CartItem
-import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
 import com.danzucker.lazypizza.product.presentation.mappers.toToppingData
+import com.danzucker.lazypizza.product.presentation.mappers.toToppingUi
 import com.danzucker.lazypizza.product.presentation.models.PizzaDetailUi
 import com.danzucker.lazypizza.product.presentation.models.ToppingUi
-import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -25,7 +27,8 @@ import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -73,34 +76,54 @@ class ProductDetailViewModel(
     private fun loadProductDetail() {
         // Load product detail logic here
         val productId = savedStateHandle.get<String>("productId") ?: "1"
-        val product = SampleProductProvider.getProductById(productId)
 
-        if (product == null) {
-            _state.update { it.copy(isLoadingData = false) }
-            return
-        }
+        viewModelScope.launch {
+            when (val productResult = productRepository.getProductById(productId)) {
+                is Result.Success -> {
+                    val product = productResult.data
+                    if (product == null) {
+                        _state.update { it.copy(isLoadingData = false) }
+                        return@launch
+                    }
 
-        // Load pizza details (dummy data for now)
-        val pizza = PizzaDetailUi(
-            id = product.id,
-            name = product.name,
-            description = product.description,
-            basePrice = product.getPriceAsDouble(),
-            imageUrl = product.imageUrl, // Use the actual imageUrl from the product
-            imageResId = R.drawable.margherita, // Keep as fallback if needed
-            ingredients = product.description, // Or create a separate ingredients field
-            category = product.category
-        )
+                    val pizza = PizzaDetailUi(
+                        id = product.id,
+                        name = product.name,
+                        description = product.description,
+                        basePrice = product.price,
+                        imageUrl = product.imageUrl,
+                        imageResId = R.drawable.margherita, // Fallback
+                        ingredients = product.description,
+                        category = product.category.displayName
+                    )
 
-        val toppings = SampleProductProvider.getToppings()
-        _state.update {
-            it.copy(
-                isLoadingData = false,
-                pizzaDetail = pizza,
-                availableToppings = toppings,
-                basePizzaPrice = pizza.basePrice,
-                totalPrice = pizza.basePrice
-            )
+                    // Load toppings
+                    productRepository.getToppings()
+                        .onEach { toppingsResult ->
+                            when (toppingsResult) {
+                                is Result.Success -> {
+                                    val toppings = toppingsResult.data.map { it.toToppingUi() }
+                                    _state.update {
+                                        it.copy(
+                                            isLoadingData = false,
+                                            pizzaDetail = pizza,
+                                            availableToppings = toppings,
+                                            basePizzaPrice = pizza.basePrice,
+                                            totalPrice = pizza.basePrice
+                                        )
+                                    }
+                                }
+                                is Result.Error -> {
+                                    _state.update { it.copy(isLoadingData = false) }
+                                }
+                            }
+                        }.launchIn(viewModelScope)
+                }
+                is Result.Error -> {
+                    _state.update { it.copy(isLoadingData = false) }
+                }
+
+            }
         }
     }
 
@@ -194,7 +217,6 @@ class ProductDetailViewModel(
                         )
                     )
                 )
-
                 is Result.Error -> eventChannel.send(
                     ProductDetailEvent.ShowErrorMessage(
                         UiText.StringResourceWithArgs(R.string.failed_to_add_to_cart)

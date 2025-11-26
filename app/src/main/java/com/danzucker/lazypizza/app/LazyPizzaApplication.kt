@@ -3,6 +3,8 @@ package com.danzucker.lazypizza.app
 import android.app.Application
 import com.danzucker.lazypizza.BuildConfig
 import com.danzucker.lazypizza.app.di.appModule
+import com.danzucker.lazypizza.auth.di.authModule
+import com.danzucker.lazypizza.core.di.coreModule
 import com.danzucker.lazypizza.product.di.productModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,8 @@ class LazyPizzaApplication : Application() {
             androidContext(this@LazyPizzaApplication)
             modules(appModule)
             modules(productModule)
+            modules(authModule)
+            modules(coreModule)
         }
     }
 }
