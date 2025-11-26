@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.data
 
-import android.provider.SyncStateContract.Helpers.update
 import com.danzucker.lazypizza.auth.data.AuthManager
 import com.danzucker.lazypizza.core.domain.util.DataError
 import com.danzucker.lazypizza.core.domain.util.EmptyResult
@@ -10,7 +9,6 @@ import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.CartSummary
 import com.danzucker.lazypizza.product.domain.model.CartTopping
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue.delete
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
@@ -18,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import kotlin.getOrThrow
 
 /**
  * Firebase implementation of CartRepository
