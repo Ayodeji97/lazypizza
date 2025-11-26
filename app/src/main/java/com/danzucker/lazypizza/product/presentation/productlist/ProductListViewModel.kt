@@ -5,13 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.model.CartItem
+import com.danzucker.lazypizza.product.domain.model.ProductCategory
 import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
+import com.danzucker.lazypizza.product.presentation.mappers.toProductListUi
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.*
-import com.danzucker.lazypizza.product.presentation.util.SampleProductProvider
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
@@ -23,7 +24,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProductListViewModel(
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -93,22 +95,35 @@ class ProductListViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoadingData = true) }
 
-            // Simulate network delay
-            delay(500)
+            productRepository.getProducts()
+                .onEach { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            val products = result.data.map { product ->
+                                product.toProductListUi(quantityInCart = 0)
+                            }
+                            val categories = ProductCategory.entries.map { it.displayName }
 
-            val products = SampleProductProvider.getProducts()
-            val categories = SampleProductProvider.getCategories()
-
-            _state.update {
-                it.copy(
-                    isLoadingData = false,
-                    allProducts = products,
-                    customerPhoneNumber = UiText.StringResourceWithArgs(R.string.customer_phone_number),
-                    filteredProducts = products,
-                    categories = categories,
-                    selectedCategory = null
-                )
-            }
+                            _state.update {
+                                it.copy(
+                                    isLoadingData = false,
+                                    allProducts = products,
+                                    filteredProducts = products,
+                                    categories = categories,
+                                    customerPhoneNumber = UiText.StringResourceWithArgs(R.string.customer_phone_number)
+                                )
+                            }
+                        }
+                        is Result.Error -> {
+                            _state.update { it.copy(isLoadingData = false) }
+                            eventChannel.send(
+                                ShowErrorMessage(
+                                    UiText.StringResourceWithArgs(R.string.failed_to_load_products)
+                                )
+                            )
+                        }
+                    }
+                }.launchIn(viewModelScope)
         }
     }
 

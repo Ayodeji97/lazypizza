@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.firebase.goggle.service)
 }
 
 android {
@@ -67,6 +68,15 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.coil.compose)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+    implementation(libs.bundles.datastore)
+
+
+    // Coroutines for Firebase
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Logging
     implementation(libs.timber)
