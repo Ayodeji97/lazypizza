@@ -13,7 +13,7 @@ coil = "2.4.0"
 timber = "5.0.1"
 datastoreCore = "1.1.7"
 datastoreCoreAndroid = "1.1.7"
-firebaseGoggleService = "4.4.4"
+firebaseGoogleService = "4.4.4"
 firebaseBom = "34.6.0"
 coroutinesPlayServices = "1.7.3"
 
@@ -96,5 +96,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-firebase-goggle-service = { id = "com.google.gms.google-services", version.ref = "firebaseGoggleService" }
+firebase-google-service = { id = "com.google.gms.google-services", version.ref = "firebaseGoogleService" }
 

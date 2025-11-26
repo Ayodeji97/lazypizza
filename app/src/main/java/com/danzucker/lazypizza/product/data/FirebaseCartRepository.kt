@@ -10,6 +10,7 @@ import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.CartSummary
 import com.danzucker.lazypizza.product.domain.model.CartTopping
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue.delete
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
@@ -157,12 +158,12 @@ class FirebaseCartRepository(
         }
 
         val cartCollection = getCartCollection()
-            ?: Result.Error(DataError.Network.UNKNOWN)
+            ?: return Result.Error(DataError.Network.UNKNOWN)
 
         return try {
-            (cartCollection as? CollectionReference)?.document(itemId)
-                ?.update("quantity", quantity)
-                ?.await()
+            cartCollection.document(itemId)
+                .update("quantity", quantity)
+                .await()
 
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -172,12 +173,12 @@ class FirebaseCartRepository(
 
     override suspend fun removeFromCart(itemId: String): EmptyResult<DataError> {
         val cartCollection = getCartCollection()
-            ?: Result.Error(DataError.Network.UNKNOWN)
-
+            ?: return Result.Error(DataError.Network.UNKNOWN)
         return try {
-            (cartCollection as? CollectionReference)?.document(itemId)
-                ?.delete()
-                ?.await()
+            cartCollection
+                .document(itemId)
+                .delete()
+                .await()
 
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -187,10 +188,9 @@ class FirebaseCartRepository(
 
     override suspend fun clearCart(): EmptyResult<DataError> {
         val cartCollection = getCartCollection()
-            ?: Result.Error(DataError.Network.UNKNOWN)
-
+            ?: return Result.Error(DataError.Network.UNKNOWN)
         return try {
-            val snapshot = (cartCollection as? CollectionReference)?.get()?.await()
+            val snapshot = cartCollection.get().await()
             firestore.runBatch { batch ->
                 snapshot?.documents?.forEach { doc ->
                     batch.delete(doc.reference)

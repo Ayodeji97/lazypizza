@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.collections.map
 
 class CartViewModel(
@@ -111,6 +112,7 @@ class CartViewModel(
                     }
                     is Result.Error -> {
                         // Handle error silently or show message
+                        Timber.w("Failed to load add-ons: ${result.error}")
                     }
                 }
             }.launchIn(viewModelScope)
