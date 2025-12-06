@@ -13,18 +13,26 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="OtpCodeBoxEmptyPreview">
+      <SelectionState runConfigName="OrderCardPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="OtpCodeBoxFilledPreview">
+      <SelectionState runConfigName="OrderCardCompletedPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AuthPhoneInputContentPreview">
+      <SelectionState runConfigName="OrderHistoryWithOrdersPreview">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-12-06T18:16:15.526136Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_Tablet_API_35.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="AuthScreenPreview">
+      <SelectionState runConfigName="OrderHistoryWithOrdersPreview (1)">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-06T14:16:15.156838Z">
+        <DropdownSelection timestamp="2025-12-06T20:59:14.812935Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_9_API_35_-_android_15.avd" />
@@ -33,7 +41,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Preview">
+      <SelectionState runConfigName="OrderHistoryEmptyPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

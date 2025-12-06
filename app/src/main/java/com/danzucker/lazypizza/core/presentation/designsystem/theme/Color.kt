@@ -22,6 +22,9 @@ val LazyPizzaGradientSolidColor = Color(0xFFF36B50)
 val LazyPizzaGradientLightColor = Color(0xFFF9966F)
 val LazyPizzaShadowColor = Color(0x0F03131F)
 val LazyPizzaGrayColor = Color(0x14627686)
+val LazyPizzaOrderStatusGreenColor = Color(0xFF2E7D32)
+val LazyPizzaOrderStatusOrangeColor = Color(0xFFF9A825)
+val LazyPizzaOrderStatusRedColor = Color(0xFFEF5350)
 
 
 
