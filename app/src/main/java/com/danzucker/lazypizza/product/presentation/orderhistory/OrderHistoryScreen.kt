@@ -67,7 +67,8 @@ fun OrderHistoryScreen(
                     CircularProgressIndicator(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentSize()
+                            .wrapContentSize(),
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 

@@ -20,11 +20,4 @@ enum class OrderStatus {
     IN_PROGRESS,
     COMPLETED,
     CANCELLED;
-
-    val displayName: String
-        get() = when (this) {
-            IN_PROGRESS -> "In Progress"
-            COMPLETED -> "Completed"
-            CANCELLED -> "Cancelled"
-        }
 }
