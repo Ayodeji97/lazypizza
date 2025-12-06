@@ -34,9 +34,9 @@
     <string name="continue_btn">Continue</string>
     <string name="continue_without_signing">Continue without signing in</string>
     <string name="welcome_subtitle">Enter your phone number</string>
-    <string name="phone_number_palceholder">+1 000 000–0000</string>
+    <string name="phone_number_placeholder">+1 000 000–0000</string>
     <string name="zero_code_placeholder">0</string>
     <string name="enter_code_subtitle">Enter code</string>
     <string name="code_resend">Resend code</string>
-    <string name="code_request_message">You can request a new code in %s</string>
+    <string name="code_request_message">You can request a new code in %1$s</string>
 </resources>

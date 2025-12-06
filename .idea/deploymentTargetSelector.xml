@@ -24,7 +24,7 @@
       </SelectionState>
       <SelectionState runConfigName="AuthScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-06T11:39:58.254729Z">
+        <DropdownSelection timestamp="2025-12-06T14:16:15.156838Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_9_API_35_-_android_15.avd" />

@@ -32,7 +32,13 @@ class AuthViewModel : ViewModel() {
 
     fun onAction(action: AuthAction) {
         when (action) {
-            else -> TODO("Handle actions")
+            is AuthAction.OnBackPressed -> {}
+            is AuthAction.OnCodeBoxFocused -> {}
+            is AuthAction.OnCodeChange -> {}
+            is AuthAction.OnContinueClick -> {}
+            is AuthAction.OnContinueWithoutSignIn -> {}
+            is AuthAction.OnPhoneNumberChange -> {}
+            is AuthAction.OnResendCodeClick -> {}
         }
     }
 

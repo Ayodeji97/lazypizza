@@ -6,7 +6,7 @@ data class AuthState(
     val phoneNumber: String = "",
     val verificationCode: List<String> = List(6) { "" },
     val focusedBoxIndex: Int = 0,
-    val currentStep: AuthStep = AuthStep.PHONE_INPUT,
+    val currentStep: AuthStep = AuthStep.OTP_INPUT,
     val isLoading: Boolean = false,
     val errorMessage: UiText? = null,
     val resendCountdown: Int = 60,

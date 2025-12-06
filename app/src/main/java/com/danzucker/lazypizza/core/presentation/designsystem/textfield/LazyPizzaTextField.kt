@@ -44,7 +44,7 @@ fun LazyPizzaTextField(
         placeholder = {
             if (!isFocused && phoneNumber.isEmpty()) {
                 Text(
-                    text = stringResource(R.string.phone_number_palceholder),
+                    text = stringResource(R.string.phone_number_placeholder),
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     ),

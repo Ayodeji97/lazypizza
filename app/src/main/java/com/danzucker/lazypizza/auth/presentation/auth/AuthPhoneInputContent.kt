@@ -43,8 +43,10 @@ fun AuthPhoneInputContent(
         Spacer(modifier = Modifier.height(20.dp))
 
         LazyPizzaTextField(
-            phoneNumber = "",
-            onPhoneNumberChange = {}
+            phoneNumber = state.phoneNumber,
+            onPhoneNumberChange = {
+                onAction(AuthAction.OnPhoneNumberChange(it))
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

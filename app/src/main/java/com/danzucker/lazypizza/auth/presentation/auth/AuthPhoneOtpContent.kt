@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
@@ -23,6 +24,7 @@ import com.danzucker.lazypizza.auth.presentation.auth.components.OtpCodeBox
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimaryButton
 import com.danzucker.lazypizza.core.presentation.designsystem.textfield.LazyPizzaTextField
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
+import com.danzucker.lazypizza.product.presentation.util.formatTime
 
 @Composable
 fun AuthPhoneOtpContent(
@@ -51,8 +53,10 @@ fun AuthPhoneOtpContent(
         Spacer(modifier = Modifier.height(20.dp))
 
         LazyPizzaTextField(
-            phoneNumber = "",
-            onPhoneNumberChange = {}
+            phoneNumber = state.phoneNumber,
+            onPhoneNumberChange = {
+                onAction(AuthAction.OnPhoneNumberChange(it))
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -80,6 +84,7 @@ fun AuthPhoneOtpContent(
                     },
                     modifier = Modifier
                         .weight(1f)
+                        .padding(horizontal = 4.dp)
                 )
             }
         }
@@ -113,7 +118,9 @@ fun AuthPhoneOtpContent(
 
         if (state.canResend) {
             TextButton(
-                onClick = {}
+                onClick = {
+                    onAction(AuthAction.OnResendCodeClick )
+                }
             ) {
                 Text(
                     stringResource(R.string.code_resend),
@@ -121,19 +128,21 @@ fun AuthPhoneOtpContent(
                 )
             }
         } else {
+            val formattedTime = formatTime(
+                state.resendCountdown / 60,
+                state.resendCountdown % 60
+            )
             Text(
-                text = "You can request a new code in ${String.format("%02d:%02d", state.resendCountdown / 60, state.resendCountdown % 60)}",
+                text = stringResource(R.string.code_request_message, formattedTime),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.surfaceTint
             )
         }
-
-
     }
 }
 
 @Preview(
-    name = "AuthPhoneInputContent",
+    name = "AuthPhoneOtpContent",
     showBackground = true,
     showSystemUi = true
 )
