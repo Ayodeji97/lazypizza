@@ -24,6 +24,7 @@ kotlinSerialization = "1.8.1"
 navigationCompose = "2.8.9"
 
 splashscreen = "1.0.1"
+foundation = "1.9.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -70,6 +71,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
 # Coroutines
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [bundles]
 koin = [
