@@ -39,4 +39,11 @@
     <string name="enter_code_subtitle">Enter code</string>
     <string name="code_resend">Resend code</string>
     <string name="code_request_message">You can request a new code in %1$s</string>
+    <string name="in_progress_order">In Progress</string>
+    <string name="completed">Completed</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="total_amount_placeholder">Total amount:</string>
+    <string name="empty_order_title">No Orders Yet</string>
+    <string name="empty_order_description">Your orders will appear here after your first purchase.</string>
+    <string name="go_to_menu_btn">Go to Menu</string>
 </resources>
