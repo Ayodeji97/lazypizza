@@ -14,6 +14,10 @@ fun formatToppings(toppings: Map<String, Int>): String {
         }
 }
 
-fun formatAmount(amount: Double): String {
+fun formatAmount(vararg amount: Double): String {
     return String.format(Locale.getDefault(), "$%.2f", amount)
+}
+
+fun formatTime(minutes: Int, seconds: Int): String {
+    return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
 }

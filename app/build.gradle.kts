@@ -80,6 +80,7 @@ dependencies {
 
     // Logging
     implementation(libs.timber)
+    implementation(libs.androidx.compose.foundation)
 
 
     testImplementation(libs.junit)
