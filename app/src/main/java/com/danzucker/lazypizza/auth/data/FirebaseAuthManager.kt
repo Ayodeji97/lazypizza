@@ -4,7 +4,10 @@ import android.app.Activity
 import com.danzucker.lazypizza.core.domain.util.DataError
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -13,6 +16,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -78,7 +82,7 @@ class AuthManager(
             val result = auth.signInAnonymously().await()
             Result.Success(result.user?.uid ?: "")
         } catch (e: Exception) {
-            println("Error signing in anonymously: $e")
+            Timber.d("Error signing in anonymously: $e")
             Result.Error(DataError.Network.UNKNOWN)
         }
     }
@@ -115,20 +119,39 @@ class AuthManager(
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                // Auto-verification happened (instant verification)
-                onVerificationCompleted()
-                continuation.resume(Result.Success(Unit))
+                Timber.d("Auto-verification completed, signing in user...")
+                auth.signInWithCredential(credential)
+                    .addOnSuccessListener { authResult ->
+                        Timber.d("Auto-verification sign-in successful: ${authResult.user?.uid}")
+                        onVerificationCompleted()
+                        continuation.resume(Result.Success(Unit))
+                    }
+                    .addOnFailureListener { e ->
+                        Timber.e(e, "Auto-verification sign-in failed")
+                        val error = when (e) {
+                            is FirebaseAuthInvalidCredentialsException ->
+                                DataError.Network.INVALID_PHONE_NUMBER
+                            is FirebaseTooManyRequestsException ->
+                                DataError.Network.TOO_MANY_REQUESTS
+                            else -> DataError.Network.UNKNOWN
+                        }
+                        onVerificationFailed(error)
+                        continuation.resume(Result.Error(error))
+                    }
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
-                println("Phone verification failed: ${e.message}")
-                val error = when {
-                    e.message?.contains("invalid", ignoreCase = true) == true ->
+                Timber.d("Phone verification failed: ${e.message}")
+
+                val error = when (e) {
+                    is FirebaseAuthInvalidCredentialsException ->
                         DataError.Network.INVALID_PHONE_NUMBER
-                    e.message?.contains("quota", ignoreCase = true) == true ->
+                    is FirebaseTooManyRequestsException ->
                         DataError.Network.TOO_MANY_REQUESTS
-                    e.message?.contains("blocked", ignoreCase = true) == true ->
-                        DataError.Network.TOO_MANY_REQUESTS
+                    is FirebaseAuthException -> when (e.errorCode) {
+                        // you can refine here if you want
+                        else -> DataError.Network.UNKNOWN
+                    }
                     else -> DataError.Network.UNKNOWN
                 }
                 onVerificationFailed(error)
@@ -139,7 +162,7 @@ class AuthManager(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
-                println("Verification code sent. ID: $verificationId")
+                Timber.d("Verification code sent. ID: $verificationId")
                 onCodeSent(verificationId)
                 continuation.resume(Result.Success(Unit))
             }
@@ -170,16 +193,20 @@ class AuthManager(
             val result = auth.signInWithCredential(credential).await()
             Result.Success(result.user?.uid ?: "")
         } catch (e: Exception) {
-            println("Code verification failed: ${e.message}")
-            val error = when {
-                e.message?.contains("invalid", ignoreCase = true) == true ->
+            Timber.d("Phone verification failed: ${e.message}")
+            val error = when (e) {
+                is FirebaseAuthInvalidCredentialsException ->
                     DataError.Network.INVALID_CODE
-                e.message?.contains("expired", ignoreCase = true) == true ->
-                    DataError.Network.CODE_EXPIRED
-                e.message?.contains("session", ignoreCase = true) == true ->
-                    DataError.Network.CODE_EXPIRED
+                is FirebaseTooManyRequestsException ->
+                    DataError.Network.TOO_MANY_REQUESTS
+                is FirebaseAuthException -> when (e.errorCode) {
+                    "ERROR_SESSION_EXPIRED",
+                    "ERROR_CODE_EXPIRED" -> DataError.Network.CODE_EXPIRED
+                    else -> DataError.Network.UNKNOWN
+                }
                 else -> DataError.Network.UNKNOWN
             }
+
             Result.Error(error)
         }
     }

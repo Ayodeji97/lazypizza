@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
@@ -26,7 +25,6 @@ import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimaryButt
 import com.danzucker.lazypizza.core.presentation.designsystem.textfield.LazyPizzaTextField
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.product.presentation.util.formatTime
-import com.google.android.play.integrity.internal.ac
 
 @Composable
 fun AuthPhoneOtpContent(

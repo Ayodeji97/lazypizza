@@ -102,6 +102,7 @@ class AuthViewModel(
 
             when (val result = authRepository.signInAnonymously()) {
                 is Result.Success -> {
+                    _state.update { it.copy(isLoading = false) }
                     eventChannel.send(AuthEvent.NavigateToHome)
                 }
                 is Result.Error -> {
