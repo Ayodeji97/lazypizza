@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.danzucker.lazypizza.R
-import com.danzucker.lazypizza.core.presentation.designsystem.LoggedIcon
+import com.danzucker.lazypizza.core.presentation.designsystem.LogoutIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.UserIcon
 
 @Composable
@@ -23,7 +23,7 @@ fun UserIcon(
     ) {
         Icon(
             imageVector = if (isAuthenticated && !isAnonymous) {
-                LoggedIcon
+                LogoutIcon
             } else {
                 UserIcon
             },

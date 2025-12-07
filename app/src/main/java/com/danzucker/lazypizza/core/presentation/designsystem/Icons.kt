@@ -50,7 +50,7 @@ val UserIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_user)
 
-val LoggedIcon: ImageVector
+val LogoutIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
 
