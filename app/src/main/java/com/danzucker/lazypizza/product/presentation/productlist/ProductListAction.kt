@@ -9,4 +9,7 @@ sealed interface ProductListAction {
     data class OnDeleteFromCart(val productId: String) : ProductListAction
     data object OnPhoneNumberClick : ProductListAction
     data object OnScrollToCategoryComplete : ProductListAction
+    data object OnUserIconClick : ProductListAction
+    data object OnLogoutConfirmed : ProductListAction
+    data object OnLogoutCancelled : ProductListAction
 }

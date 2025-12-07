@@ -45,3 +45,12 @@ val CartIcon: ImageVector
 val HistoryIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_history)
+
+val UserIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_user)
+
+val LoggedIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
+

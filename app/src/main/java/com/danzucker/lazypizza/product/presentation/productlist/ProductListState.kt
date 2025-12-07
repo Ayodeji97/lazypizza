@@ -12,7 +12,11 @@ data class ProductListState(
     val isLoadingData: Boolean = false,
     val customerPhoneNumber: UiText = UiText.DynamicString(""),
     val error: UiText? = null,
-    val cartItemsCount: Int = 0
+    val cartItemsCount: Int = 0,
+    val showLogoutDialog: Boolean = false,
+    val isAuthenticated: Boolean = false,
+    val isAnonymous: Boolean = false,
+    val userPhoneNumber: String? = null
 ) {
     val hasProducts: Boolean
         get() = filteredProducts.isNotEmpty()
