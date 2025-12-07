@@ -81,10 +81,10 @@ fun LazyPizzaTopAppBar(
                                 onClick = onCustomerPhoneNumberClick
                             )
                     )
-                    Spacer(modifier = Modifier.width(sizeSmallMedium12))
+                    Spacer(modifier = Modifier.width(sizeExtraSmall4))
                 }
                 endContent?.invoke()
-                Spacer(modifier = Modifier.width(sizeMedium16))
+                Spacer(modifier = Modifier.width(sizeSmallMedium12))
             }
         },
         modifier = modifier,

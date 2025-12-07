@@ -1,5 +1,6 @@
 package com.danzucker.lazypizza.product.presentation.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimarySmallButton
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
@@ -26,8 +27,10 @@ fun LazyPizzaAlertDialog(
     onConfirmClick: () -> Unit = {}
 ) {
     AlertDialog(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(0.9f),
         onDismissRequest = onDismissClick,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         confirmButton = {
             PrimarySmallButton(
                 text = confirmText,
@@ -44,8 +47,7 @@ fun LazyPizzaAlertDialog(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
-                letterSpacing = 0.1.sp
+                style = MaterialTheme.typography.displayLarge
             )
         },
         text = {

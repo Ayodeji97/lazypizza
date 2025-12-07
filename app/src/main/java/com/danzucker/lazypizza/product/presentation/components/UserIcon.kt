@@ -32,7 +32,12 @@ fun UserIcon(
             } else {
                 stringResource(R.string.sign_in)
             },
-            tint = MaterialTheme.colorScheme.onSurface
+            tint = if (isAuthenticated && !isAnonymous) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.surfaceTint
+            }
+
         )
     }
 }
