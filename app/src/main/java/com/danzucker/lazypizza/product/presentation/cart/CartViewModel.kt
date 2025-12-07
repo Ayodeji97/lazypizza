@@ -69,7 +69,7 @@ class CartViewModel(
             is CartAction.OnProceedToCheckout -> {
                 // TODO: Implement in next milestone
                 viewModelScope.launch {
-                    eventChannel.send(CartEvent.ShowMessage(UiText.StringResourceWithArgs(R.string.checkout_coming_soon)))
+                    eventChannel.send(CartEvent.ShowMessage(UiText.StringResource(R.string.checkout_coming_soon)))
                 }
             }
             is CartAction.OnQuantityChange -> {
@@ -163,7 +163,7 @@ class CartViewModel(
                 is Result.Error -> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResourceWithArgs(R.string.failed_to_update_quantity)
+                            UiText.StringResource(R.string.failed_to_update_quantity)
                         )
                     )
                 }
@@ -178,7 +178,7 @@ class CartViewModel(
                 is Result.Error -> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResourceWithArgs(R.string.failed_to_remove_item)
+                            UiText.StringResource(R.string.failed_to_remove_item)
                         )
                     )
                 }
@@ -227,7 +227,7 @@ class CartViewModel(
                 is Result.Error-> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResourceWithArgs(R.string.failed_to_add_item)
+                            UiText.StringResource(R.string.failed_to_add_item)
                         )
                     )
                 }

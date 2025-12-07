@@ -1,6 +1,7 @@
 package com.danzucker.lazypizza.auth.presentation.auth
 
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,11 +26,13 @@ import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimaryButt
 import com.danzucker.lazypizza.core.presentation.designsystem.textfield.LazyPizzaTextField
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.product.presentation.util.formatTime
+import com.google.android.play.integrity.internal.ac
 
 @Composable
 fun AuthPhoneOtpContent(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
+    activity: Activity?,
     modifier: Modifier = Modifier,
 ) {
 
@@ -70,16 +73,16 @@ fun AuthPhoneOtpContent(
                 OtpCodeBox(
                     digit = digit,
                     isError = state.errorMessage != null,
-                    onCodeChange = {
-
+                    onCodeChange = { newDigit ->
+                        onAction(AuthAction.OnCodeChange(index, newDigit))
                     },
                     onFocused = {
-
+                        onAction(AuthAction.OnCodeBoxFocused(index))
                     },
                     imeAction = if (index == 5) ImeAction.Done else ImeAction.Next,
                     onImeAction = {
                         if (index < 5 && digit.isNotEmpty()) {
-
+                            onAction(AuthAction.OnCodeBoxFocused(index + 1))
                         }
                     },
                     modifier = Modifier
@@ -101,7 +104,7 @@ fun AuthPhoneOtpContent(
         Spacer(modifier = Modifier.height(16.dp))
         PrimaryButton(
             text = stringResource(R.string.continue_btn),
-            onClick = { onAction(AuthAction.OnContinueClick) },
+            onClick = { onAction(AuthAction.OnContinueClick(activity)) },
             enabled = state.canLogin,
             isLoading = state.isLoading
         )
@@ -119,7 +122,7 @@ fun AuthPhoneOtpContent(
         if (state.canResend) {
             TextButton(
                 onClick = {
-                    onAction(AuthAction.OnResendCodeClick )
+                    onAction(AuthAction.OnResendCodeClick(activity) )
                 }
             ) {
                 Text(
@@ -150,11 +153,10 @@ fun AuthPhoneOtpContent(
 private fun AuthPhoneInputContentPreview() {
     LazyPizzaTheme {
         AuthPhoneOtpContent(
-            state = AuthState(
-                canLogin = false
-            ),
+            state = AuthState(),
             onAction = {},
-            modifier = Modifier
+            activity = null,
+            modifier = Modifier,
         )
     }
 }

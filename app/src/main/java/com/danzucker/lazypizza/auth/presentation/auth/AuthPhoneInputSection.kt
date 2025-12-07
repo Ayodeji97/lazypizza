@@ -1,5 +1,6 @@
 package com.danzucker.lazypizza.auth.presentation.auth
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import com.danzucker.lazypizza.core.presentation.util.applyIf
 fun AuthPhoneInputSection(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
+    activity: Activity?,
     isMobilePortrait: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -35,6 +37,7 @@ fun AuthPhoneInputSection(
         AuthPhoneInputContent(
             state = state,
             onAction = onAction,
+            activity = activity,
             modifier = Modifier
                 .applyIf(!isMobilePortrait) {
                     fillMaxWidth(0.5f)
@@ -57,6 +60,7 @@ private fun AuthPhoneInputSectionPreview() {
             state = AuthState(),
             onAction = {},
             isMobilePortrait = true,
+            activity = null
         )
     }
 }

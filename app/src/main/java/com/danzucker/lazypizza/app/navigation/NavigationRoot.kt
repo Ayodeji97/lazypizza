@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.danzucker.lazypizza.auth.presentation.auth.AuthRoot
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListViewModel
@@ -24,6 +25,23 @@ fun NavigationRoot(
         navController = navController,
         startDestination = NavigationRoute.ProductList
     ) {
+
+        // Auth Screen
+        composable<NavigationRoute.Auth> {
+            AuthRoot(
+                onNavigateToHome = {
+                    // Navigate to home and clear auth from back stack
+                    navController.navigate(NavigationRoute.ProductList) {
+                        popUpTo(NavigationRoute.Auth) { inclusive = true }
+                    }
+                },
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        // Main Scaffold (Home with tabs)
         composable<NavigationRoute.ProductList> {
             MainScaffold(
                 onNavigateToProductDetails = { productId ->
@@ -32,6 +50,9 @@ fun NavigationRoot(
                             productId = productId
                         )
                     )
+                },
+                onNavigateToAuth = {
+                    navController.navigate(NavigationRoute.Auth)
                 },
                 cartItemCount = productListState.cartItemsCount
             )

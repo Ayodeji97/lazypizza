@@ -2,9 +2,12 @@ package com.danzucker.lazypizza.app.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -18,9 +21,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.HistoryIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.MenuIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.components.BottomNavItem
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBottomNavigationBar
-import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaCenteredTopAppBar
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaNavigationRail
-import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaTopAppBar
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
 import com.danzucker.lazypizza.product.presentation.cart.CartRoot
@@ -30,6 +31,7 @@ import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
 @Composable
 fun MainScaffold(
     onNavigateToProductDetails: (String) -> Unit,
+    onNavigateToAuth: () -> Unit,
     cartItemCount: Int
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -66,14 +68,17 @@ fun MainScaffold(
                     1 -> CartRoot(
                         onNavigateToMenu = { selectedTabIndex = 0 }
                     )
-                    2 -> OrderHistoryRoot()
+                    2 -> OrderHistoryRoot(
+                        onNavigateToAuth = onNavigateToAuth
+                    )
                 }
             }
         }
     } else {
         // Mobile layout with BottomNavigationBar
         Scaffold(
-           // containerColor = MaterialTheme.colorScheme.background,
+            // Only apply bottom system-bar insets here, not top
+            contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Bottom),
             bottomBar = {
                 LazyPizzaBottomNavigationBar(
                     items = navItems,
@@ -96,7 +101,9 @@ fun MainScaffold(
                     1 -> CartRoot(
                         onNavigateToMenu = { selectedTabIndex = 0 }
                     )
-                    2 -> OrderHistoryRoot()
+                    2 -> OrderHistoryRoot(
+                        onNavigateToAuth = onNavigateToAuth
+                    )
                 }
             }
         }

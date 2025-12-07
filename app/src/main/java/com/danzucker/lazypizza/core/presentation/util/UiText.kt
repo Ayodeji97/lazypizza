@@ -11,7 +11,7 @@ sealed interface UiText {
     data class DynamicString(val value: String) : UiText
 
     @Stable
-    data class StringResourceWithArgs(
+    data class StringResource(
         @StringRes val resId: Int,
         val args: Array<Any> = arrayOf()
     ) : UiText {
@@ -19,7 +19,7 @@ sealed interface UiText {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as StringResourceWithArgs
+            other as StringResource
 
             if (resId != other.resId) return false
             if (!args.contentEquals(other.args)) return false
@@ -62,13 +62,13 @@ sealed interface UiText {
     fun asString(): String {
         return when (this) {
             is DynamicString -> value
-            is StringResourceWithArgs -> stringResource(resId, *args)
+            is StringResource -> stringResource(resId, *args)
             is Combined -> {
                 val strings = uiTexts.map { uiText ->
                     when(uiText) {
                         is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
                         is DynamicString -> uiText.value
-                        is StringResourceWithArgs -> stringResource(uiText.resId, *uiText.args)
+                        is StringResource -> stringResource(uiText.resId, *uiText.args)
                     }
                 }
                 String.format(format, *strings.toTypedArray())
@@ -79,13 +79,13 @@ sealed interface UiText {
     fun asString(context: Context): String {
         return when(this) {
             is DynamicString -> value
-            is StringResourceWithArgs -> context.getString(resId, *args)
+            is StringResource -> context.getString(resId, *args)
             is Combined -> {
                 val strings = uiTexts.map { uiText ->
                     when(uiText) {
                         is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
                         is DynamicString -> uiText.value
-                        is StringResourceWithArgs -> context.getString(uiText.resId, *uiText.args)
+                        is StringResource -> context.getString(uiText.resId, *uiText.args)
                     }
                 }
                 String.format(format, *strings.toTypedArray())

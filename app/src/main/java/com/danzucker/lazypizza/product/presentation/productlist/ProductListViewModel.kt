@@ -110,7 +110,7 @@ class ProductListViewModel(
                                     allProducts = products,
                                     filteredProducts = products,
                                     categories = categories,
-                                    customerPhoneNumber = UiText.StringResourceWithArgs(R.string.customer_phone_number)
+                                    customerPhoneNumber = UiText.StringResource(R.string.customer_phone_number)
                                 )
                             }
                         }
@@ -118,7 +118,7 @@ class ProductListViewModel(
                             _state.update { it.copy(isLoadingData = false) }
                             eventChannel.send(
                                 ShowErrorMessage(
-                                    UiText.StringResourceWithArgs(R.string.failed_to_load_products)
+                                    UiText.StringResource(R.string.failed_to_load_products)
                                 )
                             )
                         }
@@ -178,7 +178,7 @@ class ProductListViewModel(
                     eventChannel.send(ItemAddedToCart)
                 }
 
-                is Result.Error -> eventChannel.send(ShowErrorMessage(UiText.StringResourceWithArgs(R.string.failed_to_add_to_cart)))
+                is Result.Error -> eventChannel.send(ShowErrorMessage(UiText.StringResource(R.string.failed_to_add_to_cart)))
             }
         }
     }
