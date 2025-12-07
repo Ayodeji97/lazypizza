@@ -3,7 +3,7 @@
 package com.danzucker.lazypizza.product.presentation.productlist
 
 import android.content.Intent
-import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +19,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,19 +43,19 @@ import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenTyp
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaCategoryChipList
 import com.danzucker.lazypizza.product.presentation.components.LazyPizzaListProductList
 import androidx.core.net.toUri
-import kotlinx.coroutines.launch
+import com.danzucker.lazypizza.product.presentation.components.LazyPizzaAlertDialog
+import com.danzucker.lazypizza.product.presentation.components.UserIcon
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductListRoot(
     onNavigateToProductDetails: (String) -> Unit,
+    onNavigateToAuth: () -> Unit,
     viewModel: ProductListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -71,21 +67,20 @@ fun ProductListRoot(
             }
 
             is ProductListEvent.ShowErrorMessage -> {
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = event.message.asString(context),
-                        duration = SnackbarDuration.Long
-                    )
-                }
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
             }
             ProductListEvent.ItemAddedToCart -> {
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(R.string.item_added_to_cart),
-                        duration = SnackbarDuration.Long
-                    )
-                }
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.item_added_to_cart),
+                    Toast.LENGTH_LONG
+                ).show()
             }
+            ProductListEvent.NavigateToAuth -> onNavigateToAuth()
         }
     }
 
@@ -126,6 +121,13 @@ fun ProductListScreen(
                         contentDescription = stringResource(R.string.lazy_pizza),
                         modifier = Modifier
                             .size(20.dp)
+                    )
+                },
+                endContent = {
+                    UserIcon(
+                        isAuthenticated = state.isAuthenticated,
+                        isAnonymous = state.isAnonymous,
+                        onClick = { onAction(ProductListAction.OnUserIconClick) }
                     )
                 }
             )
@@ -187,6 +189,18 @@ fun ProductListScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                }
+                state.showLogoutDialog -> {
+                    LazyPizzaAlertDialog(
+                        title = stringResource(R.string.logout_confirmation),
+                        confirmText = stringResource(R.string.logout),
+                        onConfirmClick = {
+                            onAction(ProductListAction.OnLogoutConfirmed)
+                        },
+                        onDismissClick = {
+                            onAction(ProductListAction.OnLogoutCancelled)
+                        }
+                    )
                 }
                 else -> {
                     LazyPizzaListProductList(

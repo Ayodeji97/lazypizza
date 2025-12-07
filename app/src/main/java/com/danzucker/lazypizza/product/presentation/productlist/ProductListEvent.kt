@@ -6,4 +6,5 @@ sealed interface ProductListEvent {
     data class OpenPhoneDialer(val phoneNumber: String) : ProductListEvent
     data object ItemAddedToCart : ProductListEvent
     data class ShowErrorMessage(val message: UiText) : ProductListEvent
+    data object NavigateToAuth : ProductListEvent
 }

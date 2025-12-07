@@ -3,6 +3,7 @@ package com.danzucker.lazypizza.product.presentation.productlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
+import com.danzucker.lazypizza.auth.domain.AuthRepository
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 
 class ProductListViewModel(
     private val cartRepository: CartRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -39,7 +41,8 @@ class ProductListViewModel(
             if (!hasLoadedInitialData) {
                 /** Load initial data here **/
                 loadProducts()
-                observeCartCount()
+                observeCartItemsCount()
+                observeAuthState()
                 hasLoadedInitialData = true
             }
         }
@@ -80,10 +83,50 @@ class ProductListViewModel(
             }
 
             is ProductListAction.OnScrollToCategoryComplete -> onScrollComplete()
+            is ProductListAction.OnUserIconClick -> handleUserIconClick()
+            is ProductListAction.OnLogoutConfirmed -> handleLogout()
+            is ProductListAction.OnLogoutCancelled -> handleLogoutCancelled()
         }
     }
 
-    private fun observeCartCount() {
+    private fun observeAuthState() {
+        authRepository.observeAuthState()
+            .onEach { user ->
+                _state.update {
+                    it.copy(
+                        isAuthenticated = user != null,
+                        isAnonymous = user?.isAnonymous ?: false,
+                        userPhoneNumber = user?.phoneNumber
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun handleUserIconClick() {
+        viewModelScope.launch {
+            if (state.value.isAuthenticated && !state.value.isAnonymous) {
+                // User is signed in with phone → Show logout dialog
+                _state.update { it.copy(showLogoutDialog = true) }
+            } else {
+                // User is not signed in or is anonymous → Navigate to auth
+                eventChannel.send(NavigateToAuth)
+            }
+        }
+    }
+
+    private fun handleLogout() {
+        viewModelScope.launch {
+            authRepository.signOut()
+            _state.update { it.copy(showLogoutDialog = false) }
+        }
+    }
+
+    private fun handleLogoutCancelled() {
+        _state.update { it.copy(showLogoutDialog = false) }
+    }
+
+    private fun observeCartItemsCount() {
         cartRepository.getCartItemsCount()
             .onEach { count ->
                 _state.update { it.copy(cartItemsCount = count) }

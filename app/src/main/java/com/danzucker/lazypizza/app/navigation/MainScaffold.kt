@@ -63,7 +63,8 @@ fun MainScaffold(
             Box(modifier = Modifier.fillMaxSize()) {
                 when (selectedTabIndex) {
                     0 -> ProductListRoot(
-                        onNavigateToProductDetails = onNavigateToProductDetails
+                        onNavigateToProductDetails = onNavigateToProductDetails,
+                        onNavigateToAuth = onNavigateToAuth
                     )
                     1 -> CartRoot(
                         onNavigateToMenu = { selectedTabIndex = 0 }
@@ -96,7 +97,8 @@ fun MainScaffold(
             ) {
                 when (selectedTabIndex) {
                     0 -> ProductListRoot(
-                        onNavigateToProductDetails = onNavigateToProductDetails
+                        onNavigateToProductDetails = onNavigateToProductDetails,
+                        onNavigateToAuth = onNavigateToAuth
                     )
                     1 -> CartRoot(
                         onNavigateToMenu = { selectedTabIndex = 0 }
