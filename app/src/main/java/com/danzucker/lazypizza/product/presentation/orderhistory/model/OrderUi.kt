@@ -21,7 +21,7 @@ data class OrderItemUi(
 }
 
 enum class OrderStatusUi(val displayName: UiText) {
-    IN_PROGRESS(UiText.StringResourceWithArgs(R.string.in_progress_order)),
-    COMPLETED(UiText.StringResourceWithArgs(R.string.completed)),
-    CANCELLED(UiText.StringResourceWithArgs(R.string.cancelled))
+    IN_PROGRESS(UiText.StringResource(R.string.in_progress_order)),
+    COMPLETED(UiText.StringResource(R.string.completed)),
+    CANCELLED(UiText.StringResource(R.string.cancelled))
 }

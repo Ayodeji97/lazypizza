@@ -13,6 +13,9 @@ sealed interface DataError: Error {
         SERVER_ERROR,
         SERIALIZATION,
         PERMISSION_DENIED,
+        INVALID_PHONE_NUMBER,
+        INVALID_CODE,
+        CODE_EXPIRED,
         UNKNOWN
     }
 

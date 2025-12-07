@@ -14,7 +14,7 @@ fun formatToppings(toppings: Map<String, Int>): String {
         }
 }
 
-fun formatAmount(vararg amount: Double): String {
+fun formatAmount(amount: Double): String {
     return String.format(Locale.getDefault(), "$%.2f", amount)
 }
 

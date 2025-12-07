@@ -212,14 +212,14 @@ class ProductDetailViewModel(
             when (cartRepository.addToCart(item = cartItem)) {
                 is Result.Success -> eventChannel.send(
                     ProductDetailEvent.ShowMessage(
-                        UiText.StringResourceWithArgs(
+                        UiText.StringResource(
                             R.string.item_added_to_cart
                         )
                     )
                 )
                 is Result.Error -> eventChannel.send(
                     ProductDetailEvent.ShowErrorMessage(
-                        UiText.StringResourceWithArgs(R.string.failed_to_add_to_cart)
+                        UiText.StringResource(R.string.failed_to_add_to_cart)
                     )
                 )
             }

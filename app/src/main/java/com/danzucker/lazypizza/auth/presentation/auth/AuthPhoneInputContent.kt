@@ -1,5 +1,6 @@
 package com.danzucker.lazypizza.auth.presentation.auth
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun AuthPhoneInputContent(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
+    activity: Activity?,
     modifier: Modifier = Modifier,
 ) {
 
@@ -53,7 +55,7 @@ fun AuthPhoneInputContent(
 
         PrimaryButton(
             text = stringResource(R.string.continue_btn),
-            onClick = { onAction(AuthAction.OnContinueClick) },
+            onClick = { onAction(AuthAction.OnContinueClick(activity)) },
             enabled = state.canLogin,
             isLoading = state.isLoading
         )
@@ -73,11 +75,10 @@ fun AuthPhoneInputContent(
 private fun AuthPhoneInputContentPreview() {
     LazyPizzaTheme {
         AuthPhoneInputContent(
-            state = AuthState(
-                canLogin = false
-            ),
+            state = AuthState(),
             onAction = {},
-            modifier = Modifier
+            modifier = Modifier,
+            activity = null
         )
     }
 }

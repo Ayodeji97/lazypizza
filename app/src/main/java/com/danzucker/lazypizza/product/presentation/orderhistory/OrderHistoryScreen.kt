@@ -32,13 +32,19 @@ import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
 
 @Composable
 fun OrderHistoryRoot(
+    onNavigateToAuth: () -> Unit,
     viewModel: OrderHistoryViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     OrderHistoryScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                OrderHistoryAction.SignIn -> onNavigateToAuth()
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
