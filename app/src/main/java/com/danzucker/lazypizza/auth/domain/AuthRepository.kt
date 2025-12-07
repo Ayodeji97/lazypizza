@@ -29,6 +29,7 @@ interface AuthRepository {
     fun getCurrentUserId(): String?
 
     fun observeAuthState(): Flow<FirebaseUser?>
+    suspend fun transferGuestCart()
 
     fun signOut()
 }

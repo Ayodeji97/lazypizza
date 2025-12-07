@@ -14,4 +14,5 @@ interface CartRepository {
     suspend fun removeFromCart(itemId: String): EmptyResult<DataError>
     suspend fun clearCart(): EmptyResult<DataError>
     fun getCartItemsCount(): Flow<Int>
+    suspend fun transferCart(fromUserId: String, toUserId: String): EmptyResult<DataError.Network>
 }

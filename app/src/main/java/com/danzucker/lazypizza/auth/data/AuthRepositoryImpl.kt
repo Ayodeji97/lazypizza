@@ -4,11 +4,13 @@ import android.app.Activity
 import com.danzucker.lazypizza.auth.domain.AuthRepository
 import com.danzucker.lazypizza.core.domain.util.DataError
 import com.danzucker.lazypizza.core.domain.util.Result
+import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
-    private val authManager: AuthManager
+    private val authManager: AuthManager,
+    private val cartRepository: CartRepository
 ) : AuthRepository {
 
     override suspend fun sendVerificationCode(
@@ -52,6 +54,18 @@ class AuthRepositoryImpl(
 
     override fun observeAuthState(): Flow<FirebaseUser?> {
         return authManager.observeAuthState()
+    }
+
+    override suspend fun transferGuestCart() {
+        val oldUserId = authManager.currentUserId // Anonymous user
+        val newUserId = authManager.currentUser?.uid // Authenticated user
+
+        if (oldUserId != null && newUserId != null && oldUserId != newUserId) {
+            cartRepository.transferCart(
+                fromUserId = oldUserId,
+                toUserId = newUserId
+            )
+        }
     }
 
     override fun signOut() {

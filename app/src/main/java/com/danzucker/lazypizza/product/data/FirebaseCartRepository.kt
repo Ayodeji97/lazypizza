@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.danzucker.lazypizza.product.data
 
 import com.danzucker.lazypizza.auth.data.AuthManager
@@ -11,16 +13,16 @@ import com.danzucker.lazypizza.product.domain.model.CartTopping
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
-/**
- * Firebase implementation of CartRepository
- * Stores user's cart in Firestore: users/{userId}/cart/{cartItemId}
- */
 class FirebaseCartRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
     private val authManager: AuthManager = AuthManager()
@@ -31,22 +33,27 @@ class FirebaseCartRepository(
         private const val CART_COLLECTION = "cart"
     }
 
-    override fun getCartItems(): Flow<List<CartItem>> = callbackFlow {
-        val userId = when (val result = authManager.ensureAuthenticated()) {
-            is Result.Success -> result.data
-            is Result.Error -> {
-                trySend(emptyList())
-                close()
-                return@callbackFlow
+    override fun getCartItems(): Flow<List<CartItem>> {
+        return authManager.observeAuthState()
+            .flatMapLatest { user ->
+                if (user == null) {
+                    Timber.d("No user, returning empty cart")
+                    flowOf(emptyList())
+                } else {
+                    Timber.d("Observing cart for user: ${user.uid}")
+                    observeCartForUser(user.uid)
+                }
             }
-        }
+    }
 
+    private fun observeCartForUser(userId: String): Flow<List<CartItem>> = callbackFlow {
         val listener = firestore.collection(USERS_COLLECTION)
             .document(userId)
             .collection(CART_COLLECTION)
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
+                    Timber.e(error, "Error observing cart for user $userId")
                     trySend(emptyList())
                     return@addSnapshotListener
                 }
@@ -64,6 +71,7 @@ class FirebaseCartRepository(
                                     quantity = (toppingMap["quantity"] as? Number)?.toInt() ?: 1
                                 )
                             } catch (e: Exception) {
+                                Timber.e(e, "Error parsing topping")
                                 null
                             }
                         }
@@ -80,13 +88,17 @@ class FirebaseCartRepository(
                             timestamp = doc.getLong("timestamp") ?: System.currentTimeMillis()
                         )
                     } catch (e: Exception) {
+                        Timber.e(e, "Error parsing cart item")
                         null
                     }
                 } ?: emptyList()
+
+                Timber.d("Cart updated: ${items.size} items, total quantity: ${items.sumOf { it.quantity }}")
                 trySend(items)
             }
 
         awaitClose {
+            Timber.d("Closing cart observer for user $userId")
             listener.remove()
         }
     }
@@ -97,12 +109,71 @@ class FirebaseCartRepository(
         }
     }
 
+    override fun getCartItemsCount(): Flow<Int> {
+        return getCartItems().map { items ->
+            val count = items.sumOf { it.quantity }
+            Timber.d("Cart count: $count")
+            count
+        }
+    }
+
+    override suspend fun transferCart(
+        fromUserId: String,
+        toUserId: String
+    ): Result<Unit, DataError.Network> {
+        return try {
+            Timber.d("Transferring cart from $fromUserId to $toUserId")
+
+            val guestCartSnapshot = firestore
+                .collection(USERS_COLLECTION)
+                .document(fromUserId)
+                .collection(CART_COLLECTION)
+                .get()
+                .await()
+
+            if (guestCartSnapshot.isEmpty) {
+                Timber.d("Guest cart is empty, nothing to transfer")
+                return Result.Success(Unit)
+            }
+
+            // Copy to authenticated user's cart
+            val batch = firestore.batch()
+            var itemsTransferred = 0
+
+            guestCartSnapshot.documents.forEach { doc ->
+                val data = doc.data
+                if (data != null) {
+                    val newDocRef = firestore
+                        .collection(USERS_COLLECTION)
+                        .document(toUserId)
+                        .collection(CART_COLLECTION)
+                        .document(doc.id)
+
+                    batch.set(newDocRef, data)
+                    itemsTransferred++
+                }
+            }
+
+            // Delete guest cart items
+            guestCartSnapshot.documents.forEach { doc ->
+                batch.delete(doc.reference)
+            }
+
+            batch.commit().await()
+            Timber.d("Successfully transferred $itemsTransferred items")
+            Result.Success(Unit)
+
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to transfer cart from $fromUserId to $toUserId")
+            Result.Error(DataError.Network.UNKNOWN)
+        }
+    }
+
     override suspend fun addToCart(item: CartItem): EmptyResult<DataError> {
         val cartCollection = getCartCollection()
             ?: return Result.Error(DataError.Network.UNKNOWN)
 
         return try {
-            // Convert CartItem to Firestore document
             val itemData = hashMapOf(
                 "id" to item.id,
                 "productId" to item.productId,
@@ -122,11 +193,9 @@ class FirebaseCartRepository(
                 }
             )
 
-            // Check if item already exists
             val existingDoc = cartCollection.document(item.id).get().await()
 
             if (existingDoc.exists()) {
-                // Update quantity if item exists
                 val existingQuantity = existingDoc.getLong("quantity")?.toInt() ?: 0
                 val newQuantity = existingQuantity + item.quantity
 
@@ -134,7 +203,6 @@ class FirebaseCartRepository(
                     .update("quantity", newQuantity)
                     .await()
             } else {
-                // Add new item
                 cartCollection.document(item.id)
                     .set(itemData)
                     .await()
@@ -142,6 +210,7 @@ class FirebaseCartRepository(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Error adding to cart")
             Result.Error(DataError.Network.UNKNOWN)
         }
     }
@@ -164,6 +233,7 @@ class FirebaseCartRepository(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Error updating quantity")
             Result.Error(DataError.Network.UNKNOWN)
         }
     }
@@ -179,6 +249,7 @@ class FirebaseCartRepository(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Error removing from cart")
             Result.Error(DataError.Network.UNKNOWN)
         }
     }
@@ -196,20 +267,11 @@ class FirebaseCartRepository(
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Error clearing cart")
             Result.Error(DataError.Network.UNKNOWN)
         }
     }
 
-    override fun getCartItemsCount(): Flow<Int> {
-        return getCartItems().map { items ->
-            items.sumOf { it.quantity }
-        }
-    }
-
-    /**
-     * Get reference to user's cart collection
-     * Returns null if authentication fails
-     */
     private suspend fun getCartCollection(): CollectionReference? {
         return when (val result = authManager.ensureAuthenticated()) {
             is Result.Success -> {

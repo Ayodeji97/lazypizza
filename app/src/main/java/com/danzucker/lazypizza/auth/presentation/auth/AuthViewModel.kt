@@ -235,6 +235,8 @@ class AuthViewModel(
         viewModelScope.launch {
             when (val result = authRepository.verifyCode(verificationId, code)) {
                 is Result.Success -> {
+                    // Transfer guest cart if any
+                    authRepository.transferGuestCart()
                     _state.update { it.copy(isLoading = false) }
                     eventChannel.send(AuthEvent.NavigateToHome)
                 }

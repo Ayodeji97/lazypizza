@@ -9,17 +9,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.danzucker.lazypizza.auth.presentation.auth.AuthRoot
+import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
 ) {
-    val productListViewModel: ProductListViewModel = koinViewModel()
-    val productListState by productListViewModel.state.collectAsStateWithLifecycle()
+    val cartRepository: CartRepository = koinInject()
+    val cartItemCount by cartRepository.getCartItemsCount()
+        .collectAsStateWithLifecycle(initialValue = 0)
 
     NavHost(
         navController = navController,
@@ -54,7 +57,7 @@ fun NavigationRoot(
                 onNavigateToAuth = {
                     navController.navigate(NavigationRoute.Auth)
                 },
-                cartItemCount = productListState.cartItemsCount
+                cartItemCount = cartItemCount
             )
         }
 

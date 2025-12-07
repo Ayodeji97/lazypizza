@@ -22,14 +22,14 @@ val coreModule = module {
 
     single {
         FirebaseFirestore.getInstance()
-//        FirebaseFirestore.getInstance().apply {
-//            firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
-//                .setLocalCacheSettings(
-//                    PersistentCacheSettings.newBuilder()
-//                        .build()
-//                )
-//                .build()
-//        }
+        FirebaseFirestore.getInstance().apply {
+            firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
+                .setLocalCacheSettings(
+                    PersistentCacheSettings.newBuilder()
+                        .build()
+                )
+                .build()
+        }
     }
 
     single<DataStore<Preferences>> {
