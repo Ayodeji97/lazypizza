@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class AuthViewModel(
     private val authRepository: AuthRepository
@@ -233,8 +234,26 @@ class AuthViewModel(
         _state.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
+            val anonymousUserId = authRepository.getCurrentUserId()
+            Timber.d("Captured anonymous user ID before verification: $anonymousUserId")
             when (val result = authRepository.verifyCode(verificationId, code)) {
                 is Result.Success -> {
+                    Timber.d("Phone verification successful, transferring cart...")
+                    // Transfer guest cart if any
+                    when (val transferResult = authRepository.transferGuestCart(fromUserId = anonymousUserId)) {
+                        is Result.Success -> {
+                            Timber.d("Cart transferred successfully")
+                        }
+                        is Result.Error -> {
+                            Timber.e("Cart transfer failed: ${transferResult.error}")
+
+                            eventChannel.send(
+                                AuthEvent.ShowMessage(
+                                    UiText.StringResource(R.string.cart_transfer_warning)
+                                )
+                            )
+                        }
+                    }
                     _state.update { it.copy(isLoading = false) }
                     eventChannel.send(AuthEvent.NavigateToHome)
                 }

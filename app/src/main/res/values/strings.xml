@@ -59,4 +59,5 @@
     <string name="logout_confirmation">Are you sure you want\nto log out?</string>
     <string name="logout">Log Out</string>
     <string name="sign_in">Sign In</string>
+    <string name="cart_transfer_warning">Unable to transfer items in cart!</string>
 </resources>

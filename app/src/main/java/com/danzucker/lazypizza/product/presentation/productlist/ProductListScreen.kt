@@ -111,7 +111,7 @@ fun ProductListScreen(
         topBar = {
             LazyPizzaTopAppBar(
                 title = stringResource(R.string.lazy_pizza),
-                customerPhoneNumber = state.customerPhoneNumber.asString(),
+                customerPhoneNumber = state.userPhoneNumber,
                 onCustomerPhoneNumberClick = {
                     onAction(ProductListAction.OnPhoneNumberClick)
                 },

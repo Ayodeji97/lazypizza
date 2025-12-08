@@ -41,7 +41,6 @@ class ProductListViewModel(
             if (!hasLoadedInitialData) {
                 /** Load initial data here **/
                 loadProducts()
-                observeCartItemsCount()
                 observeAuthState()
                 hasLoadedInitialData = true
             }
@@ -126,13 +125,6 @@ class ProductListViewModel(
         _state.update { it.copy(showLogoutDialog = false) }
     }
 
-    private fun observeCartItemsCount() {
-        cartRepository.getCartItemsCount()
-            .onEach { count ->
-                _state.update { it.copy(cartItemsCount = count) }
-            }.launchIn(viewModelScope)
-    }
-
     private fun loadProducts() {
         // Implementation to load products - Dummy data for now
         viewModelScope.launch {
@@ -153,7 +145,6 @@ class ProductListViewModel(
                                     allProducts = products,
                                     filteredProducts = products,
                                     categories = categories,
-                                    customerPhoneNumber = UiText.StringResource(R.string.customer_phone_number)
                                 )
                             }
                         }

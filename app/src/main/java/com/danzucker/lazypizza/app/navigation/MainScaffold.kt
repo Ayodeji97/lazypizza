@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.danzucker.lazypizza.core.presentation.designsystem.CartIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.HistoryIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.MenuIcon
@@ -24,17 +25,22 @@ import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPiz
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaNavigationRail
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
+import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.presentation.cart.CartRoot
 import com.danzucker.lazypizza.product.presentation.orderhistory.OrderHistoryRoot
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListRoot
+import org.koin.compose.koinInject
 
 @Composable
 fun MainScaffold(
     onNavigateToProductDetails: (String) -> Unit,
     onNavigateToAuth: () -> Unit,
-    cartItemCount: Int
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    val cartRepository: CartRepository = koinInject()
+    val cartItemCount by cartRepository.getCartItemsCount()
+        .collectAsStateWithLifecycle(initialValue = 0)
 
     val windowClass = currentWindowAdaptiveInfo().windowSizeClass
     val deviceScreenType = fromWindowSizeClass(windowSizeClass = windowClass)
