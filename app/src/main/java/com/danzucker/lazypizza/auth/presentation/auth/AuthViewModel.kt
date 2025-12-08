@@ -65,24 +65,28 @@ class AuthViewModel(
     }
 
     private fun handleCodeChange(index: Int, digit: String) {
-        val newCode = _state.value.verificationCode.toMutableList()
+        val oldCode = _state.value.verificationCode          // value before change
+        val newCode = oldCode.toMutableList()
         newCode[index] = digit
 
-        _state.update { it.copy(
-            verificationCode = newCode,
-            errorMessage = null
-        )}
-
-        // Auto-advance to next box if digit entered
-        if (digit.isNotEmpty() && index < 5) {
-            viewModelScope.launch {
-                eventChannel.send(AuthEvent.MoveFocusToBox(index + 1))
-            }
+        _state.update {
+            it.copy(
+                verificationCode = newCode,
+                errorMessage = null
+            )
         }
 
-        // Auto-verify when all digits entered
-        if (newCode.all { it.isNotEmpty() }) {
-            verifyOtpCode()
+        when {
+            // Typed a digit -> move to NEXT box
+            digit.isNotEmpty() && index < 5 -> {
+                handleCodeBoxFocused(index + 1)
+            }
+
+            // Deleted the digit in this box -> move to PREVIOUS box
+            // oldCode[index] was non-empty, now it's empty
+            digit.isEmpty() && oldCode[index].isNotEmpty() && index > 0 -> {
+                handleCodeBoxFocused(index - 1)
+            }
         }
     }
 
@@ -183,7 +187,8 @@ class AuthViewModel(
                         verificationId = verificationId,
                         currentStep = AuthStep.OTP_INPUT,
                         isLoading = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        focusedBoxIndex = 0
                     )}
                     startResendCountdown()
 
@@ -266,7 +271,7 @@ class AuthViewModel(
                     eventChannel.send(AuthEvent.ShowErrorMessage(result.error.asUiText()))
 
                     // Move focus back to first box
-                    eventChannel.send(AuthEvent.MoveFocusToBox(0))
+                    handleCodeBoxFocused(0)
                 }
             }
         }

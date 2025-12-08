@@ -45,9 +45,6 @@ fun AuthRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is AuthEvent.MoveFocusToBox -> {
-                // Focus will be handled by recomposition
-            }
             is AuthEvent.NavigateBack -> onNavigateBack()
             is AuthEvent.NavigateToHome -> onNavigateToHome()
             is AuthEvent.ShowErrorMessage -> {

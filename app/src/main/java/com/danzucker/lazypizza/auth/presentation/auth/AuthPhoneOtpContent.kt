@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.auth.presentation.auth
 
-
 import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +12,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
@@ -33,6 +35,8 @@ fun AuthPhoneOtpContent(
     activity: Activity?,
     modifier: Modifier = Modifier,
 ) {
+    // Create FocusRequesters for each OTP box
+    val focusRequesters = remember { List(6) { FocusRequester() } }
 
     Column(
         modifier = modifier,
@@ -45,6 +49,7 @@ fun AuthPhoneOtpContent(
         )
 
         Spacer(modifier = Modifier.height(6.dp))
+
         Text(
             text = stringResource(R.string.enter_code_subtitle),
             style = MaterialTheme.typography.bodyMedium,
@@ -79,10 +84,13 @@ fun AuthPhoneOtpContent(
                     },
                     imeAction = if (index == 5) ImeAction.Done else ImeAction.Next,
                     onImeAction = {
-                        if (index < 5 && digit.isNotEmpty()) {
+                        // Move to next box if not the last one
+                        if (index < 5) {
                             onAction(AuthAction.OnCodeBoxFocused(index + 1))
                         }
                     },
+                    focusRequester = focusRequesters[index],
+                    shouldRequestFocus = state.focusedBoxIndex == index,
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 4.dp)
@@ -95,32 +103,44 @@ fun AuthPhoneOtpContent(
             Text(
                 text = state.errorMessage.asString(),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Start
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
         PrimaryButton(
             text = stringResource(R.string.continue_btn),
-            onClick = { onAction(AuthAction.OnContinueClick(activity)) },
+            onClick = {
+                onAction(AuthAction.OnContinueClick(activity))
+            },
             enabled = state.canLogin,
             isLoading = state.isLoading
         )
 
         Spacer(modifier = Modifier.height(9.dp))
 
-        Text(
-            text = stringResource(R.string.continue_without_signing),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
+        TextButton(
+            onClick = {
+                onAction(AuthAction.OnContinueWithoutSignIn)
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.continue_without_signing),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         Spacer(modifier = Modifier.height(11.dp))
 
         if (state.canResend) {
             TextButton(
                 onClick = {
-                    onAction(AuthAction.OnResendCodeClick(activity) )
+                    onAction(AuthAction.OnResendCodeClick(activity))
                 }
             ) {
                 Text(

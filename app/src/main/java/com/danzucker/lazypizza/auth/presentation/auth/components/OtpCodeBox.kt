@@ -13,14 +13,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,13 +49,20 @@ fun OtpCodeBox(
     keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: (() -> Unit)? = null,
+    focusRequester: FocusRequester,
+    shouldRequestFocus: Boolean = false
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    LaunchedEffect(shouldRequestFocus) {
+        if (shouldRequestFocus) {
+            focusRequester.requestFocus()
+        }
+    }
+
     Surface(
-        modifier = modifier
-            .height(48.dp),
+        modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(100),
         color = when {
             isError -> MaterialTheme.colorScheme.surface
@@ -60,21 +72,33 @@ fun OtpCodeBox(
         border = BorderStroke(
             width = 1.dp,
             color = when {
-                isError -> MaterialTheme.colorScheme.primary
-                isFocused -> MaterialTheme.colorScheme.primary
+                isError || isFocused -> MaterialTheme.colorScheme.primary
                 else -> Color.Transparent
             }
         )
     ) {
         BasicTextField(
             value = digit,
-            onValueChange = {
-                if (isValidInput && it.length <= 1 && it.all { char -> char.isDigit() }) {
-                    onCodeChange(it)
+            onValueChange = { newValue ->
+                when {
+                    // Clear box (backspace or delete)
+                    newValue.isEmpty() -> {
+                        onCodeChange("")
+                    }
+
+                    // User typed a single digit
+                    newValue.length == 1 &&
+                            isValidInput &&
+                            newValue.all { it.isDigit() } -> {
+                        onCodeChange(newValue)
+                    }
+
+                    // Ignore everything else (pastes, letters, etc.)
                 }
             },
             modifier = Modifier
                 .fillMaxSize()
+                .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused = it.isFocused
                     if (it.isFocused) {
@@ -83,19 +107,21 @@ fun OtpCodeBox(
                 },
             textStyle = MaterialTheme.typography.titleSmall.copy(
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Normal
             ),
             singleLine = true,
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType,
                 imeAction = imeAction
             ),
             keyboardActions = KeyboardActions(
-                onAny = {
+                onNext = {
                     onImeAction?.invoke()
-                    if (imeAction == ImeAction.Done) {
-                        keyboardController?.hide()
-                    }
+                },
+                onDone = {
+                    keyboardController?.hide()
                 }
             ),
             decorationBox = { innerTextField ->
@@ -125,12 +151,14 @@ fun OtpCodeBox(
 @Composable
 private fun OtpCodeBoxEmptyPreview() {
     LazyPizzaTheme {
+        val focusRequester = remember { FocusRequester() }
         OtpCodeBox(
             digit = "",
             isError = false,
             onCodeChange = {},
             onFocused = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            focusRequester = focusRequester
         )
     }
 }
@@ -139,12 +167,14 @@ private fun OtpCodeBoxEmptyPreview() {
 @Composable
 private fun OtpCodeBoxFilledPreview() {
     LazyPizzaTheme {
+        val focusRequester = remember { FocusRequester() }
         OtpCodeBox(
             digit = "1",
             isError = false,
             onCodeChange = {},
             onFocused = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            focusRequester = focusRequester
         )
     }
 }
@@ -153,12 +183,14 @@ private fun OtpCodeBoxFilledPreview() {
 @Composable
 private fun OtpCodeBoxErrorPreview() {
     LazyPizzaTheme {
+        val focusRequester = remember { FocusRequester() }
         OtpCodeBox(
             digit = "5",
             isError = true,
             onCodeChange = {},
             onFocused = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            focusRequester = focusRequester
         )
     }
 }
