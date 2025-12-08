@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,11 +63,17 @@ fun AuthPhoneInputContent(
 
         Spacer(modifier = Modifier.height(9.dp))
 
-        Text(
-            text = stringResource(R.string.continue_without_signing),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
+        TextButton(
+            onClick = {
+                onAction(AuthAction.OnContinueWithoutSignIn)
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.continue_without_signing),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 

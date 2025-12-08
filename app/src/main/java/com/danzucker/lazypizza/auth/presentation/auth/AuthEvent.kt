@@ -7,5 +7,4 @@ sealed interface AuthEvent {
     data object NavigateBack : AuthEvent
     data class ShowMessage(val message: UiText) : AuthEvent
     data class ShowErrorMessage(val message: UiText) : AuthEvent
-    data class MoveFocusToBox(val index: Int) : AuthEvent
 }
