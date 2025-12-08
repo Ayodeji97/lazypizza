@@ -28,7 +28,8 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun LazyPizzaTextField(
     phoneNumber: String,
     onPhoneNumberChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    readOnly: Boolean = false
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -53,6 +54,7 @@ fun LazyPizzaTextField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         singleLine = true,
+        readOnly = readOnly,
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,

@@ -33,7 +33,7 @@ fun AuthPhoneOtpContent(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
     activity: Activity?,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     // Create FocusRequesters for each OTP box
     val focusRequesters = remember { List(6) { FocusRequester() } }
@@ -62,8 +62,10 @@ fun AuthPhoneOtpContent(
             phoneNumber = state.phoneNumber,
             onPhoneNumberChange = {
                 onAction(AuthAction.OnPhoneNumberChange(it))
-            }
+            },
+            readOnly = true
         )
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
