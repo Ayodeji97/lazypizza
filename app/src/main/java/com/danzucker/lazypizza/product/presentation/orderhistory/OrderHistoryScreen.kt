@@ -29,11 +29,13 @@ import com.danzucker.lazypizza.product.presentation.orderhistory.components.Orde
 import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderItemUi
 import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderStatusUi
 import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun OrderHistoryRoot(
     onNavigateToAuth: () -> Unit,
-    viewModel: OrderHistoryViewModel = viewModel()
+    onNavigateToMenu: () -> Unit,
+    viewModel: OrderHistoryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -42,6 +44,7 @@ fun OrderHistoryRoot(
         onAction = { action ->
             when (action) {
                 OrderHistoryAction.SignIn -> onNavigateToAuth()
+                OrderHistoryAction.GoToMenu -> onNavigateToMenu()
                 else -> viewModel.onAction(action)
             }
         }

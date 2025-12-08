@@ -5,6 +5,7 @@ import com.danzucker.lazypizza.product.data.FirebaseProductRepository
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.presentation.cart.CartViewModel
+import com.danzucker.lazypizza.product.presentation.orderhistory.OrderHistoryViewModel
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailViewModel
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListViewModel
 import org.koin.core.module.dsl.singleOf
@@ -18,4 +19,5 @@ val productModule = module {
     viewModelOf(::ProductListViewModel)
     viewModelOf(::ProductDetailViewModel)
     viewModelOf(::CartViewModel)
+    viewModelOf(::OrderHistoryViewModel)
 }
