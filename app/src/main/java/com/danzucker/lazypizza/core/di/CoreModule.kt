@@ -21,7 +21,6 @@ val coreModule = module {
     }
 
     single {
-        FirebaseFirestore.getInstance()
         FirebaseFirestore.getInstance().apply {
             firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
                 .setLocalCacheSettings(

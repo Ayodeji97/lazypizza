@@ -17,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -35,6 +36,7 @@ class FirebaseCartRepository(
 
     override fun getCartItems(): Flow<List<CartItem>> {
         return authManager.observeAuthState()
+            .distinctUntilChanged { old, new -> old?.uid == new?.uid }
             .flatMapLatest { user ->
                 if (user == null) {
                     Timber.d("No user, returning empty cart")
@@ -117,6 +119,14 @@ class FirebaseCartRepository(
         }
     }
 
+    /**
+     * Transfers cart items from guest (anonymous) user to authenticated user.
+     * Should be called after successful phone authentication to preserve cart items.
+     *
+     * @param fromUserId The source user ID (anonymous/guest user)
+     * @param toUserId The destination user ID (authenticated user)
+     * @return Success if transfer completed, or Error if transfer failed
+     */
     override suspend fun transferCart(
         fromUserId: String,
         toUserId: String
@@ -124,6 +134,7 @@ class FirebaseCartRepository(
         return try {
             Timber.d("Transferring cart from $fromUserId to $toUserId")
 
+            // Get guest cart items
             val guestCartSnapshot = firestore
                 .collection(USERS_COLLECTION)
                 .document(fromUserId)
@@ -136,31 +147,66 @@ class FirebaseCartRepository(
                 return Result.Success(Unit)
             }
 
-            // Copy to authenticated user's cart
-            val batch = firestore.batch()
-            var itemsTransferred = 0
+            // Get existing authenticated user's cart items
+            val authenticatedCartSnapshot = firestore
+                .collection(USERS_COLLECTION)
+                .document(toUserId)
+                .collection(CART_COLLECTION)
+                .get()
+                .await()
 
-            guestCartSnapshot.documents.forEach { doc ->
-                val data = doc.data
-                if (data != null) {
-                    val newDocRef = firestore
+            val existingItems = authenticatedCartSnapshot.documents.associateBy { it.id }
+
+            // Copy/merge items to authenticated cart
+            val copyBatch = firestore.batch()
+            var itemsTransferred = 0
+            var itemsMerged = 0
+
+            guestCartSnapshot.documents.forEach { guestDoc ->
+                val guestData = guestDoc.data
+                if (guestData != null) {
+                    val itemRef = firestore
                         .collection(USERS_COLLECTION)
                         .document(toUserId)
                         .collection(CART_COLLECTION)
-                        .document(doc.id)
+                        .document(guestDoc.id)
 
-                    batch.set(newDocRef, data)
-                    itemsTransferred++
+                    val existingItem = existingItems[guestDoc.id]
+
+                    if (existingItem != null) {
+                        // Item exists - merge quantities
+                        val guestQuantity = (guestData["quantity"] as? Number)?.toInt() ?: 1
+                        val existingQuantity = existingItem.getLong("quantity")?.toInt() ?: 1
+                        val mergedQuantity = guestQuantity + existingQuantity
+
+                        Timber.d("Merging item ${guestDoc.id}: $guestQuantity + $existingQuantity = $mergedQuantity")
+                        copyBatch.update(itemRef, "quantity", mergedQuantity)
+                        itemsMerged++
+                    } else {
+                        // New item - add to cart
+                        Timber.d("Adding new item ${guestDoc.id}")
+                        copyBatch.set(itemRef, guestData)
+                        itemsTransferred++
+                    }
                 }
             }
 
-            // Delete guest cart items
+            // Commit copy batch FIRST
+            Timber.d("Committing copy batch: $itemsTransferred new, $itemsMerged merged")
+            copyBatch.commit().await()
+            Timber.d("Copy batch committed successfully")
+
+            // Only delete guest cart AFTER successful copy
+            val deleteBatch = firestore.batch()
             guestCartSnapshot.documents.forEach { doc ->
-                batch.delete(doc.reference)
+                deleteBatch.delete(doc.reference)
             }
 
-            batch.commit().await()
-            Timber.d("Successfully transferred $itemsTransferred items")
+            Timber.d("Committing delete batch: ${guestCartSnapshot.documents.size} items")
+            deleteBatch.commit().await()
+            Timber.d("Delete batch committed successfully")
+
+            Timber.d("Cart transfer complete: $itemsTransferred new items, $itemsMerged merged items")
             Result.Success(Unit)
 
         } catch (e: Exception) {
