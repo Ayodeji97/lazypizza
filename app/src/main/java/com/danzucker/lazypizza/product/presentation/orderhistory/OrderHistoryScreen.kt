@@ -43,8 +43,8 @@ fun OrderHistoryRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                is OrderHistoryAction.SignIn -> onNavigateToAuth()
-                is OrderHistoryAction.GoToMenu -> onNavigateToMenu()
+                OrderHistoryAction.SignIn -> onNavigateToAuth()
+                OrderHistoryAction.GoToMenu -> onNavigateToMenu()
                 else -> viewModel.onAction(action)
             }
         }

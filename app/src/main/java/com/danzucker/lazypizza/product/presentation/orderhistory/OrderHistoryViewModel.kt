@@ -8,6 +8,8 @@ import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderStat
 import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -49,23 +51,20 @@ class OrderHistoryViewModel(
     }
 
     private fun loadData() {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoadingData = true) }
+        _state.update { it.copy(isLoadingData = true) }
 
-            // Check if user is authenticated
-            authRepository.observeAuthState()
-                .collect { user ->
-                    val isAuthenticated = user != null && !user.isAnonymous
-
-                    _state.update {
-                        it.copy(
-                            isAuthenticated = isAuthenticated,
-                            orders = if (isAuthenticated) getDummyOrders() else emptyList(),
-                            isLoadingData = false
-                        )
-                    }
+        authRepository.observeAuthState()
+            .onEach { user ->
+                val isAuthenticated = user != null && !user.isAnonymous
+                _state.update {
+                    it.copy(
+                        isAuthenticated = isAuthenticated,
+                        orders = if (isAuthenticated) getDummyOrders() else emptyList(),
+                        isLoadingData = false
+                    )
                 }
-        }
+            }
+            .launchIn(viewModelScope)
     }
 
     // ✅ Dummy data for now - will replace with Firebase in Milestone 4
