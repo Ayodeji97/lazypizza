@@ -76,7 +76,8 @@ fun MainScaffold(
                         onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                     2 -> OrderHistoryRoot(
-                        onNavigateToAuth = onNavigateToAuth
+                        onNavigateToAuth = onNavigateToAuth,
+                        onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                 }
             }
@@ -110,7 +111,8 @@ fun MainScaffold(
                         onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                     2 -> OrderHistoryRoot(
-                        onNavigateToAuth = onNavigateToAuth
+                        onNavigateToAuth = onNavigateToAuth,
+                        onNavigateToMenu = { selectedTabIndex = 0 }
                     )
                 }
             }

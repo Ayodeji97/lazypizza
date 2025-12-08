@@ -44,7 +44,7 @@ fun NavigationRoot(
                 },
                 onNavigateToAuth = {
                     navController.navigate(NavigationRoute.Auth)
-                },
+                }
             )
         }
 
