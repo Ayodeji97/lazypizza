@@ -180,7 +180,10 @@ class FirebaseCartRepository(
                         val mergedQuantity = guestQuantity + existingQuantity
 
                         Timber.d("Merging item ${guestDoc.id}: $guestQuantity + $existingQuantity = $mergedQuantity")
-                        copyBatch.update(itemRef, "quantity", mergedQuantity)
+                        copyBatch.update(itemRef, mapOf(
+                            "quantity" to mergedQuantity,
+                            "timestamp" to System.currentTimeMillis()
+                        ))
                         itemsMerged++
                     } else {
                         // New item - add to cart
