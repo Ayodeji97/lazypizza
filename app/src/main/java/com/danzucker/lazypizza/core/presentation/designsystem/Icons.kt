@@ -54,3 +54,13 @@ val LogoutIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
 
+val ArrowUpIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_arrow_up)
+
+
+val ArrowDownIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_arrow_down)
+
+

@@ -46,7 +46,6 @@
     <string name="empty_order_title">No Orders Yet</string>
     <string name="empty_order_description">Your orders will appear here after your first purchase.</string>
     <string name="go_to_menu_btn">Go to Menu</string>
-
     <string name="error_invalid_phone_number">Please enter a valid phone number</string>
     <string name="error_invalid_code">Invalid verification code</string>
     <string name="error_verification_failed">Verification failed. Please try again</string>
@@ -60,4 +59,19 @@
     <string name="logout">Log Out</string>
     <string name="sign_in">Sign In</string>
     <string name="cart_transfer_warning">Unable to transfer items in cart!</string>
+    <string name="order_checkout_title">Order Checkout</string>
+    <string name="pickup_time_subtitle">PICKUP TIME</string>
+    <string name="earliest_available_time">Earliest available time</string>
+    <string name="schedule_time">Schedule time</string>
+    <string name="earliest_pickup_time_label">EARLIEST PICKUP TIME:</string>
+    <string name="order_details_subtitle">ORDER DETAILS</string>
+    <string name="recommended_add_ons_subtitle">RECOMMENDED ADD-ONS</string>
+    <string name="comments_subtitle">COMMENTS</string>
+    <string name="add_comment_hint">Add Comment</string>
+    <string name="order_total_label">ORDER TOTAL:</string>
+    <string name="place_order_button">Place Order</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+    <string name="up_arrow">Up arrow</string>
+    <string name="down_arrow">Down arrow</string>
 </resources>
