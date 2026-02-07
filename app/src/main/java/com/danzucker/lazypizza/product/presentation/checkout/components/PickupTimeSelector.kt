@@ -1,8 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.checkout.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,16 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,28 +76,23 @@ private fun VerticalPickupTimeOptions(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Earliest available time option
-        PickupTimeOptionCard(
-            isSelected = selectedOption == PickupTimeOption.EARLIEST,
-            title = stringResource(R.string.earliest_available_time),
-            subtitle = null,
+        PickupTimeRadioButton(
+            text = stringResource(R.string.earliest_available_time),
+            selected = selectedOption == PickupTimeOption.EARLIEST,
             onClick = { onOptionSelected(PickupTimeOption.EARLIEST) }
         )
 
         // Schedule time option
-        PickupTimeOptionCard(
-            isSelected = selectedOption == PickupTimeOption.SCHEDULED,
-            title = stringResource(R.string.schedule_time),
-            subtitle = scheduledDateTime,
+        PickupTimeRadioButton(
+            text = stringResource(R.string.schedule_time),
+            selected = selectedOption == PickupTimeOption.SCHEDULED,
             onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) }
         )
 
         // Show earliest pickup time when EARLIEST is selected
-        if (selectedOption == PickupTimeOption.EARLIEST) {
-            Text(
-                text = stringResource(R.string.earliest_pickup_time_label, earliestPickupTime),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+        if (earliestPickupTime != "") {
+            EarliestPickupTime(
+                earliestPickupTime = earliestPickupTime
             )
         }
     }
@@ -125,104 +112,60 @@ private fun HorizontalPickupTimeOptions(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Earliest available time option
-            PickupTimeOptionCard(
-                isSelected = selectedOption == PickupTimeOption.EARLIEST,
-                title = stringResource(R.string.earliest_available_time),
-                subtitle = null,
+
+            PickupTimeRadioButton(
+                text = stringResource(R.string.earliest_available_time),
+                selected = selectedOption == PickupTimeOption.EARLIEST,
                 onClick = { onOptionSelected(PickupTimeOption.EARLIEST) },
                 modifier = Modifier.weight(1f)
             )
 
-            // Schedule time option
-            PickupTimeOptionCard(
-                isSelected = selectedOption == PickupTimeOption.SCHEDULED,
-                title = stringResource(R.string.schedule_time),
-                subtitle = scheduledDateTime,
+            PickupTimeRadioButton(
+                text = stringResource(R.string.schedule_time),
+                selected = selectedOption == PickupTimeOption.SCHEDULED,
                 onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) },
                 modifier = Modifier.weight(1f)
             )
         }
 
         // Show earliest pickup time when EARLIEST is selected
-        if (selectedOption == PickupTimeOption.EARLIEST) {
+        if (scheduledDateTime != "") {
             Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.earliest_pickup_time_label, earliestPickupTime),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 8.dp)
+            EarliestPickupTime(
+                earliestPickupTime = scheduledDateTime ?: ""
             )
         }
     }
 }
+
 
 @Composable
-private fun PickupTimeOptionCard(
-    isSelected: Boolean,
-    title: String,
-    subtitle: String?,
-    onClick: () -> Unit,
+fun EarliestPickupTime(
+    earliestPickupTime: String,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.outlineVariant
-    }
-
-    val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
-    } else {
-        MaterialTheme.colorScheme.surface
-    }
-
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(backgroundColor)
-            .border(
-                width = if (isSelected) 2.dp else 1.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .clickable(onClick = onClick)
-            .padding(16.dp),
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(
-            selected = isSelected,
-            onClick = onClick,
-            colors = RadioButtonDefaults.colors(
-                selectedColor = MaterialTheme.colorScheme.primary,
-                unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Text(
+            text = stringResource(R.string.earliest_pickup_time_label),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 8.dp)
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                }
-            )
-
-            if (subtitle != null) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
+        Text(
+            text = earliestPickupTime,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(start = 8.dp)
+        )
     }
 }
+
 
 @Preview(name = "Phone - Vertical Layout")
 @Composable
