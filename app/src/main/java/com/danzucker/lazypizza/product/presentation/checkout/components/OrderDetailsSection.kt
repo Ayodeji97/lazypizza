@@ -39,7 +39,7 @@ fun OrderDetailsSection(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         AnimatedVisibility(
             visible = isExpanded,

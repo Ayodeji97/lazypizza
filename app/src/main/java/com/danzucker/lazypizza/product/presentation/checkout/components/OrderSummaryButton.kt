@@ -134,7 +134,8 @@ private fun OrderSummaryWideLayout(
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = stringResource(R.string.order_total_label),
@@ -158,7 +159,7 @@ private fun OrderSummaryWideLayout(
             onClick = onPlaceOrder,
             isLoading = isLoading,
             enabled = enabled,
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.weight(1f)
         )
     }
 }

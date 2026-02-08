@@ -2,10 +2,7 @@ package com.danzucker.lazypizza.product.presentation.checkout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,55 +10,54 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBackground
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
-import com.danzucker.lazypizza.product.presentation.checkout.PickupTimeOption
 import com.danzucker.lazypizza.product.presentation.checkout.components.CommentsTextField
+import com.danzucker.lazypizza.product.presentation.checkout.components.HorizontalPickupTimeOptions
 import com.danzucker.lazypizza.product.presentation.checkout.components.OrderDetailsSection
 import com.danzucker.lazypizza.product.presentation.checkout.components.OrderSummaryButton
-import com.danzucker.lazypizza.product.presentation.checkout.components.PickupTimeSelector
 import com.danzucker.lazypizza.product.presentation.components.RecommendedAddOnsSection
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
 /**
- * Checkout landscape content with two-column layout
+ * Checkout landscape content with single-column scrollable layout
  *
- * Structure:
- * - Left column: Pickup time + Order details (scrollable)
- * - Right column: Recommended add-ons + Comments + Order Summary Button
+ * Structure (same as portrait, just wider):
+ * - Pickup time (horizontal buttons)
+ * - Earliest pickup time
+ * - Order details (collapsible with 2-column grid)
+ * - Recommended add-ons (horizontal scroll)
+ * - Comments
+ * - Order Summary Button (sticky at bottom)
  *
  * Note: Using Column + verticalScroll instead of LazyColumn because OrderDetailsSection
- * contains LazyVerticalGrid, and nested vertical scrollables are not allowed.
+ * contains regular Column (with grid layout), and we want to avoid any nested scrollables.
  */
+
 @Composable
 fun CheckoutLandscapeContent(
     state: CheckoutState,
     onAction: (CheckoutAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        // Left column: Pickup time + Order details (scrollable)
+        // Single scrollable column with all content
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 8.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Pickup Time Section
-            PickupTimeSelector(
+            HorizontalPickupTimeOptions(
                 selectedOption = state.pickupTimeOption,
                 earliestPickupTime = state.earliestPickupTime,
                 scheduledDateTime = state.scheduledDateTime,
-                deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
                 onOptionSelected = { option ->
                     onAction(CheckoutAction.OnPickupTimeSelected(option))
                 }
@@ -83,13 +79,7 @@ fun CheckoutLandscapeContent(
                 },
                 deviceScreenType = DeviceScreenType.TABLET_PORTRAIT
             )
-        }
 
-        // Right column: Recommended add-ons + Comments + Order Summary
-        LazyPizzaBackground(
-            bottomStartCornerRadius = 16.dp,
-            modifier = Modifier.weight(1f)
-        ) {
             // Recommended Add-ons Section
             if (state.recommendedAddOns.isNotEmpty()) {
                 RecommendedAddOnsSection(
@@ -98,7 +88,6 @@ fun CheckoutLandscapeContent(
                         onAction(CheckoutAction.OnAddRecommendedItem(addOnId))
                     }
                 )
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
             // Comments Section
@@ -108,18 +97,16 @@ fun CheckoutLandscapeContent(
                     onAction(CheckoutAction.OnCommentChange(comment))
                 }
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Order Summary Button
-            OrderSummaryButton(
-                totalAmount = state.totalAmount,
-                onPlaceOrder = { onAction(CheckoutAction.OnPlaceOrder) },
-                deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
-                isLoading = state.isPlacingOrder,
-                enabled = state.canPlaceOrder
-            )
         }
+
+        // Order Summary Button (sticky at bottom)
+        OrderSummaryButton(
+            totalAmount = state.totalAmount,
+            onPlaceOrder = { onAction(CheckoutAction.OnPlaceOrder) },
+            deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
+            isLoading = state.isPlacingOrder,
+            enabled = state.canPlaceOrder
+        )
     }
 }
 
@@ -129,9 +116,9 @@ private fun CheckoutLandscapeContentPreview() {
     LazyPizzaTheme {
         CheckoutLandscapeContent(
             state = CheckoutState(
-                pickupTimeOption = PickupTimeOption.SCHEDULED,
+                pickupTimeOption = PickupTimeOption.EARLIEST,
                 earliestPickupTime = "12:15",
-                scheduledDateTime = "November 25, 18:30",
+                scheduledDateTime = null,
                 orderItems = listOf(
                     LazyPizzaProductListUi(
                         id = "1",
@@ -149,6 +136,20 @@ private fun CheckoutLandscapeContentPreview() {
                     ),
                     LazyPizzaProductListUi(
                         id = "2",
+                        name = "Pepperoni",
+                        description = "Spicy pizza",
+                        price = "$9.99",
+                        imageUrl = "",
+                        isAvailable = true,
+                        category = "Pizza",
+                        rating = 4.7f,
+                        reviewsCount = 180,
+                        isFavorite = false,
+                        cardType = LazyPizzaCardType.PIZZA,
+                        quantityInCart = 2
+                    ),
+                    LazyPizzaProductListUi(
+                        id = "3",
                         name = "Pepsi",
                         description = "Refreshing beverage",
                         price = "$1.99",
@@ -160,9 +161,23 @@ private fun CheckoutLandscapeContentPreview() {
                         isFavorite = false,
                         cardType = LazyPizzaCardType.OTHERS,
                         quantityInCart = 2
+                    ),
+                    LazyPizzaProductListUi(
+                        id = "4",
+                        name = "Cookies Ice Cream",
+                        description = "Delicious dessert",
+                        price = "$1.49",
+                        imageUrl = "",
+                        isAvailable = true,
+                        category = "Dessert",
+                        rating = 4.8f,
+                        reviewsCount = 200,
+                        isFavorite = false,
+                        cardType = LazyPizzaCardType.OTHERS,
+                        quantityInCart = 1
                     )
                 ),
-                isOrderDetailsExpanded = false,
+                isOrderDetailsExpanded = true,
                 recommendedAddOns = listOf(
                     RecommendedAddOnUi(
                         id = "r1",

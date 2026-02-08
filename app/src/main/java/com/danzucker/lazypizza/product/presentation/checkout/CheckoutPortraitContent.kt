@@ -2,10 +2,8 @@ package com.danzucker.lazypizza.product.presentation.checkout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,7 +17,7 @@ import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnU
 import com.danzucker.lazypizza.product.presentation.checkout.components.CommentsTextField
 import com.danzucker.lazypizza.product.presentation.checkout.components.OrderDetailsSection
 import com.danzucker.lazypizza.product.presentation.checkout.components.OrderSummaryButton
-import com.danzucker.lazypizza.product.presentation.checkout.components.PickupTimeSelector
+import com.danzucker.lazypizza.product.presentation.checkout.components.VerticalPickupTimeOptions
 import com.danzucker.lazypizza.product.presentation.components.RecommendedAddOnsSection
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
@@ -53,11 +51,10 @@ fun CheckoutPortraitContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Pickup Time Section
-            PickupTimeSelector(
+            VerticalPickupTimeOptions(
                 selectedOption = state.pickupTimeOption,
                 earliestPickupTime = state.earliestPickupTime,
                 scheduledDateTime = state.scheduledDateTime,
-                deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
                 onOptionSelected = { option ->
                     onAction(CheckoutAction.OnPickupTimeSelected(option))
                 }

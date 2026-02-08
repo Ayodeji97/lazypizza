@@ -6,21 +6,12 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.danzucker.lazypizza.R
-import com.danzucker.lazypizza.core.presentation.designsystem.BackIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.components.BackButton
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBackground
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaCenteredTopAppBar
@@ -40,17 +30,9 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
-import com.danzucker.lazypizza.product.presentation.cart.CartLandscapeContent
-import com.danzucker.lazypizza.product.presentation.cart.CartPortraitContent
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
-import com.danzucker.lazypizza.product.presentation.checkout.components.CommentsTextField
-import com.danzucker.lazypizza.product.presentation.checkout.components.OrderDetailsSection
-import com.danzucker.lazypizza.product.presentation.checkout.components.OrderSummaryButton
-import com.danzucker.lazypizza.product.presentation.checkout.components.PickupTimeSelector
-import com.danzucker.lazypizza.product.presentation.components.RecommendedAddOnsSection
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
-import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailAction
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
