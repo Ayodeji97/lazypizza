@@ -29,8 +29,9 @@ import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListU
  * - Column + verticalScroll (scrollable): Pickup time, Order details, Recommended add-ons, Comments
  * - OrderSummaryButton (always visible at bottom): Place order button
  *
- * Note: Using Column + verticalScroll instead of LazyColumn because OrderDetailsSection
- * contains LazyVerticalGrid, and nested vertical scrollables are not allowed.
+ * Note: The scrollable content is implemented with a simple Column + verticalScroll.
+ * OrderDetailsSection currently renders its items using a regular Column/Row layout
+ * (OrderDetailsList), not a LazyVerticalGrid.
  */
 @Composable
 fun CheckoutPortraitContent(

@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.checkout
 
-import android.text.format.DateUtils.isToday
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel

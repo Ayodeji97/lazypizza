@@ -1,7 +1,5 @@
 package com.danzucker.lazypizza.product.presentation.checkout.components
 
-import android.R.attr.enabled
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

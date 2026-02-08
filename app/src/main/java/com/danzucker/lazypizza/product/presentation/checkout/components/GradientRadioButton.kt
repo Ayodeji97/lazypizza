@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.core.presentation.designsystem.components
+package com.danzucker.lazypizza.product.presentation.checkout.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
