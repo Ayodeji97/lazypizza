@@ -13,40 +13,48 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="OrderCardPreview">
+      <SelectionState runConfigName="CheckoutPortraitContentPreview">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="OrderCardCompletedPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="OrderHistoryWithOrdersPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-06T18:16:15.526136Z">
+        <DropdownSelection timestamp="2026-02-08T13:23:20.127169Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_Tablet_API_35.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_Tablet.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="OrderHistoryWithOrdersPreview (1)">
+      <SelectionState runConfigName="CheckoutScreenPortraitPreview">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-06T20:59:14.812935Z">
+        <DropdownSelection timestamp="2026-02-08T13:31:15.875586Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_9_API_35_-_android_15.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_9_Pro.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="OrderHistoryEmptyPreview">
+      <SelectionState runConfigName="CheckoutLandscapeContentPreview">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-07T16:56:46.941309Z">
+        <DropdownSelection timestamp="2026-02-08T13:23:34.523499Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=aul7t4rkzdiblf59" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_Tablet.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="PickupTimeSelectorPhoneScheduledPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="CheckoutScreenLandscapePreview">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-02-08T13:31:07.843380Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/danzucker/.android/avd/Pixel_9_Pro.avd" />
             </handle>
           </Target>
         </DropdownSelection>

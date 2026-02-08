@@ -1,4 +1,4 @@
-package com.danzucker.lazypizza.product.presentation.cart.component
+package com.danzucker.lazypizza.product.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,8 +1,6 @@
 package com.danzucker.lazypizza.product.presentation.cart
 
-import android.R.attr.enabled
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +15,7 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.components.LazyPizzaBackground
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.product.presentation.cart.component.CartProductList
-import com.danzucker.lazypizza.product.presentation.cart.component.RecommendedAddOnsSection
+import com.danzucker.lazypizza.product.presentation.components.RecommendedAddOnsSection
 import com.danzucker.lazypizza.product.presentation.cart.model.CartItemUi
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
 import com.danzucker.lazypizza.product.presentation.components.StickyBottomBar
