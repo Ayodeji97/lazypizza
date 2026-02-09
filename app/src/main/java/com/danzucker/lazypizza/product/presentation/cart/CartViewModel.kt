@@ -67,15 +67,13 @@ class CartViewModel(
                 }
             }
             is CartAction.OnProceedToCheckout -> {
-                // TODO: Implement in next milestone
                 viewModelScope.launch {
-                    eventChannel.send(CartEvent.ShowMessage(UiText.StringResource(R.string.checkout_coming_soon)))
+                    eventChannel.send(CartEvent.NavigateToCheckout)
                 }
             }
             is CartAction.OnQuantityChange -> {
                 updateQuantity(action.itemId, action.quantity)
             }
-
             is CartAction.OnAddRecommendedItem -> addRecommendedItem(action.itemId)
             is CartAction.OnDeleteItem -> deleteItem(action.itemId)
         }
@@ -234,6 +232,4 @@ class CartViewModel(
             }
         }
     }
-
-
 }

@@ -35,6 +35,7 @@ import org.koin.compose.koinInject
 fun MainScaffold(
     onNavigateToProductDetails: (String) -> Unit,
     onNavigateToAuth: () -> Unit,
+    onNavigateToCheckout: () -> Unit
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
@@ -73,7 +74,8 @@ fun MainScaffold(
                         onNavigateToAuth = onNavigateToAuth
                     )
                     1 -> CartRoot(
-                        onNavigateToMenu = { selectedTabIndex = 0 }
+                        onNavigateToMenu = { selectedTabIndex = 0 },
+                        onNavigateToCheckout = onNavigateToCheckout
                     )
                     2 -> OrderHistoryRoot(
                         onNavigateToAuth = onNavigateToAuth,
@@ -108,7 +110,8 @@ fun MainScaffold(
                         onNavigateToAuth = onNavigateToAuth
                     )
                     1 -> CartRoot(
-                        onNavigateToMenu = { selectedTabIndex = 0 }
+                        onNavigateToMenu = { selectedTabIndex = 0 },
+                        onNavigateToCheckout = onNavigateToCheckout
                     )
                     2 -> OrderHistoryRoot(
                         onNavigateToAuth = onNavigateToAuth,

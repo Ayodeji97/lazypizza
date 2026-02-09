@@ -30,6 +30,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -77,6 +78,11 @@ dependencies {
 
     // Coroutines for Firebase
     implementation(libs.kotlinx.coroutines.play.services)
+
+    // Kotlin DateTime
+    implementation(libs.kotlinx.datetime)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
 
     // Logging
     implementation(libs.timber)

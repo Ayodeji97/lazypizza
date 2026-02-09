@@ -2,19 +2,50 @@ package com.danzucker.lazypizza.product.presentation.checkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danzucker.lazypizza.auth.domain.AuthRepository
+import com.danzucker.lazypizza.product.domain.cart.CartRepository
+import com.danzucker.lazypizza.product.domain.model.Product
+import com.danzucker.lazypizza.product.domain.order.OrderRepository
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
+import com.danzucker.lazypizza.product.presentation.util.formatPickupTime
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import kotlinx.datetime.Clock
+import timber.log.Timber
+import com.danzucker.lazypizza.R
+import com.danzucker.lazypizza.core.domain.util.Result
+import com.danzucker.lazypizza.core.presentation.util.UiText
+import com.danzucker.lazypizza.product.domain.mappers.toOrderItem
+import com.danzucker.lazypizza.product.domain.model.CartItem
+import com.danzucker.lazypizza.product.domain.model.Order
+import com.danzucker.lazypizza.product.domain.model.OrderStatus
+import com.danzucker.lazypizza.product.domain.model.ProductCategory
+import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
+import com.danzucker.lazypizza.product.presentation.mappers.toProductListUi
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
+import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
+import kotlinx.coroutines.flow.combine
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
-class CheckoutViewModel : ViewModel() {
+class CheckoutViewModel(
+    private val cartRepository: CartRepository,
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository,
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
@@ -25,6 +56,7 @@ class CheckoutViewModel : ViewModel() {
         .onStart {
             if (!hasLoadedInitialData) {
                 /** Load initial data here **/
+                loadInitialData()
                 hasLoadedInitialData = true
             }
         }
@@ -33,6 +65,14 @@ class CheckoutViewModel : ViewModel() {
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = CheckoutState()
         )
+
+    // Cache for all products (for recommendations)
+    private var allProducts = listOf<Product>()
+
+    // Store selected date and time separately for picker dialogs
+    private var selectedDateMillis: Long? = null
+    private var selectedHour: Int? = null
+    private var selectedMinute: Int? = null
 
     fun onAction(action: CheckoutAction) {
         when (action) {
@@ -51,17 +91,86 @@ class CheckoutViewModel : ViewModel() {
 
     private fun loadInitialData() {
         // Calculate earliest pickup time (current time + 15 minutes)
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, 15)
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val now = Clock.System.now()
+        val earliestPickupMillis = now.toEpochMilliseconds() + (15 * 60 * 1000)
+
+        val formattedTime = formatPickupTime(earliestPickupMillis)
 
         _state.update {
-            it.copy(
-                earliestPickupTime = timeFormat.format(calendar.time),
-                // TODO: Load cart items from repository
-                // TODO: Load recommended add-ons from repository
-            )
+            it.copy(earliestPickupTime = formattedTime)
         }
+
+        loadProducts()
+        observeCart()
+    }
+
+    private fun loadProducts() {
+        productRepository.getProducts()
+            .onEach { result ->
+                when (result) {
+                    is Result.Success -> {
+                        allProducts = result.data
+                    }
+                    is Result.Error -> {
+                        Timber.w("Failed to load products for recommendations")
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeCart() {
+        combine(
+            cartRepository.getCartItems(),
+            cartRepository.getCartSummary()
+        ) { cartItems, summary ->
+            cartItems to summary
+        }.onEach { (cartItems, summary) ->
+            val orderItems = cartItems.map { cartItem ->
+                val product = allProducts.find { it.id == cartItem.productId }
+                product?.toProductListUi(quantityInCart = cartItem.quantity) ?: run {
+                    LazyPizzaProductListUi(
+                        id = cartItem.id,
+                        name = cartItem.name,
+                        description = "",
+                        price = "$${cartItem.basePrice}",
+                        imageUrl = cartItem.imageUrl,
+                        isAvailable = true,
+                        category = cartItem.category,
+                        rating = 0f,
+                        reviewsCount = 0,
+                        isFavorite = false,
+                        cardType = LazyPizzaCardType.OTHERS,
+                        quantityInCart = cartItem.quantity
+                    )
+                }
+            }
+
+            val cartItemIds = cartItems.map { it.productId }.toSet()
+            val recommendations = allProducts
+                .filter {
+                    (it.category == ProductCategory.SAUCES ||
+                            it.category == ProductCategory.DRINKS) &&
+                            it.id !in cartItemIds
+                }
+                .shuffled()
+                .take(5)
+                .map { product ->
+                    RecommendedAddOnUi(
+                        id = product.id,
+                        name = product.name,
+                        price = product.price,
+                        imageUrl = product.imageUrl
+                    )
+                }
+            _state.update { currentState ->
+                currentState.copy(
+                    orderItems = orderItems,
+                    recommendedAddOns = recommendations,
+                    totalAmount = summary.total
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun handlePickupTimeSelected(option: PickupTimeOption) {
@@ -71,6 +180,12 @@ class CheckoutViewModel : ViewModel() {
             viewModelScope.launch {
                 eventChannel.send(CheckoutEvent.ShowDatePicker)
             }
+        } else {
+            // Reset scheduled time
+            selectedDateMillis = null
+            selectedHour = null
+            selectedMinute = null
+            _state.update { it.copy(scheduledDateTime = null) }
         }
     }
 
@@ -84,20 +199,85 @@ class CheckoutViewModel : ViewModel() {
         _state.update { it.copy(isOrderDetailsExpanded = !it.isOrderDetailsExpanded) }
     }
 
-    private fun handleProductClick(productId: String) {
-        // TODO: Navigate to product details if needed
-    }
-
     private fun handleQuantityChange(productId: String, quantity: Int) {
-        // TODO: Update quantity in cart repository
+        viewModelScope.launch {
+            // Find cart item ID (may be different from product ID if it has toppings)
+            val cartItem = _state.value.orderItems.find { it.id == productId }
+            if (cartItem != null) {
+                when (cartRepository.updateQuantity(cartItem.id, quantity)) {
+                    is Result.Success -> Unit
+                    is Result.Error -> {
+                        eventChannel.send(
+                            CheckoutEvent.ShowError(
+                                UiText.StringResource(R.string.failed_to_update_quantity)
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun handleDeleteItem(productId: String) {
-        // TODO: Delete item from cart repository
+        viewModelScope.launch {
+            val cartItem = _state.value.orderItems.find { it.id == productId }
+            if (cartItem != null) {
+                when (cartRepository.removeFromCart(cartItem.id)) {
+                    is Result.Success -> Unit
+                    is Result.Error -> {
+                        eventChannel.send(
+                            CheckoutEvent.ShowError(
+                                UiText.StringResource(R.string.failed_to_remove_item)
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun handleAddRecommendedItem(addOnId: String) {
-        // TODO: Add recommended item to cart
+        viewModelScope.launch {
+            // Find product
+            val product = allProducts.find { it.id == addOnId }
+            if (product == null) {
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.failed_to_add_item)
+                    )
+                )
+                return@launch
+            }
+
+            // Create cart item
+            val cartItem = CartItem(
+                id = product.id,
+                productId = product.id,
+                name = product.name,
+                imageUrl = product.imageUrl,
+                basePrice = product.price,
+                quantity = 1,
+                toppings = emptyList(),
+                category = product.category.displayName
+            )
+
+            when (cartRepository.addToCart(cartItem)) {
+                is Result.Success -> {
+                    eventChannel.send(
+                        CheckoutEvent.ShowMessage(
+                            UiText.DynamicString("${product.name} added to order")
+                        )
+                    )
+                }
+                is Result.Error -> {
+                    eventChannel.send(
+                        CheckoutEvent.ShowError(
+                            UiText.StringResource(R.string.failed_to_add_item)
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun handleCommentChange(comment: String) {
@@ -106,14 +286,116 @@ class CheckoutViewModel : ViewModel() {
 
     private fun handlePlaceOrder() {
         viewModelScope.launch {
+            // Validate order
+            val currentState = _state.value
+
+            if (currentState.orderItems.isEmpty()) {
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.empty_cart_error)
+                    )
+                )
+                return@launch
+            }
+
+            // Check authentication
+            if (!authRepository.isAuthenticated() || authRepository.isAnonymous()) {
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.signin_required_error)
+                    )
+                )
+                return@launch
+            }
+
             _state.update { it.copy(isPlacingOrder = true) }
 
-            // TODO: Place order via repository
-            // For now, just simulate success
-            kotlinx.coroutines.delay(1000)
+            try {
+                // Calculate pickup time
+                val pickupTimeMillis = calculatePickupTimeMillis()
+                val pickupTimeFormatted = formatPickupTime(pickupTimeMillis)
 
-            _state.update { it.copy(isPlacingOrder = false) }
-            eventChannel.send(CheckoutEvent.NavigateToOrderConfirmation)
+                // Validate pickup time
+                if (!isPickupTimeValid(pickupTimeMillis)) {
+                    _state.update { it.copy(isPlacingOrder = false) }
+                    eventChannel.send(
+                        CheckoutEvent.ShowError(
+                            UiText.StringResource(R.string.invalid_pickup_time_error)
+                        )
+                    )
+                    return@launch
+                }
+
+                // Get cart items from repository to get full details with toppings
+                val cartItemsResult = cartRepository.getCartItems()
+                val cartItems = mutableListOf<com.danzucker.lazypizza.product.domain.model.CartItem>()
+
+                cartItemsResult.collect { items ->
+                    cartItems.clear()
+                    cartItems.addAll(items)
+                }
+
+                // Create order
+                val order = Order(
+                    id = "", // Will be set by repository
+                    orderNumber = Order.generateOrderNumber(),
+                    userId = authRepository.getCurrentUserId() ?: "",
+                    items = cartItems.map { it.toOrderItem() },
+                    pickupTime = pickupTimeFormatted,
+                    pickupTimeMillis = pickupTimeMillis,
+                    comment = currentState.comment,
+                    subtotal = currentState.totalAmount,
+                    tax = 0.0, // TODO: Calculate tax in future milestone
+                    total = currentState.totalAmount,
+                    status = OrderStatus.IN_PROGRESS,
+                    createdAt = System.currentTimeMillis()
+                )
+
+                // Place order
+                when (val result = orderRepository.createOrder(order)) {
+                    is Result.Success -> {
+                        val orderId = result.data
+
+                        // Clear cart after successful order
+                        when (cartRepository.clearCart()) {
+                            is Result.Success -> {
+                                Timber.d("Cart cleared successfully after order placement")
+                            }
+                            is Result.Error -> {
+                                Timber.w("Failed to clear cart after order placement")
+                                // Don't fail the order, just log
+                            }
+                        }
+
+                        _state.update { it.copy(isPlacingOrder = false) }
+
+                        // Navigate to order confirmation
+                        eventChannel.send(
+                            CheckoutEvent.NavigateToOrderConfirmation(
+                                orderId = orderId,
+                                orderNumber = order.orderNumber,
+                                pickupTime = pickupTimeFormatted
+                            )
+                        )
+                    }
+                    is Result.Error -> {
+                        _state.update { it.copy(isPlacingOrder = false) }
+                        eventChannel.send(
+                            CheckoutEvent.ShowError(
+                                UiText.StringResource(R.string.order_placement_failed)
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error placing order")
+                _state.update { it.copy(isPlacingOrder = false) }
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.order_placement_failed)
+                    )
+                )
+            }
         }
     }
 
@@ -123,24 +405,132 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun setScheduledDateTime(date: String, time: String) {
-        val scheduledDateTime = if (isToday(date)) {
-            time // Show only time if today
-        } else {
-            "$date, $time" // Show date + time if future day
+    /**
+     * Called when user selects a date from the DatePicker
+     */
+    fun onDateSelected(dateMillis: Long) {
+        selectedDateMillis = dateMillis
+        // After date is selected, show time picker
+        viewModelScope.launch {
+            eventChannel.send(CheckoutEvent.ShowTimePicker)
+        }
+    }
+
+    /**
+     * Called when user selects a time from the TimePicker
+     */
+    fun onTimeSelected(hour: Int, minute: Int) {
+        selectedHour = hour
+        selectedMinute = minute
+
+        // Combine date and time
+        val dateMillis = selectedDateMillis ?: return
+
+        val dateTime = combineDateTime(dateMillis, hour, minute)
+        val timeMillis = dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+
+        // Validate time
+        val now = Clock.System.now().toEpochMilliseconds()
+        val earliestAllowed = now + (15 * 60 * 1000) // Current time + 15 minutes
+
+        if (timeMillis < earliestAllowed) {
+            viewModelScope.launch {
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.pickup_time_too_early_error)
+                    )
+                )
+            }
+            // Reset to EARLIEST option
+            _state.update {
+                it.copy(
+                    pickupTimeOption = PickupTimeOption.EARLIEST,
+                    scheduledDateTime = null
+                )
+            }
+            return
         }
 
+        // Validate time is within operating hours (10:15 - 21:45)
+        if (hour !in 10..21 || (hour == 21 && minute > 45)) {
+            viewModelScope.launch {
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.pickup_time_outside_hours_error)
+                    )
+                )
+            }
+            return
+        }
+
+        // Format and display using the util function
+        val formatted = formatPickupTime(timeMillis)
         _state.update {
             it.copy(
                 pickupTimeOption = PickupTimeOption.SCHEDULED,
-                scheduledDateTime = scheduledDateTime
+                scheduledDateTime = formatted
             )
         }
     }
 
-    private fun isToday(date: String): Boolean {
-        val today = SimpleDateFormat("MMMM dd", Locale.getDefault())
-            .format(Calendar.getInstance().time)
-        return date == today
+    /**
+     * Calculate pickup time in milliseconds
+     */
+    private fun calculatePickupTimeMillis(): Long {
+        val currentState = _state.value
+
+        return when (currentState.pickupTimeOption) {
+            PickupTimeOption.EARLIEST -> {
+                // Current time + 15 minutes
+                val now = Clock.System.now()
+                now.toEpochMilliseconds() + (15 * 60 * 1000)
+            }
+            PickupTimeOption.SCHEDULED -> {
+                // Use selected date and time
+                val dateMillis = selectedDateMillis ?: return Clock.System.now().toEpochMilliseconds()
+                val hour = selectedHour ?: 0
+                val minute = selectedMinute ?: 0
+
+                val dateTime = combineDateTime(dateMillis, hour, minute)
+                dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+            }
+        }
+    }
+
+    /**
+     * Validate pickup time is valid
+     */
+    private fun isPickupTimeValid(pickupTimeMillis: Long): Boolean {
+        val now = Clock.System.now().toEpochMilliseconds()
+        val earliestAllowed = now + (15 * 60 * 1000) // Current time + 15 minutes
+
+        if (pickupTimeMillis < earliestAllowed) {
+            return false
+        }
+
+        // Check if within operating hours (10:15 - 21:45)
+        val pickupTime = Instant.fromEpochMilliseconds(pickupTimeMillis)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val hour = pickupTime.hour
+        val minute = pickupTime.minute
+
+        // Before 10:15 or after 21:45
+        return !(hour !in 10..21 || (hour == 21 && minute > 45))
+    }
+
+    /**
+     * Combine date (from DatePicker) with time (from TimePicker)
+     */
+    private fun combineDateTime(dateMillis: Long, hour: Int, minute: Int): LocalDateTime {
+        val date = Instant.fromEpochMilliseconds(dateMillis)
+            .toLocalDateTime(TimeZone.UTC)
+            .date
+
+        return date.atTime(hour, minute)
+    }
+
+    private fun handleProductClick(productId: String) {
+        // TODO: Navigate to product details if needed (future milestone)
     }
 }

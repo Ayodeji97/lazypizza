@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.danzucker.lazypizza.auth.presentation.auth.AuthRoot
+import com.danzucker.lazypizza.product.presentation.checkout.CheckoutRoot
+import com.danzucker.lazypizza.product.presentation.orderconfirmation.OrderConfirmationScreen
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 
 @Composable
@@ -44,6 +47,9 @@ fun NavigationRoot(
                 },
                 onNavigateToAuth = {
                     navController.navigate(NavigationRoute.Auth)
+                },
+                onNavigateToCheckout = {
+                    navController.navigate(NavigationRoute.Checkout)
                 }
             )
         }
@@ -51,6 +57,42 @@ fun NavigationRoot(
         composable<NavigationRoute.ProductDetails> {
             ProductDetailRoot(
                 onNavigateBack = navController::navigateUp
+            )
+        }
+
+        composable<NavigationRoute.Checkout> {
+            CheckoutRoot(
+                onNavigateBack = navController::navigateUp,
+                onNavigateToOrderConfirmation = { orderId, orderNumber, pickupTime ->
+                    navController.navigate(
+                        NavigationRoute.OrderConfirmation(
+                            orderId = orderId,
+                            orderNumber = orderNumber,
+                            pickupTime = pickupTime
+                        )
+                    ) {
+                        // Remove Checkout from back stack
+                        popUpTo(NavigationRoute.Checkout) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Order Confirmation Screen
+        composable<NavigationRoute.OrderConfirmation> {
+            val args = it.toRoute<NavigationRoute.OrderConfirmation>()
+            OrderConfirmationScreen(
+                orderId = args.orderId,
+                orderNumber = args.orderNumber,
+                pickupTime = args.pickupTime,
+                onBackToMenu = {
+                    // Navigate back to main screen and clear entire back stack
+                    navController.navigate(NavigationRoute.ProductList) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = false
+                        }
+                    }
+                }
             )
         }
     }

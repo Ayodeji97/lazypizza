@@ -33,6 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CartRoot(
     onNavigateToMenu: () -> Unit,
+    onNavigateToCheckout: () -> Unit,
     viewModel: CartViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -41,6 +42,7 @@ fun CartRoot(
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is CartEvent.NavigateBack -> onNavigateToMenu()
+            is CartEvent.NavigateToCheckout -> onNavigateToCheckout()
             is CartEvent.ShowErrorMessage -> {
                 Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
             }
