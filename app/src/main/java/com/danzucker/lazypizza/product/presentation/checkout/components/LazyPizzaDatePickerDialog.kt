@@ -21,6 +21,9 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimarySmallButton
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,12 +31,15 @@ fun LazyPizzaDatePickerDialog(
     onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    // Get current date in milliseconds
-    val now = Clock.System.now()
-    val todayMillis = now.toEpochMilliseconds()
+    // Use start-of-today in UTC so that today is always selectable
+    val todayMillis = Clock.System.now()
+        .toLocalDateTime(TimeZone.UTC)
+        .date
+        .atStartOfDayIn(TimeZone.UTC)
+        .toEpochMilliseconds()
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = todayMillis,
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 // Only allow dates from today onwards

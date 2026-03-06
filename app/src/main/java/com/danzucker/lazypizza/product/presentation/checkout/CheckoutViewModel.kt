@@ -33,10 +33,13 @@ import com.danzucker.lazypizza.product.presentation.mappers.toProductListUi
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
+import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
@@ -90,9 +93,7 @@ class CheckoutViewModel(
     }
 
     private fun loadInitialData() {
-        // Calculate earliest pickup time (current time + 15 minutes)
-        val now = Clock.System.now()
-        val earliestPickupMillis = now.toEpochMilliseconds() + (15 * 60 * 1000)
+        val earliestPickupMillis = computeEarliestPickupMillis()
 
         val formattedTime = formatPickupTime(earliestPickupMillis)
 
@@ -128,7 +129,8 @@ class CheckoutViewModel(
         }.onEach { (cartItems, summary) ->
             val orderItems = cartItems.map { cartItem ->
                 val product = allProducts.find { it.id == cartItem.productId }
-                product?.toProductListUi(quantityInCart = cartItem.quantity) ?: run {
+                val productUi = product?.toProductListUi(quantityInCart = cartItem.quantity)
+                productUi?.copy(id = cartItem.id) ?: run {
                     LazyPizzaProductListUi(
                         id = cartItem.id,
                         name = cartItem.name,
@@ -326,14 +328,8 @@ class CheckoutViewModel(
                     return@launch
                 }
 
-                // Get cart items from repository to get full details with toppings
-                val cartItemsResult = cartRepository.getCartItems()
-                val cartItems = mutableListOf<com.danzucker.lazypizza.product.domain.model.CartItem>()
-
-                cartItemsResult.collect { items ->
-                    cartItems.clear()
-                    cartItems.addAll(items)
-                }
+                // Get cart items snapshot from repository
+                val cartItems = cartRepository.getCartItems().first()
 
                 // Create order
                 val order = Order(
@@ -452,7 +448,7 @@ class CheckoutViewModel(
         }
 
         // Validate time is within operating hours (10:15 - 21:45)
-        if (hour !in 10..21 || (hour == 21 && minute > 45)) {
+        if (!isWithinOperatingHours(hour, minute)) {
             viewModelScope.launch {
                 eventChannel.send(
                     CheckoutEvent.ShowError(
@@ -481,9 +477,7 @@ class CheckoutViewModel(
 
         return when (currentState.pickupTimeOption) {
             PickupTimeOption.EARLIEST -> {
-                // Current time + 15 minutes
-                val now = Clock.System.now()
-                now.toEpochMilliseconds() + (15 * 60 * 1000)
+                computeEarliestPickupMillis()
             }
             PickupTimeOption.SCHEDULED -> {
                 // Use selected date and time
@@ -515,8 +509,7 @@ class CheckoutViewModel(
         val hour = pickupTime.hour
         val minute = pickupTime.minute
 
-        // Before 10:15 or after 21:45
-        return !(hour !in 10..21 || (hour == 21 && minute > 45))
+        return isWithinOperatingHours(hour, minute)
     }
 
     /**
@@ -532,5 +525,35 @@ class CheckoutViewModel(
 
     private fun handleProductClick(productId: String) {
         // TODO: Navigate to product details if needed (future milestone)
+    }
+
+    private fun isWithinOperatingHours(hour: Int, minute: Int): Boolean {
+        if (hour < 10 || hour > 21) return false
+        if (hour == 10 && minute < 15) return false
+        if (hour == 21 && minute > 45) return false
+        return true
+    }
+
+    private fun computeEarliestPickupMillis(): Long {
+        val now = Clock.System.now()
+        val candidate = now.toEpochMilliseconds() + (15 * 60 * 1000)
+        val candidateLocal = Instant.fromEpochMilliseconds(candidate)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+
+        if (isWithinOperatingHours(candidateLocal.hour, candidateLocal.minute)) {
+            return candidate
+        }
+
+        val tz = TimeZone.currentSystemDefault()
+        val candidateDate = candidateLocal.date
+
+        // Before 10:15 → clamp to today at 10:15
+        if (candidateLocal.hour < 10 || (candidateLocal.hour == 10 && candidateLocal.minute < 15)) {
+            return candidateDate.atTime(10, 15).toInstant(tz).toEpochMilliseconds()
+        }
+
+        // After 21:45 → clamp to next day at 10:15
+        val tomorrow = candidateDate.plus(1, DateTimeUnit.DAY)
+        return tomorrow.atTime(10, 15).toInstant(tz).toEpochMilliseconds()
     }
 }

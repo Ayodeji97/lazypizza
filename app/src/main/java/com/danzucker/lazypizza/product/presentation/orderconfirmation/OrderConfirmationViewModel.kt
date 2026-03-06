@@ -27,7 +27,7 @@ class OrderConfirmationViewModel : ViewModel() {
 
     fun onAction(action: OrderConfirmationAction) {
         when (action) {
-            else -> TODO("Handle actions")
+            else -> Unit
         }
     }
 
