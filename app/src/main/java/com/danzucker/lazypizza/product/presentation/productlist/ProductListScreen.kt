@@ -56,6 +56,7 @@ fun ProductListRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val itemAddedToCartMessage = stringResource(R.string.item_added_to_cart)
 
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
@@ -76,7 +77,7 @@ fun ProductListRoot(
             ProductListEvent.ItemAddedToCart -> {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.item_added_to_cart),
+                    itemAddedToCartMessage,
                     Toast.LENGTH_LONG
                 ).show()
             }

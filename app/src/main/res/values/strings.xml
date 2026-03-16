@@ -25,7 +25,6 @@
     <string name="proceed_to_checkout">Proceed to Checkout (%s)</string>
     <string name="failed_to_update_quantity">Failed to update quantity</string>
     <string name="failed_to_remove_item">Failed to remove item</string>
-    <string name="checkout_coming_soon">Checkout coming soon!</string>
     <string name="failed_to_add_to_cart">Couldn\'t add Item, Try again!</string>
     <string name="item_added_to_cart">Great, Item added to cart!</string>
     <string name="failed_to_add_item">Failed to add item. Try again!</string>
@@ -94,4 +93,6 @@
     <string name="order_placed_subtitle">Thank you for your order! Please come at the indicated time.</string>
     <string name="order_number_label">Order number:</string>
     <string name="pickup_time_label">Pickup Time:</string>
+    <string name="item_added_to_cart_named">%1$s added to cart!</string>
+    <string name="failed_to_load_orders">Failed to load orders</string>
 </resources>

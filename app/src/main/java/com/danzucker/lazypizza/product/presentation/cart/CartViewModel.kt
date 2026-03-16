@@ -218,7 +218,7 @@ class CartViewModel(
                      */
                     eventChannel.send(
                         CartEvent.ShowMessage(
-                            UiText.DynamicString("${addOn.name} added to cart")
+                            UiText.StringResource(R.string.item_added_to_cart_named, arrayOf(addOn.name))
                         )
                     )
                 }

@@ -2,8 +2,10 @@ package com.danzucker.lazypizza.product.presentation.orderhistory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.auth.domain.AuthRepository
 import com.danzucker.lazypizza.core.domain.util.Result
+import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.domain.order.OrderRepository
 import com.danzucker.lazypizza.product.presentation.mappers.toOrderUi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,7 +65,7 @@ class OrderHistoryViewModel(
                 is Result.Success -> ordersResult.data.map { it.toOrderUi() }
                 is Result.Error -> emptyList()
             }
-            val errorMessage = if (ordersResult is Result.Error) "Failed to load orders" else null
+            val errorMessage = if (ordersResult is Result.Error) UiText.StringResource(R.string.failed_to_load_orders) else null
             Triple(isAuthenticated, orders, errorMessage)
         }.onEach { (isAuthenticated, orders, errorMessage) ->
             _state.update {

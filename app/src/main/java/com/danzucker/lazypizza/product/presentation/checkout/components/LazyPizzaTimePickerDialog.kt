@@ -51,6 +51,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.util.Locale
 
 @Composable
 fun LazyPizzaTimePickerDialog(
@@ -60,8 +61,8 @@ fun LazyPizzaTimePickerDialog(
 ) {
     val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
-    var hourText by remember { mutableStateOf(String.format("%02d", now.hour)) }
-    var minuteText by remember { mutableStateOf(String.format("%02d", now.minute)) }
+    var hourText by remember { mutableStateOf(String.format(Locale.getDefault(), "%02d", now.hour)) }
+    var minuteText by remember { mutableStateOf(String.format(Locale.getDefault(), "%02d", now.minute)) }
 
     val hour by remember { derivedStateOf { hourText.toIntOrNull() ?: 0 } }
     val minute by remember { derivedStateOf { minuteText.toIntOrNull() ?: 0 } }
