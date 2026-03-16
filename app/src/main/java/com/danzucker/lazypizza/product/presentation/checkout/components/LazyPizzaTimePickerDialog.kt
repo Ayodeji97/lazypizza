@@ -40,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimarySmallButton
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaPrimaryColor

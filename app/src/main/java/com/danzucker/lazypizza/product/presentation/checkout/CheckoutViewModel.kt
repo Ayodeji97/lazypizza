@@ -88,8 +88,8 @@ class CheckoutViewModel(
             CheckoutAction.OnScheduleTimeClick -> handleScheduleTimeClick()
             CheckoutAction.OnToggleOrderDetails -> handleToggleOrderDetails()
             is CheckoutAction.OnProductClick -> handleProductClick(action.productId)
-            is CheckoutAction.OnQuantityChange -> handleQuantityChange(action.productId, action.quantity)
-            is CheckoutAction.OnDeleteItem -> handleDeleteItem(action.productId)
+            is CheckoutAction.OnQuantityChange -> handleQuantityChange(action.cartItemId, action.quantity)
+            is CheckoutAction.OnDeleteItem -> handleDeleteItem(action.cartItemId)
             is CheckoutAction.OnAddRecommendedItem -> handleAddRecommendedItem(action.addOnId)
             is CheckoutAction.OnCommentChange -> handleCommentChange(action.comment)
             CheckoutAction.OnPlaceOrder -> handlePlaceOrder()
@@ -408,6 +408,8 @@ class CheckoutViewModel(
                         )
                     }
                 }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Error placing order")
                 _state.update { it.copy(isPlacingOrder = false) }
