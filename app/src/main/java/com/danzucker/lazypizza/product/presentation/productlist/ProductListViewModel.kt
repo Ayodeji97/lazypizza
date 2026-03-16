@@ -13,6 +13,7 @@ import com.danzucker.lazypizza.product.domain.model.ProductCategory
 import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
 import com.danzucker.lazypizza.product.presentation.mappers.toProductListUi
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.*
+import timber.log.Timber
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -116,7 +117,10 @@ class ProductListViewModel(
 
     private fun handleLogout() {
         viewModelScope.launch {
-            cartRepository.clearCart()
+            when (val result = cartRepository.clearCart()) {
+                is Result.Error -> Timber.e("Failed to clear cart on logout: ${result.error}")
+                is Result.Success -> Unit
+            }
             authRepository.signOut()
             _state.update { it.copy(showLogoutDialog = false) }
         }

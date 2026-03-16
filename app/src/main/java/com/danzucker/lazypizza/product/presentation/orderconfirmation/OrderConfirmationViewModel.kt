@@ -25,10 +25,4 @@ class OrderConfirmationViewModel : ViewModel() {
             initialValue = OrderConfirmationState()
         )
 
-    fun onAction(action: OrderConfirmationAction) {
-        when (action) {
-            else -> Unit
-        }
-    }
-
 }

@@ -97,7 +97,7 @@ fun LazyPizzaDatePickerDialog(
             ) {
                 // "SELECT DATE" label
                 Text(
-                    text = "SELECT DATE",
+                    text = stringResource(R.string.select_date_title),
                     modifier = Modifier.padding(horizontal = hPadding),
                     style = MaterialTheme.typography.labelSmall,
                     color = LazyPizzaTextSecondaryColor,
@@ -132,15 +132,18 @@ fun LazyPizzaDatePickerDialog(
                         .padding(horizontal = hPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val displayMonthName = displayFirstDay.month.name
+                        .lowercase()
+                        .replaceFirstChar { it.uppercase() }
                     Text(
-                        text = "${displayFirstDay.month.name} ${displayFirstDay.year}",
+                        text = "$displayMonthName ${displayFirstDay.year}",
                         style = MaterialTheme.typography.labelMedium,
                         color = LazyPizzaTextSecondaryColor,
                         modifier = Modifier.weight(1f)
                     )
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Previous month",
+                        contentDescription = stringResource(R.string.previous_month_description),
                         tint = LazyPizzaTextPrimaryColor,
                         modifier = Modifier
                             .size(20.dp)
@@ -151,7 +154,7 @@ fun LazyPizzaDatePickerDialog(
                     Spacer(modifier = Modifier.width(12.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Next month",
+                        contentDescription = stringResource(R.string.next_month_description),
                         tint = LazyPizzaTextPrimaryColor,
                         modifier = Modifier
                             .size(20.dp)

@@ -4,14 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.auth.domain.AuthRepository
 import com.danzucker.lazypizza.core.domain.util.Result
-import com.danzucker.lazypizza.product.domain.model.Order
-import com.danzucker.lazypizza.product.domain.model.OrderStatus
 import com.danzucker.lazypizza.product.domain.order.OrderRepository
-import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderItemUi
-import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderStatusUi
-import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
-import com.danzucker.lazypizza.product.presentation.util.formatAmount
-import com.danzucker.lazypizza.product.presentation.util.formatPickupTime
+import com.danzucker.lazypizza.product.presentation.mappers.toOrderUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -81,16 +75,4 @@ class OrderHistoryViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun Order.toOrderUi() = OrderUi(
-        id = id,
-        orderNumber = orderNumber,
-        date = formatPickupTime(createdAt),
-        items = items.map { OrderItemUi(it.productName, it.quantity) },
-        totalAmount = formatAmount(total),
-        status = when (status) {
-            OrderStatus.IN_PROGRESS -> OrderStatusUi.IN_PROGRESS
-            OrderStatus.COMPLETED -> OrderStatusUi.COMPLETED
-            OrderStatus.CANCELLED -> OrderStatusUi.CANCELLED
-        }
-    )
 }

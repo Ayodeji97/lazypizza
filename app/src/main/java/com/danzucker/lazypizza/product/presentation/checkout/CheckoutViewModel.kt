@@ -267,7 +267,7 @@ class CheckoutViewModel(
                 is Result.Success -> {
                     eventChannel.send(
                         CheckoutEvent.ShowMessage(
-                            UiText.DynamicString("${product.name} added to order")
+                            UiText.StringResource(R.string.item_added_to_order, arrayOf(product.name))
                         )
                     )
                 }

@@ -81,7 +81,10 @@
     <string name="signin_required_error">Please sign in to place an order.</string>
     <string name="empty_cart_error">Your cart is empty. Please add items before placing an order.</string>
     <string name="pickup_time_outside_hours_error">Pickup available between 10:15 and 21:45</string>
-    <string name="select_date_title">Select Date</string>
+    <string name="select_date_title">SELECT DATE</string>
+    <string name="previous_month_description">Previous month</string>
+    <string name="next_month_description">Next month</string>
+    <string name="item_added_to_order">%1$s added to order</string>
     <string name="select_time_title">SELECT TIME</string>
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
