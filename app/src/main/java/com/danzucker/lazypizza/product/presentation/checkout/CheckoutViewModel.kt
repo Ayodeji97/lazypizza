@@ -332,11 +332,23 @@ class CheckoutViewModel(
                 // Get cart items snapshot from repository
                 val cartItems = cartRepository.getCartItems().first()
 
+                // Resolve userId; abort if auth state is inconsistent
+                val userId = authRepository.getCurrentUserId()
+                if (userId == null) {
+                    _state.update { it.copy(isPlacingOrder = false) }
+                    eventChannel.send(
+                        CheckoutEvent.ShowError(
+                            UiText.StringResource(R.string.signin_required_error)
+                        )
+                    )
+                    return@launch
+                }
+
                 // Create order
                 val order = Order(
                     id = "", // Will be set by repository
                     orderNumber = Order.generateOrderNumber(),
-                    userId = authRepository.getCurrentUserId() ?: "",
+                    userId = userId,
                     items = cartItems.map { it.toOrderItem() },
                     pickupTime = pickupTimeFormatted,
                     pickupTimeMillis = pickupTimeMillis,

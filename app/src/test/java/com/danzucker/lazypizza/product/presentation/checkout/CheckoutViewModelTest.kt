@@ -196,6 +196,24 @@ class CheckoutViewModelTest : BaseViewModelTest() {
         }
     }
 
+    @Test
+    fun onPlaceOrder_nullUserId_sendsShowErrorAndResetsIsPlacingOrder() = runTest {
+        every { authRepository.getCurrentUserId() } returns null
+        val cartItem = makeCartItem()
+        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+
+        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+
+        viewModel.events.test {
+            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+
+            assertTrue(awaitItem() is CheckoutEvent.ShowError)
+            assertFalse(viewModel.state.value.isPlacingOrder)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     // ──────────────────────────────────────────────
     // OnPlaceOrder — happy path
     // ──────────────────────────────────────────────
