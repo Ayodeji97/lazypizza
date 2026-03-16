@@ -116,6 +116,9 @@ class CheckoutViewModel(
                 when (result) {
                     is Result.Success -> {
                         allProducts = result.data
+                        // Invalidate cache so the next cart emission recomputes
+                        // recommendations with the freshly loaded product list.
+                        lastCartItemIds = emptySet()
                     }
                     is Result.Error -> {
                         Timber.w("Failed to load products for recommendations")
@@ -477,9 +480,17 @@ class CheckoutViewModel(
                     )
                 )
             }
-            // Clear cached time on failure
+            // Revert fully to EARLIEST so calculatePickupTimeMillis() never falls
+            // back to midnight (hour=0, minute=0) from stale null values.
+            selectedDateMillis = null
             selectedHour = null
             selectedMinute = null
+            _state.update {
+                it.copy(
+                    pickupTimeOption = PickupTimeOption.EARLIEST,
+                    scheduledDateTime = null
+                )
+            }
             return
         }
 
