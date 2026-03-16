@@ -57,6 +57,9 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import java.time.Month as JavaMonth
+import java.time.format.TextStyle as JavaTextStyle
+import java.util.Locale
 
 @Composable
 fun LazyPizzaDatePickerDialog(
@@ -107,9 +110,8 @@ fun LazyPizzaDatePickerDialog(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Large selected date heading, e.g. "September 25"
-                val selectedMonthName = selectedDate.month.name
-                    .lowercase()
-                    .replaceFirstChar { it.uppercase() }
+                val selectedMonthName = JavaMonth.of(selectedDate.monthNumber)
+                    .getDisplayName(JavaTextStyle.FULL, Locale.getDefault())
                 Text(
                     text = "$selectedMonthName ${selectedDate.dayOfMonth}",
                     modifier = Modifier.padding(horizontal = hPadding),
@@ -132,9 +134,8 @@ fun LazyPizzaDatePickerDialog(
                         .padding(horizontal = hPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val displayMonthName = displayFirstDay.month.name
-                        .lowercase()
-                        .replaceFirstChar { it.uppercase() }
+                    val displayMonthName = JavaMonth.of(displayFirstDay.monthNumber)
+                        .getDisplayName(JavaTextStyle.FULL, Locale.getDefault())
                     Text(
                         text = "$displayMonthName ${displayFirstDay.year}",
                         style = MaterialTheme.typography.labelMedium,
