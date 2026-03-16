@@ -99,7 +99,7 @@ fun OrderInfoCardPreview() {
             orderNumber = "#12345",
             pickupTime = "September 25, 12:15",
             modifier = Modifier
-                .padding(horizontal = 16.dp, 32.dp)
+                .padding(horizontal = 16.dp, vertical = 32.dp)
         )
     }
 }

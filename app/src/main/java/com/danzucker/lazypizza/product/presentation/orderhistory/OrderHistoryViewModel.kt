@@ -63,13 +63,15 @@ class OrderHistoryViewModel(
                 is Result.Success -> ordersResult.data.map { it.toOrderUi() }
                 is Result.Error -> emptyList()
             }
-            isAuthenticated to orders
-        }.onEach { (isAuthenticated, orders) ->
+            val errorMessage = if (ordersResult is Result.Error) "Failed to load orders" else null
+            Triple(isAuthenticated, orders, errorMessage)
+        }.onEach { (isAuthenticated, orders, errorMessage) ->
             _state.update {
                 it.copy(
                     isAuthenticated = isAuthenticated,
                     orders = orders,
-                    isLoadingData = false
+                    isLoadingData = false,
+                    errorMessage = errorMessage
                 )
             }
         }.launchIn(viewModelScope)

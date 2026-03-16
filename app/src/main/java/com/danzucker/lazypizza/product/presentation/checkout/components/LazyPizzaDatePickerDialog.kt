@@ -57,6 +57,8 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun LazyPizzaDatePickerDialog(
@@ -107,8 +109,8 @@ fun LazyPizzaDatePickerDialog(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Large selected date heading, e.g. "September 25"
-                val selectedMonthName = selectedDate.month.name
-                    .lowercase()
+                val selectedMonthName = java.time.Month.of(selectedDate.monthNumber)
+                    .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
                     .replaceFirstChar { it.uppercase() }
                 Text(
                     text = "$selectedMonthName ${selectedDate.dayOfMonth}",
@@ -132,8 +134,8 @@ fun LazyPizzaDatePickerDialog(
                         .padding(horizontal = hPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val displayMonthName = displayFirstDay.month.name
-                        .lowercase()
+                    val displayMonthName = java.time.Month.of(displayFirstDay.monthNumber)
+                        .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
                         .replaceFirstChar { it.uppercase() }
                     Text(
                         text = "$displayMonthName ${displayFirstDay.year}",
@@ -166,13 +168,17 @@ fun LazyPizzaDatePickerDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Day-of-week headers starting Monday: M T W T F S S
+                // Day-of-week headers starting Monday, sourced from locale
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = hPadding)
                 ) {
-                    listOf("M", "T", "W", "T", "F", "S", "S").forEach { header ->
+                    val dayHeaders = (1..7).map { dayNum ->
+                        java.time.DayOfWeek.of(dayNum)
+                            .getDisplayName(TextStyle.NARROW_STANDALONE, Locale.getDefault())
+                    }
+                    dayHeaders.forEach { header ->
                         Text(
                             text = header,
                             modifier = Modifier.weight(1f),

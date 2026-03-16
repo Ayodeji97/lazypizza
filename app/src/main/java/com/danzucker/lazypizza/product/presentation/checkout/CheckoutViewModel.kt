@@ -7,6 +7,7 @@ import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.model.Product
 import com.danzucker.lazypizza.product.domain.order.OrderRepository
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
+import com.danzucker.lazypizza.product.presentation.util.formatAmount
 import com.danzucker.lazypizza.product.presentation.util.formatPickupTime
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,6 +78,10 @@ class CheckoutViewModel(
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
 
+    // Cache recommendations per cart snapshot to avoid reshuffling on every emission
+    private var lastCartItemIds: Set<String> = emptySet()
+    private var cachedRecommendations: List<RecommendedAddOnUi> = emptyList()
+
     fun onAction(action: CheckoutAction) {
         when (action) {
             is CheckoutAction.OnPickupTimeSelected -> handlePickupTimeSelected(action.option)
@@ -135,7 +140,7 @@ class CheckoutViewModel(
                         id = cartItem.id,
                         name = cartItem.name,
                         description = "",
-                        price = "$${cartItem.basePrice}",
+                        price = formatAmount(cartItem.basePrice),
                         imageUrl = cartItem.imageUrl,
                         isAvailable = true,
                         category = cartItem.category,
@@ -149,22 +154,26 @@ class CheckoutViewModel(
             }
 
             val cartItemIds = cartItems.map { it.productId }.toSet()
-            val recommendations = allProducts
-                .filter {
-                    (it.category == ProductCategory.SAUCES ||
-                            it.category == ProductCategory.DRINKS) &&
-                            it.id !in cartItemIds
-                }
-                .shuffled()
-                .take(5)
-                .map { product ->
-                    RecommendedAddOnUi(
-                        id = product.id,
-                        name = product.name,
-                        price = product.price,
-                        imageUrl = product.imageUrl
-                    )
-                }
+            if (cartItemIds != lastCartItemIds) {
+                lastCartItemIds = cartItemIds
+                cachedRecommendations = allProducts
+                    .filter {
+                        (it.category == ProductCategory.SAUCES ||
+                                it.category == ProductCategory.DRINKS) &&
+                                it.id !in cartItemIds
+                    }
+                    .shuffled()
+                    .take(5)
+                    .map { product ->
+                        RecommendedAddOnUi(
+                            id = product.id,
+                            name = product.name,
+                            price = product.price,
+                            imageUrl = product.imageUrl
+                        )
+                    }
+            }
+            val recommendations = cachedRecommendations
             _state.update { currentState ->
                 currentState.copy(
                     orderItems = orderItems,
@@ -332,11 +341,23 @@ class CheckoutViewModel(
                 // Get cart items snapshot from repository
                 val cartItems = cartRepository.getCartItems().first()
 
+                // Ensure user ID is available before placing order
+                val userId = authRepository.getCurrentUserId()
+                if (userId == null) {
+                    _state.update { it.copy(isPlacingOrder = false) }
+                    eventChannel.send(
+                        CheckoutEvent.ShowError(
+                            UiText.StringResource(R.string.signin_required_error)
+                        )
+                    )
+                    return@launch
+                }
+
                 // Create order
                 val order = Order(
                     id = "", // Will be set by repository
                     orderNumber = Order.generateOrderNumber(),
-                    userId = authRepository.getCurrentUserId() ?: "",
+                    userId = userId,
                     items = cartItems.map { it.toOrderItem() },
                     pickupTime = pickupTimeFormatted,
                     pickupTimeMillis = pickupTimeMillis,
@@ -417,9 +438,6 @@ class CheckoutViewModel(
      * Called when user selects a time from the TimePicker
      */
     fun onTimeSelected(hour: Int, minute: Int) {
-        selectedHour = hour
-        selectedMinute = minute
-
         // Combine date and time
         val dateMillis = selectedDateMillis ?: return
 
@@ -438,7 +456,9 @@ class CheckoutViewModel(
                     )
                 )
             }
-            // Reset to EARLIEST option
+            // Reset to EARLIEST option and clear any previously cached time
+            selectedHour = null
+            selectedMinute = null
             _state.update {
                 it.copy(
                     pickupTimeOption = PickupTimeOption.EARLIEST,
@@ -457,8 +477,15 @@ class CheckoutViewModel(
                     )
                 )
             }
+            // Clear cached time on failure
+            selectedHour = null
+            selectedMinute = null
             return
         }
+
+        // Validation passed — persist the selected time
+        selectedHour = hour
+        selectedMinute = minute
 
         // Format and display using the util function
         val formatted = formatPickupTime(timeMillis)
