@@ -82,7 +82,7 @@ dependencies {
 
 
     // Material Icons
-    implementation("androidx.compose.material:material-icons-core")
+    implementation(libs.material.icons.core)
 
     // Logging
     implementation(libs.timber)
