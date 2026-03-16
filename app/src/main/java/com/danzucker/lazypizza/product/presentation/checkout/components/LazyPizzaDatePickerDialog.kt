@@ -43,6 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danzucker.lazypizza.R
+import java.time.DayOfWeek
+import java.time.format.TextStyle
+import java.time.temporal.WeekFields
+import java.util.Locale
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimarySmallButton
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaButtonGradient
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaPrimaryColor
@@ -66,6 +70,15 @@ fun LazyPizzaDatePickerDialog(
     val today = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
+
+    val locale = Locale.getDefault()
+    val localeFirstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
+    val dayHeaders = remember(locale) {
+        (0..6).map { offset ->
+            val dow = DayOfWeek.of((localeFirstDayOfWeek.value - 1 + offset) % 7 + 1)
+            dow.getDisplayName(TextStyle.NARROW, locale)
+        }
+    }
 
     var selectedDate by remember { mutableStateOf(today) }
     // Track the first day of the currently displayed month for navigation
@@ -166,13 +179,13 @@ fun LazyPizzaDatePickerDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Day-of-week headers starting Monday: M T W T F S S
+                // Day-of-week headers ordered by locale's first day of week
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = hPadding)
                 ) {
-                    listOf("M", "T", "W", "T", "F", "S", "S").forEach { header ->
+                    dayHeaders.forEach { header ->
                         Text(
                             text = header,
                             modifier = Modifier.weight(1f),
@@ -187,7 +200,7 @@ fun LazyPizzaDatePickerDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Calendar grid
-                buildCalendarDays(displayFirstDay).chunked(7).forEach { week ->
+                buildCalendarDays(displayFirstDay, localeFirstDayOfWeek).chunked(7).forEach { week ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -283,13 +296,17 @@ fun LazyPizzaDatePickerDialog(
 }
 
 /**
- * Builds a flat list of [LocalDate?] for a 7-column Monday-first calendar grid.
+ * Builds a flat list of [LocalDate?] for a 7-column calendar grid.
+ * The grid starts on [firstDayOfWeek] (locale-aware).
  * Leading and trailing nulls pad incomplete weeks.
  */
-private fun buildCalendarDays(firstDayOfMonth: LocalDate): List<LocalDate?> {
-    // isoDayNumber: Monday=1 … Sunday=7  →  offset = isoDayNumber - 1
-    // DayOfWeek.value: Monday=1 … Sunday=7 (ISO); subtract 1 for 0-based Monday offset
-    val startOffset = firstDayOfMonth.dayOfWeek.value - 1
+private fun buildCalendarDays(
+    firstDayOfMonth: LocalDate,
+    firstDayOfWeek: DayOfWeek = DayOfWeek.MONDAY
+): List<LocalDate?> {
+    // Both kotlinx.datetime DayOfWeek.value and java.time.DayOfWeek.value use ISO (Monday=1…Sunday=7).
+    // startOffset: number of blank columns before the 1st of the month.
+    val startOffset = ((firstDayOfMonth.dayOfWeek.value - firstDayOfWeek.value) + 7) % 7
     val lastDay = firstDayOfMonth.plus(1, DateTimeUnit.MONTH).minus(1, DateTimeUnit.DAY)
 
     val days = mutableListOf<LocalDate?>()
