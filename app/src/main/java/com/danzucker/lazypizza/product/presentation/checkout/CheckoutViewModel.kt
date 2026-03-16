@@ -417,9 +417,6 @@ class CheckoutViewModel(
      * Called when user selects a time from the TimePicker
      */
     fun onTimeSelected(hour: Int, minute: Int) {
-        selectedHour = hour
-        selectedMinute = minute
-
         // Combine date and time
         val dateMillis = selectedDateMillis ?: return
 
@@ -431,6 +428,8 @@ class CheckoutViewModel(
         val earliestAllowed = now + (15 * 60 * 1000) // Current time + 15 minutes
 
         if (timeMillis < earliestAllowed) {
+            selectedHour = null
+            selectedMinute = null
             viewModelScope.launch {
                 eventChannel.send(
                     CheckoutEvent.ShowError(
@@ -450,6 +449,8 @@ class CheckoutViewModel(
 
         // Validate time is within operating hours (10:15 - 21:45)
         if (!isWithinOperatingHours(hour, minute)) {
+            selectedHour = null
+            selectedMinute = null
             viewModelScope.launch {
                 eventChannel.send(
                     CheckoutEvent.ShowError(
@@ -459,6 +460,10 @@ class CheckoutViewModel(
             }
             return
         }
+
+        // Validation passed — persist the selected time
+        selectedHour = hour
+        selectedMinute = minute
 
         // Format and display using the util function
         val formatted = formatPickupTime(timeMillis)
