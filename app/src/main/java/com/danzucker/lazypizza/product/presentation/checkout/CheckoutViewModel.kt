@@ -72,6 +72,10 @@ class CheckoutViewModel(
     // Cache for all products (for recommendations)
     private var allProducts = listOf<Product>()
 
+    // Cache shuffled recommendations per cart snapshot to avoid reshuffling on every emission
+    private var lastCartSnapshotIds: Set<String> = emptySet()
+    private var cachedRecommendations: List<RecommendedAddOnUi> = emptyList()
+
     // Store selected date and time separately for picker dialogs
     private var selectedDateMillis: Long? = null
     private var selectedHour: Int? = null
@@ -149,22 +153,29 @@ class CheckoutViewModel(
             }
 
             val cartItemIds = cartItems.map { it.productId }.toSet()
-            val recommendations = allProducts
-                .filter {
-                    (it.category == ProductCategory.SAUCES ||
-                            it.category == ProductCategory.DRINKS) &&
-                            it.id !in cartItemIds
-                }
-                .shuffled()
-                .take(5)
-                .map { product ->
-                    RecommendedAddOnUi(
-                        id = product.id,
-                        name = product.name,
-                        price = product.price,
-                        imageUrl = product.imageUrl
-                    )
-                }
+            val recommendations = if (cartItemIds != lastCartSnapshotIds) {
+                val newRecommendations = allProducts
+                    .filter {
+                        (it.category == ProductCategory.SAUCES ||
+                                it.category == ProductCategory.DRINKS) &&
+                                it.id !in cartItemIds
+                    }
+                    .shuffled()
+                    .take(5)
+                    .map { product ->
+                        RecommendedAddOnUi(
+                            id = product.id,
+                            name = product.name,
+                            price = product.price,
+                            imageUrl = product.imageUrl
+                        )
+                    }
+                lastCartSnapshotIds = cartItemIds
+                cachedRecommendations = newRecommendations
+                newRecommendations
+            } else {
+                cachedRecommendations
+            }
             _state.update { currentState ->
                 currentState.copy(
                     orderItems = orderItems,
