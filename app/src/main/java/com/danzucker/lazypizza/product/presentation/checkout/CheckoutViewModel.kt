@@ -7,6 +7,7 @@ import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.model.Product
 import com.danzucker.lazypizza.product.domain.order.OrderRepository
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
+import com.danzucker.lazypizza.product.presentation.util.formatAmount
 import com.danzucker.lazypizza.product.presentation.util.formatPickupTime
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -135,7 +136,7 @@ class CheckoutViewModel(
                         id = cartItem.id,
                         name = cartItem.name,
                         description = "",
-                        price = "$${cartItem.basePrice}",
+                        price = formatAmount(cartItem.basePrice),
                         imageUrl = cartItem.imageUrl,
                         isAvailable = true,
                         category = cartItem.category,
