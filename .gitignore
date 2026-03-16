@@ -15,3 +15,6 @@
 local.properties
 .idea/deploymentTargetSelector.xml
 /app/src/main/java/com/danzucker/lazypizza/auth/presentation/auth/components/SampleDeletedCodeLater.kt
+
+# Milestone requirement PDFs (local reference docs, not part of the project source)
+*.pdf

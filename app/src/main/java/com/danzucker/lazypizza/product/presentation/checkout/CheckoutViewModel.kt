@@ -318,7 +318,8 @@ class CheckoutViewModel(
                 val pickupTimeFormatted = formatPickupTime(pickupTimeMillis)
 
                 // Validate pickup time
-                if (!isPickupTimeValid(pickupTimeMillis)) {
+                val isEarliest = currentState.pickupTimeOption == PickupTimeOption.EARLIEST
+                if (!isPickupTimeValid(pickupTimeMillis, skipMinimumWaitCheck = isEarliest)) {
                     _state.update { it.copy(isPlacingOrder = false) }
                     eventChannel.send(
                         CheckoutEvent.ShowError(
@@ -494,12 +495,14 @@ class CheckoutViewModel(
     /**
      * Validate pickup time is valid
      */
-    private fun isPickupTimeValid(pickupTimeMillis: Long): Boolean {
-        val now = Clock.System.now().toEpochMilliseconds()
-        val earliestAllowed = now + (15 * 60 * 1000) // Current time + 15 minutes
+    private fun isPickupTimeValid(pickupTimeMillis: Long, skipMinimumWaitCheck: Boolean = false): Boolean {
+        if (!skipMinimumWaitCheck) {
+            val now = Clock.System.now().toEpochMilliseconds()
+            val earliestAllowed = now + (15 * 60 * 1000) // Current time + 15 minutes
 
-        if (pickupTimeMillis < earliestAllowed) {
-            return false
+            if (pickupTimeMillis < earliestAllowed) {
+                return false
+            }
         }
 
         // Check if within operating hours (10:15 - 21:45)

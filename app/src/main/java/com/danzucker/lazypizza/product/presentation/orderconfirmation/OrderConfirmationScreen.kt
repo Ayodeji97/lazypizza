@@ -83,7 +83,7 @@ fun OrderConfirmationScreen(
                 ) {
 
                     LazyPizzaCenteredTopAppBar(
-                        title = stringResource(R.string.order_checkout_title),
+                        title = stringResource(R.string.order_confirmation_title),
                         titleColor = MaterialTheme.colorScheme.onSurface,
                         containerColor = MaterialTheme.colorScheme.surface,
                         navigationIcon = {

@@ -116,6 +116,7 @@ class ProductListViewModel(
 
     private fun handleLogout() {
         viewModelScope.launch {
+            cartRepository.clearCart()
             authRepository.signOut()
             _state.update { it.copy(showLogoutDialog = false) }
         }

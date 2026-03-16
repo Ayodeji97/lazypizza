@@ -28,9 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,6 +57,17 @@ fun OtpCodeBox(
     var isFocused by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(digit, TextRange(digit.length)))
+    }
+
+    // Sync when the ViewModel updates the digit externally (e.g. error clear)
+    LaunchedEffect(digit) {
+        if (textFieldValue.text != digit) {
+            textFieldValue = TextFieldValue(digit, TextRange(digit.length))
+        }
+    }
+
     LaunchedEffect(shouldRequestFocus) {
         if (shouldRequestFocus) {
             focusRequester.requestFocus()
@@ -78,19 +91,30 @@ fun OtpCodeBox(
         )
     ) {
         BasicTextField(
-            value = digit,
+            value = textFieldValue,
             onValueChange = { newValue ->
                 when {
                     // Clear box (backspace or delete)
-                    newValue.isEmpty() -> {
+                    newValue.text.isEmpty() -> {
+                        textFieldValue = TextFieldValue("")
                         onCodeChange("")
                     }
 
-                    // User typed a single digit
-                    newValue.length == 1 &&
+                    // User typed a digit into an empty box
+                    newValue.text.length == 1 &&
                             isValidInput &&
-                            newValue.all { it.isDigit() } -> {
-                        onCodeChange(newValue)
+                            newValue.text.all { it.isDigit() } -> {
+                        textFieldValue = TextFieldValue(newValue.text, TextRange(1))
+                        onCodeChange(newValue.text)
+                    }
+
+                    // User typed a new digit into a filled box — take the new character
+                    newValue.text.length == 2 &&
+                            isValidInput &&
+                            newValue.text.last().isDigit() -> {
+                        val replacement = newValue.text.last().toString()
+                        textFieldValue = TextFieldValue(replacement, TextRange(1))
+                        onCodeChange(replacement)
                     }
 
                     // Ignore everything else (pastes, letters, etc.)
@@ -99,10 +123,12 @@ fun OtpCodeBox(
             modifier = Modifier
                 .fillMaxSize()
                 .focusRequester(focusRequester)
-                .onFocusChanged {
-                    isFocused = it.isFocused
-                    if (it.isFocused) {
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
+                    if (focusState.isFocused) {
                         onFocused()
+                        // Move cursor to end on focus — no selection to avoid highlight handles
+                        textFieldValue = TextFieldValue(digit, TextRange(digit.length))
                     }
                 },
             textStyle = MaterialTheme.typography.titleSmall.copy(

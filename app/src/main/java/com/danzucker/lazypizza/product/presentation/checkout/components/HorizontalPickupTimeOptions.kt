@@ -54,12 +54,11 @@ fun HorizontalPickupTimeOptions(
             )
         }
 
-        // Show earliest pickup time when EARLIEST is selected
-        if (scheduledDateTime != "") {
+        // Show confirmed scheduled time, or fall back to earliest available time
+        val displayTime = scheduledDateTime ?: earliestPickupTime
+        if (displayTime.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
-            PickupTime(
-                time = scheduledDateTime ?: ""
-            )
+            PickupTime(time = displayTime)
         }
     }
 }

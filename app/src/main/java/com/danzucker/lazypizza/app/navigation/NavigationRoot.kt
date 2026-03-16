@@ -89,7 +89,7 @@ fun NavigationRoot(
                     // Navigate back to main screen and clear entire back stack
                     navController.navigate(NavigationRoute.ProductList) {
                         popUpTo(navController.graph.id) {
-                            inclusive = false
+                            inclusive = true
                         }
                     }
                 }

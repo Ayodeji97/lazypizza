@@ -32,6 +32,7 @@
     <string name="failed_to_load_products">Failed to load products</string>
     <string name="welcome_title">Welcome to LazyPizza</string>
     <string name="continue_btn">Continue</string>
+    <string name="confirm_btn">Confirm</string>
     <string name="continue_without_signing">Continue without signing in</string>
     <string name="welcome_subtitle">Enter your phone number</string>
     <string name="phone_number_placeholder">+1 000 000–0000</string>
@@ -47,7 +48,7 @@
     <string name="empty_order_description">Your orders will appear here after your first purchase.</string>
     <string name="go_to_menu_btn">Go to Menu</string>
     <string name="error_invalid_phone_number">Please enter a valid phone number</string>
-    <string name="error_invalid_code">Invalid verification code</string>
+    <string name="error_invalid_code">Incorrect code. Please try again.</string>
     <string name="error_verification_failed">Verification failed. Please try again</string>
     <string name="error_generic">Something went wrong. Please try again</string>
     <string name="code_sent_message">Verification code sent</string>
@@ -60,6 +61,7 @@
     <string name="sign_in">Sign In</string>
     <string name="cart_transfer_warning">Unable to transfer items in cart!</string>
     <string name="order_checkout_title">Order Checkout</string>
+    <string name="order_confirmation_title">Order Confirmation</string>
     <string name="pickup_time_subtitle">PICKUP TIME</string>
     <string name="earliest_available_time">Earliest available time</string>
     <string name="schedule_time">Schedule time</string>
@@ -81,6 +83,8 @@
     <string name="pickup_time_outside_hours_error">Pickup available between 10:15 and 21:45</string>
     <string name="select_date_title">Select Date</string>
     <string name="select_time_title">SELECT TIME</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
     <string name="pickup_time_too_early_error">Pickup is possible at least 15 minutes from the current time</string>
     <string name="pickup_time_hours_hint">Pickup available between 10:15 and 21:45</string>
     <string name="order_placed_title">Your order has been placed!</string>

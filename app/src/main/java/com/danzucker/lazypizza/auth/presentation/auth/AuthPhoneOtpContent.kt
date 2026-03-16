@@ -115,7 +115,7 @@ fun AuthPhoneOtpContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryButton(
-            text = stringResource(R.string.continue_btn),
+            text = stringResource(R.string.confirm_btn),
             onClick = {
                 onAction(AuthAction.OnContinueClick(activity))
             },

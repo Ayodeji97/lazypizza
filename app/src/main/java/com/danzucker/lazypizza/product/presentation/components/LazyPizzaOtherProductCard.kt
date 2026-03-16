@@ -23,7 +23,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +34,7 @@ import com.danzucker.lazypizza.core.presentation.designsystem.MinusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.PlusIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.components.CardShell
 import com.danzucker.lazypizza.core.presentation.designsystem.components.RemoteImage
+import androidx.compose.ui.draw.shadow
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaShadowColor
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.elevationLarge
