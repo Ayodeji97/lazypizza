@@ -14,7 +14,7 @@ import com.danzucker.lazypizza.product.presentation.util.formatOrderDate
  * Convert LazyPizzaProductListUi to OrderItem (for recommended add-ons)
  */
 fun LazyPizzaProductListUi.toOrderItem(): OrderItem {
-    val priceDouble = price.removePrefix("$").toDoubleOrNull() ?: 0.0
+    val priceDouble = getPriceAsDouble()
     return OrderItem(
         productId = id,
         productName = name,
