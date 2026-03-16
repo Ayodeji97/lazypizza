@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.danzucker.lazypizza.auth.presentation.auth.AuthRoot
 import com.danzucker.lazypizza.product.presentation.checkout.CheckoutRoot
-import com.danzucker.lazypizza.product.presentation.orderconfirmation.OrderConfirmationScreen
+import com.danzucker.lazypizza.product.presentation.orderconfirmation.OrderConfirmationRoot
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 
 @Composable
@@ -81,7 +81,7 @@ fun NavigationRoot(
         // Order Confirmation Screen
         composable<NavigationRoute.OrderConfirmation> {
             val args = it.toRoute<NavigationRoute.OrderConfirmation>()
-            OrderConfirmationScreen(
+            OrderConfirmationRoot(
                 orderId = args.orderId,
                 orderNumber = args.orderNumber,
                 pickupTime = args.pickupTime,

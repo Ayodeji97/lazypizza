@@ -17,12 +17,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.button.SecondaryButton
 import com.danzucker.lazypizza.core.presentation.designsystem.components.BackButton
@@ -33,6 +35,28 @@ import com.danzucker.lazypizza.core.presentation.util.applyIf
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.MOBILE_PORTRAIT
 import com.danzucker.lazypizza.product.presentation.orderconfirmation.components.OrderInfoCard
+import org.koin.androidx.compose.koinViewModel
+
+
+@Composable
+fun OrderConfirmationRoot(
+    orderId: String,
+    orderNumber: String,
+    pickupTime: String,
+    onBackToMenu: () -> Unit,
+    viewModel: OrderConfirmationViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    OrderConfirmationScreen(
+        orderId = orderId,
+        orderNumber = orderNumber,
+        pickupTime = pickupTime,
+        state = state,
+        onAction = viewModel::onAction,
+        onBackToMenu = onBackToMenu
+    )
+}
 
 
 @Composable
@@ -40,6 +64,8 @@ fun OrderConfirmationScreen(
     orderId: String,
     orderNumber: String,
     pickupTime: String,
+    state: OrderConfirmationState,
+    onAction: (OrderConfirmationAction) -> Unit,
     onBackToMenu: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -162,6 +188,8 @@ private fun OrderConfirmationContentPreview() {
             orderId = "#1",
             orderNumber = "#12345",
             pickupTime = "September 25, 12:15",
+            state = OrderConfirmationState(),
+            onAction = {},
             onBackToMenu = {},
         )
     }

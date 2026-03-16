@@ -25,4 +25,9 @@ class OrderConfirmationViewModel : ViewModel() {
             initialValue = OrderConfirmationState()
         )
 
+    fun onAction(action: OrderConfirmationAction) {
+        when (action) {
+            // No actions defined yet
+        }
+    }
 }
