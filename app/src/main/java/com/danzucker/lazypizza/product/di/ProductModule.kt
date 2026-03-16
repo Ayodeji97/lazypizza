@@ -8,7 +8,7 @@ import com.danzucker.lazypizza.product.domain.order.OrderRepository
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.presentation.cart.CartViewModel
 import com.danzucker.lazypizza.product.presentation.checkout.CheckoutViewModel
-import com.danzucker.lazypizza.product.presentation.orderconfirmation.OrderConfirmationViewModel
+
 import com.danzucker.lazypizza.product.presentation.orderhistory.OrderHistoryViewModel
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailViewModel
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListViewModel
@@ -27,5 +27,4 @@ val productModule = module {
     viewModelOf(::CartViewModel)
     viewModelOf(::OrderHistoryViewModel)
     viewModelOf(::CheckoutViewModel)
-    viewModelOf(::OrderConfirmationViewModel)
 }

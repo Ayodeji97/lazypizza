@@ -82,7 +82,6 @@ fun NavigationRoot(
         composable<NavigationRoute.OrderConfirmation> {
             val args = it.toRoute<NavigationRoute.OrderConfirmation>()
             OrderConfirmationScreen(
-                orderId = args.orderId,
                 orderNumber = args.orderNumber,
                 pickupTime = args.pickupTime,
                 onBackToMenu = {

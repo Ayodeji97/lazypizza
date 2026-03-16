@@ -213,10 +213,9 @@ class CheckoutViewModel(
         _state.update { it.copy(isOrderDetailsExpanded = !it.isOrderDetailsExpanded) }
     }
 
-    private fun handleQuantityChange(productId: String, quantity: Int) {
+    private fun handleQuantityChange(cartItemId: String, quantity: Int) {
         viewModelScope.launch {
-            // Find cart item ID (may be different from product ID if it has toppings)
-            val cartItem = _state.value.orderItems.find { it.id == productId }
+            val cartItem = _state.value.orderItems.find { it.id == cartItemId }
             if (cartItem != null) {
                 when (cartRepository.updateQuantity(cartItem.id, quantity)) {
                     is Result.Success -> Unit
@@ -232,9 +231,9 @@ class CheckoutViewModel(
         }
     }
 
-    private fun handleDeleteItem(productId: String) {
+    private fun handleDeleteItem(cartItemId: String) {
         viewModelScope.launch {
-            val cartItem = _state.value.orderItems.find { it.id == productId }
+            val cartItem = _state.value.orderItems.find { it.id == cartItemId }
             if (cartItem != null) {
                 when (cartRepository.removeFromCart(cartItem.id)) {
                     is Result.Success -> Unit
@@ -323,6 +322,19 @@ class CheckoutViewModel(
             }
 
             _state.update { it.copy(isPlacingOrder = true) }
+
+            // Guard: SCHEDULED selected but user never completed date/time pickers
+            if (currentState.pickupTimeOption == PickupTimeOption.SCHEDULED &&
+                (selectedDateMillis == null || selectedHour == null || selectedMinute == null)
+            ) {
+                _state.update { it.copy(isPlacingOrder = false) }
+                eventChannel.send(
+                    CheckoutEvent.ShowError(
+                        UiText.StringResource(R.string.please_select_pickup_time_error)
+                    )
+                )
+                return@launch
+            }
 
             try {
                 // Calculate pickup time
@@ -429,6 +441,24 @@ class CheckoutViewModel(
     }
 
     /**
+     * Called when user dismisses the date or time picker without completing a selection.
+     * Reverts to EARLIEST if a full scheduled date+time has not been confirmed yet.
+     */
+    fun onPickerDismissed() {
+        if (selectedDateMillis == null || selectedHour == null || selectedMinute == null) {
+            selectedDateMillis = null
+            selectedHour = null
+            selectedMinute = null
+            _state.update {
+                it.copy(
+                    pickupTimeOption = PickupTimeOption.EARLIEST,
+                    scheduledDateTime = null
+                )
+            }
+        }
+    }
+
+    /**
      * Called when user selects a date from the DatePicker
      */
     fun onDateSelected(dateMillis: Long) {
@@ -522,7 +552,7 @@ class CheckoutViewModel(
             }
             PickupTimeOption.SCHEDULED -> {
                 // Use selected date and time
-                val dateMillis = selectedDateMillis ?: return Clock.System.now().toEpochMilliseconds()
+                val dateMillis = selectedDateMillis ?: return computeEarliestPickupMillis()
                 val hour = selectedHour ?: 0
                 val minute = selectedMinute ?: 0
 

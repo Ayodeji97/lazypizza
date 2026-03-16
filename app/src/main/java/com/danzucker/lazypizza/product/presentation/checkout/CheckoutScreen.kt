@@ -91,6 +91,7 @@ fun CheckoutRoot(
             },
             onDismiss = {
                 showDatePicker = false
+                viewModel.onPickerDismissed()
             }
         )
     }
@@ -104,6 +105,7 @@ fun CheckoutRoot(
             },
             onDismiss = {
                 showTimePicker = false
+                viewModel.onPickerDismissed()
             }
         )
     }

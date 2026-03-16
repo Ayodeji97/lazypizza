@@ -37,7 +37,6 @@ import com.danzucker.lazypizza.product.presentation.orderconfirmation.components
 
 @Composable
 fun OrderConfirmationScreen(
-    orderId: String,
     orderNumber: String,
     pickupTime: String,
     onBackToMenu: () -> Unit,
@@ -159,7 +158,6 @@ fun OrderConfirmationContent(
 private fun OrderConfirmationContentPreview() {
     LazyPizzaTheme {
         OrderConfirmationScreen(
-            orderId = "#1",
             orderNumber = "#12345",
             pickupTime = "September 25, 12:15",
             onBackToMenu = {},

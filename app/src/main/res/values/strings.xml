@@ -95,4 +95,5 @@
     <string name="pickup_time_label">Pickup Time:</string>
     <string name="item_added_to_cart_named">%1$s added to cart!</string>
     <string name="failed_to_load_orders">Failed to load orders</string>
+    <string name="please_select_pickup_time_error">Please select a pickup date and time before placing your order.</string>
 </resources>
