@@ -52,6 +52,10 @@ data class Order(
             @Suppress("UNCHECKED_CAST")
             val itemsData = data["items"] as? List<Map<String, Any>> ?: emptyList()
 
+            val statusString = data["status"] as? String
+            val status = enumValues<OrderStatus>().firstOrNull { it.name == statusString }
+                ?: OrderStatus.IN_PROGRESS
+
             return Order(
                 id = data["id"] as? String ?: "",
                 orderNumber = data["orderNumber"] as? String ?: "",
@@ -63,7 +67,7 @@ data class Order(
                 subtotal = (data["subtotal"] as? Number)?.toDouble() ?: 0.0,
                 tax = (data["tax"] as? Number)?.toDouble() ?: 0.0,
                 total = (data["total"] as? Number)?.toDouble() ?: 0.0,
-                status = OrderStatus.valueOf(data["status"] as? String ?: "IN_PROGRESS"),
+                status = status,
                 createdAt = (data["createdAt"] as? Number)?.toLong() ?: System.currentTimeMillis(),
                 updatedAt = (data["updatedAt"] as? Number)?.toLong() ?: System.currentTimeMillis()
             )
