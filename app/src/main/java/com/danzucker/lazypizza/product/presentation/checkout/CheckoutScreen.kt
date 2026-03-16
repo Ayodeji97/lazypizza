@@ -15,6 +15,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +34,8 @@ import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
+import com.danzucker.lazypizza.product.presentation.checkout.components.LazyPizzaDatePickerDialog
+import com.danzucker.lazypizza.product.presentation.checkout.components.LazyPizzaTimePickerDialog
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 import org.koin.androidx.compose.koinViewModel
@@ -38,31 +43,71 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CheckoutRoot(
     onNavigateBack: () -> Unit,
-    onNavigateToOrderConfirmation: () -> Unit,
+    onNavigateToOrderConfirmation: (orderId: String, orderNumber: String, pickupTime: String) -> Unit,
     viewModel: CheckoutViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             CheckoutEvent.NavigateBack -> onNavigateBack()
-            CheckoutEvent.NavigateToOrderConfirmation -> onNavigateToOrderConfirmation()
+
+            is CheckoutEvent.NavigateToOrderConfirmation -> {
+                onNavigateToOrderConfirmation(
+                    event.orderId,
+                    event.orderNumber,
+                    event.pickupTime
+                )
+            }
+
             CheckoutEvent.ShowDatePicker -> {
-                // TODO: Show date picker dialog
-                Toast.makeText(context, "Date picker coming soon", Toast.LENGTH_SHORT).show()
+                showDatePicker = true
             }
+
             CheckoutEvent.ShowTimePicker -> {
-                // TODO: Show time picker dialog
-                Toast.makeText(context, "Time picker coming soon", Toast.LENGTH_SHORT).show()
+                showTimePicker = true
             }
+
             is CheckoutEvent.ShowError -> {
-                Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG).show()
             }
+
             is CheckoutEvent.ShowMessage -> {
                 Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    // Date Picker Dialog
+    if (showDatePicker) {
+        LazyPizzaDatePickerDialog(
+            onDateSelected = { dateMillis ->
+                viewModel.onDateSelected(dateMillis)
+                showDatePicker = false
+            },
+            onDismiss = {
+                showDatePicker = false
+                viewModel.onPickerDismissed()
+            }
+        )
+    }
+
+    // Time Picker Dialog
+    if (showTimePicker) {
+        LazyPizzaTimePickerDialog(
+            onTimeSelected = { hour, minute ->
+                viewModel.onTimeSelected(hour, minute)
+                showTimePicker = false
+            },
+            onDismiss = {
+                showTimePicker = false
+                viewModel.onPickerDismissed()
+            }
+        )
     }
 
     CheckoutScreen(

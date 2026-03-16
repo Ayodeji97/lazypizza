@@ -29,21 +29,19 @@ object PhoneValidator {
     /**
      * Formats phone number as user types
      * Ensures it starts with + and contains only valid characters
+     * Caps at E.164 maximum of 15 digits
      */
     fun formatPhoneNumber(input: String): String {
-        // Remove all non-digit characters except +
-        var formatted = input.filter { it.isDigit() || it == '+' }
+        // Allow full clear (user deleted everything including +)
+        if (input.isEmpty()) return ""
 
-        // Ensure it starts with +
-        if (formatted.isEmpty()) {
-            formatted = "+"
-        } else if (!formatted.startsWith("+")) {
-            formatted = "+$formatted"
-        }
+        val cleaned = input.filter { it.isDigit() || it == '+' }
+        if (cleaned.isEmpty()) return ""
 
-        // Remove duplicate + signs
-        formatted = "+" + formatted.drop(1).replace("+", "")
+        // Extract digits, cap at E.164 max (15 digits including country code)
+        val digits = cleaned.filter { it.isDigit() }.take(15)
 
-        return formatted
+        // Return just "+" if user typed only + with no digits yet
+        return if (digits.isEmpty()) "+" else "+$digits"
     }
 }

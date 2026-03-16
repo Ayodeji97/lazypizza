@@ -1,12 +1,13 @@
 package com.danzucker.lazypizza.product.presentation.orderhistory
 
+import com.danzucker.lazypizza.core.presentation.util.UiText
 import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
 
 data class OrderHistoryState(
     val isAuthenticated: Boolean = false,
     val isLoadingData: Boolean = false,
     val orders: List<OrderUi> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: UiText? = null
 ) {
     val hasOrders: Boolean
         get() = orders.isNotEmpty()

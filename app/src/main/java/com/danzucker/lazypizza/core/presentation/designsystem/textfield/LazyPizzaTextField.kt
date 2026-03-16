@@ -9,16 +9,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
@@ -33,9 +37,27 @@ fun LazyPizzaTextField(
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
+    // Use TextFieldValue so we can pin the cursor to end after formatting.
+    // Without this, inserting "+" at position 0 shifts the cursor and causes
+    // digits to appear out of order (e.g. "+513" instead of "+351").
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(phoneNumber, TextRange(phoneNumber.length)))
+    }
+
+    // Whenever the ViewModel applies formatting and updates phoneNumber, sync the
+    // TextFieldValue and move the cursor to the end.
+    LaunchedEffect(phoneNumber) {
+        if (textFieldValue.text != phoneNumber) {
+            textFieldValue = TextFieldValue(phoneNumber, TextRange(phoneNumber.length))
+        }
+    }
+
     OutlinedTextField(
-        value = phoneNumber,
-        onValueChange = onPhoneNumberChange,
+        value = textFieldValue,
+        onValueChange = { newValue ->
+            textFieldValue = newValue
+            onPhoneNumberChange(newValue.text)
+        },
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged {

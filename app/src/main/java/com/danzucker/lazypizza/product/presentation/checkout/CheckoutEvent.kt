@@ -6,7 +6,11 @@ sealed interface CheckoutEvent {
     data object NavigateBack : CheckoutEvent
     data object ShowDatePicker : CheckoutEvent
     data object ShowTimePicker : CheckoutEvent
-    data object NavigateToOrderConfirmation : CheckoutEvent
+    data class NavigateToOrderConfirmation(
+        val orderId: String,
+        val orderNumber: String,
+        val pickupTime: String
+    ) : CheckoutEvent
     data class ShowError(val message: UiText) : CheckoutEvent
     data class ShowMessage(val message: UiText) : CheckoutEvent
 }

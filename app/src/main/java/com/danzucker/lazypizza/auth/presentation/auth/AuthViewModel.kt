@@ -91,7 +91,11 @@ class AuthViewModel(
     }
 
     private fun handleCodeBoxFocused(index: Int) {
-        _state.update { it.copy(focusedBoxIndex = index) }
+        val code = _state.value.verificationCode
+        val firstEmptyIndex = code.indexOfFirst { it.isEmpty() }
+        // Prevent skipping over empty boxes — redirect to first empty box instead
+        val targetIndex = if (firstEmptyIndex != -1 && index > firstEmptyIndex) firstEmptyIndex else index
+        _state.update { it.copy(focusedBoxIndex = targetIndex) }
     }
 
     private fun handleContinueClick(activity: Activity?) {
@@ -268,8 +272,7 @@ class AuthViewModel(
                         errorMessage = result.error.asUiText(),
                         verificationCode = List(6) { "" } // Clear code on error
                     )}
-                    eventChannel.send(AuthEvent.ShowErrorMessage(result.error.asUiText()))
-
+                    // Error is shown inline below the OTP boxes — no toast needed
                     // Move focus back to first box
                     handleCodeBoxFocused(0)
                 }

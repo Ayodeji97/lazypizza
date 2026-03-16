@@ -2,10 +2,10 @@ package com.danzucker.lazypizza.core.domain
 
 object ImageUrlProvider {
 
-    private const val BASE_URL = "https://pl-coding.com/wp-content/uploads/lazypizza"
+    private const val BASE_URL = "https://raw.githubusercontent.com/Ayodeji97/lazypizza-assets/main"
     // Category folders matching your file structure
     private const val DRINK_FOLDER = "drink"
-    private const val ICE_CREAM_FOLDER = "ice cream"
+    private const val ICE_CREAM_FOLDER = "ice-cream"
     private const val PIZZA_FOLDER = "pizza"
     private const val SAUCE_FOLDER = "sauce"
     private const val TOPPINGS_FOLDER = "toppings"

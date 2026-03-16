@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -59,16 +60,14 @@ fun CartItemCard(
                 ambientColor = LazyPizzaShadowColor
             )
     ) {
+        val imageSize = if (isMobilePortrait) 120.dp else 140.dp
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .size(if (isMobilePortrait) 120.dp else 140.dp)
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Box(
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .size(if (isMobilePortrait) 120.dp else 140.dp)
+                    .size(imageSize)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant
                     )
@@ -84,9 +83,9 @@ fun CartItemCard(
             }
 
             Column(
-                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
+                    .heightIn(min = imageSize)
                     .padding(vertical = 12.dp)
             ) {
                 Row(
@@ -127,7 +126,7 @@ fun CartItemCard(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
                 // Price and quantity section
                 ProductQuantitySection(

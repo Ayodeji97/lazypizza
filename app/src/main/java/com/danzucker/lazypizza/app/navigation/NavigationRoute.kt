@@ -18,4 +18,14 @@ sealed interface NavigationRoute {
 
     @Serializable
     data object History : NavigationRoute
+
+    @Serializable
+    data object Checkout : NavigationRoute
+
+    @Serializable
+    data class OrderConfirmation(
+        val orderId: String,
+        val orderNumber: String,
+        val pickupTime: String
+    ) : NavigationRoute
 }

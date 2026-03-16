@@ -1,5 +1,6 @@
 package com.danzucker.lazypizza.auth.presentation.auth
 
+import com.danzucker.lazypizza.auth.presentation.auth.util.PhoneValidator
 import com.danzucker.lazypizza.core.presentation.util.UiText
 
 data class AuthState(
@@ -15,7 +16,7 @@ data class AuthState(
 ) {
     val canLogin: Boolean
         get() = when (currentStep) {
-            AuthStep.PHONE_INPUT -> phoneNumber.isNotEmpty() && !isLoading
+            AuthStep.PHONE_INPUT -> PhoneValidator.isValidPhoneNumber(phoneNumber) && !isLoading
             AuthStep.OTP_INPUT -> verificationCode.all { it.isNotEmpty() } && !isLoading
         }
 

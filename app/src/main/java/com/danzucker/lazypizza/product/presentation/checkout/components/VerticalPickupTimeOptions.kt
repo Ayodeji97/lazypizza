@@ -48,11 +48,10 @@ fun VerticalPickupTimeOptions(
             onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) }
         )
 
-        // Show earliest pickup time when EARLIEST is selected
-        if (earliestPickupTime != "") {
-            PickupTime(
-                time = earliestPickupTime
-            )
+        // Show confirmed scheduled time, or fall back to earliest available time
+        val displayTime = scheduledDateTime ?: earliestPickupTime
+        if (displayTime.isNotEmpty()) {
+            PickupTime(time = displayTime)
         }
     }
 }
