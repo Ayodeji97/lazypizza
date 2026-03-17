@@ -15,29 +15,31 @@ fun UserIcon(
     isAuthenticated: Boolean,
     isAnonymous: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Icon(
-            imageVector = if (isAuthenticated && !isAnonymous) {
-                LogoutIcon
-            } else {
-                UserIcon
-            },
-            contentDescription = if (isAuthenticated && !isAnonymous) {
-                stringResource(R.string.logout)
-            } else {
-                stringResource(R.string.sign_in)
-            },
-            tint = if (isAuthenticated && !isAnonymous) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.surfaceTint
-            }
-
+            imageVector =
+                if (isAuthenticated && !isAnonymous) {
+                    LogoutIcon
+                } else {
+                    UserIcon
+                },
+            contentDescription =
+                if (isAuthenticated && !isAnonymous) {
+                    stringResource(R.string.logout)
+                } else {
+                    stringResource(R.string.sign_in)
+                },
+            tint =
+                if (isAuthenticated && !isAnonymous) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.surfaceTint
+                },
         )
     }
 }

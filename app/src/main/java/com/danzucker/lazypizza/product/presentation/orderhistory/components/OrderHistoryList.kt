@@ -23,7 +23,7 @@ import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
 fun OrderHistoryList(
     orders: List<OrderUi>,
     deviceScreenType: DeviceScreenType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val columnCount = if (deviceScreenType == MOBILE_PORTRAIT) 1 else 2
 
@@ -32,11 +32,11 @@ fun OrderHistoryList(
         modifier = modifier.fillMaxSize(),
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
     ) {
         items(
             items = orders,
-            key = { it.id }
+            key = { it.id },
         ) { order ->
             LazyPizzaOrderCard(
                 order = order,
@@ -46,16 +46,16 @@ fun OrderHistoryList(
     }
 }
 
-
 @Preview(name = "Unauthorized")
 @Composable
 private fun OrderHistoryUnauthorizedPreview() {
     LazyPizzaTheme {
         OrderHistoryScreen(
-            state = OrderHistoryState(
-                isAuthenticated = false
-            ),
-            onAction = {}
+            state =
+                OrderHistoryState(
+                    isAuthenticated = false,
+                ),
+            onAction = {},
         )
     }
 }
@@ -65,11 +65,12 @@ private fun OrderHistoryUnauthorizedPreview() {
 private fun OrderHistoryEmptyPreview() {
     LazyPizzaTheme {
         OrderHistoryScreen(
-            state = OrderHistoryState(
-                isAuthenticated = true,
-                orders = emptyList()
-            ),
-            onAction = {}
+            state =
+                OrderHistoryState(
+                    isAuthenticated = true,
+                    orders = emptyList(),
+                ),
+            onAction = {},
         )
     }
 }
@@ -79,41 +80,44 @@ private fun OrderHistoryEmptyPreview() {
 private fun OrderHistoryWithOrdersPreview() {
     LazyPizzaTheme {
         OrderHistoryList(
-            orders = listOf(
-                OrderUi(
-                    id = "1",
-                    orderNumber = "#12347",
-                    date = "September 25, 12:15",
-                    items = listOf(OrderItemUi("Margherita", 1)),
-                    totalAmount = "$8.99",
-                    status = OrderStatusUi.IN_PROGRESS
-                ),
-                OrderUi(
-                    id = "2",
-                    orderNumber = "#12346",
-                    date = "September 25, 12:15",
-                    items = listOf(
-                        OrderItemUi("Margherita", 1),
-                        OrderItemUi("Pepsi", 2),
-                        OrderItemUi("Cookies Ice Cream", 2)
+            orders =
+                listOf(
+                    OrderUi(
+                        id = "1",
+                        orderNumber = "#12347",
+                        date = "September 25, 12:15",
+                        items = listOf(OrderItemUi("Margherita", 1)),
+                        totalAmount = "$8.99",
+                        status = OrderStatusUi.IN_PROGRESS,
                     ),
-                    totalAmount = "$25.45",
-                    status = OrderStatusUi.COMPLETED
-                ),
-                OrderUi(
-                    id = "3",
-                    orderNumber = "#12345",
-                    date = "September 25, 12:15",
-                    items = listOf(
-                        OrderItemUi("Margherita", 1),
-                        OrderItemUi("Cookies Ice Cream", 2)
+                    OrderUi(
+                        id = "2",
+                        orderNumber = "#12346",
+                        date = "September 25, 12:15",
+                        items =
+                            listOf(
+                                OrderItemUi("Margherita", 1),
+                                OrderItemUi("Pepsi", 2),
+                                OrderItemUi("Cookies Ice Cream", 2),
+                            ),
+                        totalAmount = "$25.45",
+                        status = OrderStatusUi.COMPLETED,
                     ),
-                    totalAmount = "$11.78",
-                    status = OrderStatusUi.COMPLETED
-                )
-            ),
+                    OrderUi(
+                        id = "3",
+                        orderNumber = "#12345",
+                        date = "September 25, 12:15",
+                        items =
+                            listOf(
+                                OrderItemUi("Margherita", 1),
+                                OrderItemUi("Cookies Ice Cream", 2),
+                            ),
+                        totalAmount = "$11.78",
+                        status = OrderStatusUi.COMPLETED,
+                    ),
+                ),
             deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
-            modifier = Modifier
+            modifier = Modifier,
         )
     }
 }

@@ -16,12 +16,12 @@ fun SecondaryButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Text(
             text = text,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
         )
     }
 }
@@ -32,7 +32,7 @@ private fun SecondaryButtonPreview() {
     LazyPizzaTheme {
         SecondaryButton(
             text = "Back",
-            onClick = {}
+            onClick = {},
         )
     }
 }

@@ -40,18 +40,19 @@ import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListU
 fun CheckoutLandscapeContent(
     state: CheckoutState,
     onAction: (CheckoutAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         // Single scrollable column with all content
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Pickup Time Section
             HorizontalPickupTimeOptions(
@@ -60,7 +61,7 @@ fun CheckoutLandscapeContent(
                 scheduledDateTime = state.scheduledDateTime,
                 onOptionSelected = { option ->
                     onAction(CheckoutAction.OnPickupTimeSelected(option))
-                }
+                },
             )
 
             // Order Details Section (Collapsible)
@@ -77,7 +78,7 @@ fun CheckoutLandscapeContent(
                 onDeleteItem = { productId ->
                     onAction(CheckoutAction.OnDeleteItem(productId))
                 },
-                deviceScreenType = DeviceScreenType.TABLET_PORTRAIT
+                deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
             )
 
             // Recommended Add-ons Section
@@ -86,7 +87,7 @@ fun CheckoutLandscapeContent(
                     recommendedAddOns = state.recommendedAddOns,
                     onAddClick = { addOnId ->
                         onAction(CheckoutAction.OnAddRecommendedItem(addOnId))
-                    }
+                    },
                 )
             }
 
@@ -95,7 +96,7 @@ fun CheckoutLandscapeContent(
                 value = state.comment,
                 onValueChange = { comment ->
                     onAction(CheckoutAction.OnCommentChange(comment))
-                }
+                },
             )
         }
 
@@ -105,7 +106,7 @@ fun CheckoutLandscapeContent(
             onPlaceOrder = { onAction(CheckoutAction.OnPlaceOrder) },
             deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
             isLoading = state.isPlacingOrder,
-            enabled = state.canPlaceOrder
+            enabled = state.canPlaceOrder,
         )
     }
 }
@@ -115,105 +116,108 @@ fun CheckoutLandscapeContent(
 private fun CheckoutLandscapeContentPreview() {
     LazyPizzaTheme {
         CheckoutLandscapeContent(
-            state = CheckoutState(
-                pickupTimeOption = PickupTimeOption.EARLIEST,
-                earliestPickupTime = "12:15",
-                scheduledDateTime = null,
-                orderItems = listOf(
-                    LazyPizzaProductListUi(
-                        id = "1",
-                        name = "Margherita",
-                        description = "Classic pizza",
-                        price = "$8.99",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Pizza",
-                        rating = 4.5f,
-                        reviewsCount = 150,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.PIZZA,
-                        quantityInCart = 2
-                    ),
-                    LazyPizzaProductListUi(
-                        id = "2",
-                        name = "Pepperoni",
-                        description = "Spicy pizza",
-                        price = "$9.99",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Pizza",
-                        rating = 4.7f,
-                        reviewsCount = 180,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.PIZZA,
-                        quantityInCart = 2
-                    ),
-                    LazyPizzaProductListUi(
-                        id = "3",
-                        name = "Pepsi",
-                        description = "Refreshing beverage",
-                        price = "$1.99",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Beverage",
-                        rating = 4.0f,
-                        reviewsCount = 50,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.OTHERS,
-                        quantityInCart = 2
-                    ),
-                    LazyPizzaProductListUi(
-                        id = "4",
-                        name = "Cookies Ice Cream",
-                        description = "Delicious dessert",
-                        price = "$1.49",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Dessert",
-                        rating = 4.8f,
-                        reviewsCount = 200,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.OTHERS,
-                        quantityInCart = 1
-                    )
+            state =
+                CheckoutState(
+                    pickupTimeOption = PickupTimeOption.EARLIEST,
+                    earliestPickupTime = "12:15",
+                    scheduledDateTime = null,
+                    orderItems =
+                        listOf(
+                            LazyPizzaProductListUi(
+                                id = "1",
+                                name = "Margherita",
+                                description = "Classic pizza",
+                                price = "$8.99",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Pizza",
+                                rating = 4.5f,
+                                reviewsCount = 150,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.PIZZA,
+                                quantityInCart = 2,
+                            ),
+                            LazyPizzaProductListUi(
+                                id = "2",
+                                name = "Pepperoni",
+                                description = "Spicy pizza",
+                                price = "$9.99",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Pizza",
+                                rating = 4.7f,
+                                reviewsCount = 180,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.PIZZA,
+                                quantityInCart = 2,
+                            ),
+                            LazyPizzaProductListUi(
+                                id = "3",
+                                name = "Pepsi",
+                                description = "Refreshing beverage",
+                                price = "$1.99",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Beverage",
+                                rating = 4.0f,
+                                reviewsCount = 50,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.OTHERS,
+                                quantityInCart = 2,
+                            ),
+                            LazyPizzaProductListUi(
+                                id = "4",
+                                name = "Cookies Ice Cream",
+                                description = "Delicious dessert",
+                                price = "$1.49",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Dessert",
+                                rating = 4.8f,
+                                reviewsCount = 200,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.OTHERS,
+                                quantityInCart = 1,
+                            ),
+                        ),
+                    isOrderDetailsExpanded = true,
+                    recommendedAddOns =
+                        listOf(
+                            RecommendedAddOnUi(
+                                id = "r1",
+                                name = "BBQ Sauce",
+                                price = 0.59,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r2",
+                                name = "Garlic Sauce",
+                                price = 0.59,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r3",
+                                name = "Vanilla Ice Cream",
+                                price = 2.49,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r4",
+                                name = "Orange Juice",
+                                price = 2.49,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r5",
+                                name = "Pistachio Ice Cream",
+                                price = 2.99,
+                                imageUrl = "",
+                            ),
+                        ),
+                    comment = "",
+                    totalAmount = 25.45,
                 ),
-                isOrderDetailsExpanded = true,
-                recommendedAddOns = listOf(
-                    RecommendedAddOnUi(
-                        id = "r1",
-                        name = "BBQ Sauce",
-                        price = 0.59,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r2",
-                        name = "Garlic Sauce",
-                        price = 0.59,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r3",
-                        name = "Vanilla Ice Cream",
-                        price = 2.49,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r4",
-                        name = "Orange Juice",
-                        price = 2.49,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r5",
-                        name = "Pistachio Ice Cream",
-                        price = 2.99,
-                        imageUrl = ""
-                    )
-                ),
-                comment = "",
-                totalAmount = 25.45
-            ),
-            onAction = {}
+            onAction = {},
         )
     }
 }

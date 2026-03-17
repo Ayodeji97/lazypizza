@@ -26,7 +26,7 @@ fun GradientRadioButton(
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val gradient = MaterialTheme.colorScheme.LazyPizzaButtonGradient
     val unselectedColor = MaterialTheme.colorScheme.surfaceTint
@@ -35,13 +35,14 @@ fun GradientRadioButton(
         if (onClick != null) {
             Modifier.clickable(
                 interactionSource = interactionSource,
-                indication = ripple(
-                    bounded = false,
-                    radius = 20.dp
-                ),
+                indication =
+                    ripple(
+                        bounded = false,
+                        radius = 20.dp,
+                    ),
                 enabled = enabled,
                 role = Role.RadioButton,
-                onClick = onClick
+                onClick = onClick,
             )
         } else {
             Modifier
@@ -52,7 +53,7 @@ fun GradientRadioButton(
             .then(selectableModifier)
             .wrapContentSize(Alignment.Center)
             .padding(2.dp)
-            .requiredSize(20.dp)
+            .requiredSize(20.dp),
     ) {
         val strokeWidth = 2.dp.toPx()
         val radius = (size.minDimension - strokeWidth) / 2
@@ -62,20 +63,20 @@ fun GradientRadioButton(
             drawCircle(
                 brush = gradient,
                 radius = radius,
-                style = Stroke(width = strokeWidth)
+                style = Stroke(width = strokeWidth),
             )
             // Inner filled circle with gradient
             drawCircle(
                 brush = gradient,
                 radius = radius * 0.5f,
-                style = Fill
+                style = Fill,
             )
         } else {
             // Unselected: just the outer circle
             drawCircle(
                 color = unselectedColor,
                 radius = radius,
-                style = Stroke(width = strokeWidth)
+                style = Stroke(width = strokeWidth),
             )
         }
     }
@@ -87,7 +88,7 @@ private fun GradientRadioButtonSelectedPreview() {
     LazyPizzaTheme {
         GradientRadioButton(
             selected = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -98,7 +99,7 @@ private fun GradientRadioButtonUnselectedPreview() {
     LazyPizzaTheme {
         GradientRadioButton(
             selected = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }

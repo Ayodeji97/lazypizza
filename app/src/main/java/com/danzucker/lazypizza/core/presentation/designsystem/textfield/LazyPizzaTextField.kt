@@ -33,7 +33,7 @@ fun LazyPizzaTextField(
     phoneNumber: String,
     onPhoneNumberChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -58,36 +58,40 @@ fun LazyPizzaTextField(
             textFieldValue = newValue
             onPhoneNumberChange(newValue.text)
         },
-        modifier = modifier
-            .fillMaxWidth()
-            .onFocusChanged {
-                isFocused = it.isFocused
-            },
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                },
         shape = RoundedCornerShape(100),
         placeholder = {
             if (!isFocused && phoneNumber.isEmpty()) {
                 Text(
                     text = stringResource(R.string.phone_number_placeholder),
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
+                    style =
+                        MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Normal,
+                        ),
                 )
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         singleLine = true,
         readOnly = readOnly,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.surfaceTint,
-        ),
-        textStyle = MaterialTheme.typography.titleSmall.copy(
-            fontWeight = FontWeight.Normal
-        )
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.surfaceTint,
+            ),
+        textStyle =
+            MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
     )
 }
 
@@ -98,9 +102,10 @@ private fun LazyPizzaTextFieldPreview() {
         LazyPizzaTextField(
             phoneNumber = "+1 234 567 8901",
             onPhoneNumberChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp),
         )
     }
 }

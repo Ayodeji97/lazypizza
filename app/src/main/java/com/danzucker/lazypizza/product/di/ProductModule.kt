@@ -8,7 +8,6 @@ import com.danzucker.lazypizza.product.domain.order.OrderRepository
 import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.presentation.cart.CartViewModel
 import com.danzucker.lazypizza.product.presentation.checkout.CheckoutViewModel
-
 import com.danzucker.lazypizza.product.presentation.orderhistory.OrderHistoryViewModel
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailViewModel
 import com.danzucker.lazypizza.product.presentation.productlist.ProductListViewModel
@@ -17,14 +16,15 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val productModule = module {
-    singleOf(::FirebaseProductRepository).bind<ProductRepository>()
-    singleOf(::FirebaseCartRepository).bind<CartRepository>()
-    singleOf(::FirebaseOrderRepository).bind<OrderRepository>()
+val productModule =
+    module {
+        singleOf(::FirebaseProductRepository).bind<ProductRepository>()
+        singleOf(::FirebaseCartRepository).bind<CartRepository>()
+        singleOf(::FirebaseOrderRepository).bind<OrderRepository>()
 
-    viewModelOf(::ProductListViewModel)
-    viewModelOf(::ProductDetailViewModel)
-    viewModelOf(::CartViewModel)
-    viewModelOf(::OrderHistoryViewModel)
-    viewModelOf(::CheckoutViewModel)
-}
+        viewModelOf(::ProductListViewModel)
+        viewModelOf(::ProductDetailViewModel)
+        viewModelOf(::CartViewModel)
+        viewModelOf(::OrderHistoryViewModel)
+        viewModelOf(::CheckoutViewModel)
+    }

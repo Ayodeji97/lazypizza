@@ -56,7 +56,7 @@ import java.util.Locale
 fun LazyPizzaTimePickerDialog(
     onTimeSelected: (hour: Int, minute: Int) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -73,26 +73,28 @@ fun LazyPizzaTimePickerDialog(
     }
 
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Surface(
-                modifier = Modifier
-                    .widthIn(max = 380.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .widthIn(max = 380.dp)
+                        .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 color = Color.White,
                 tonalElevation = 0.dp,
-                shadowElevation = 8.dp
+                shadowElevation = 8.dp,
             ) {
                 val hPadding = 24.dp
                 Column(
-                    modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
                 ) {
                     // "SELECT TIME" label
                     Text(
@@ -100,17 +102,18 @@ fun LazyPizzaTimePickerDialog(
                         modifier = Modifier.padding(horizontal = hPadding),
                         style = MaterialTheme.typography.labelSmall,
                         color = LazyPizzaTextSecondaryColor,
-                        letterSpacing = 1.sp
+                        letterSpacing = 1.sp,
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Hour : Minute — fields fill the dialog width equally
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = hPadding),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = hPadding),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TimeFieldColumn(
                             value = hourText,
@@ -118,20 +121,22 @@ fun LazyPizzaTimePickerDialog(
                             onValueChange = { new ->
                                 if (new.length <= 2 && new.all { it.isDigit() }) hourText = new
                             },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
 
                         // Colon separator
                         Text(
                             text = ":",
-                            modifier = Modifier
-                                .width(28.dp)
-                                .padding(bottom = 20.dp),
+                            modifier =
+                                Modifier
+                                    .width(28.dp)
+                                    .padding(bottom = 20.dp),
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = LazyPizzaTextPrimaryColor
+                            style =
+                                MaterialTheme.typography.headlineLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                            color = LazyPizzaTextPrimaryColor,
                         )
 
                         TimeFieldColumn(
@@ -140,7 +145,7 @@ fun LazyPizzaTimePickerDialog(
                             onValueChange = { new ->
                                 if (new.length <= 2 && new.all { it.isDigit() }) minuteText = new
                             },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     }
 
@@ -149,11 +154,12 @@ fun LazyPizzaTimePickerDialog(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = stringResource(R.string.pickup_time_hours_hint),
-                            modifier = Modifier
-                                .padding(horizontal = hPadding)
-                                .fillMaxWidth(),
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = hPadding)
+                                    .fillMaxWidth(),
                             style = MaterialTheme.typography.bodySmall,
-                            color = LazyPizzaPrimaryColor
+                            color = LazyPizzaPrimaryColor,
                         )
                     }
 
@@ -165,17 +171,18 @@ fun LazyPizzaTimePickerDialog(
 
                     // Cancel / Ok buttons
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = hPadding),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = hPadding),
                         horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TextButton(onClick = onDismiss) {
                             Text(
                                 text = stringResource(R.string.cancel),
                                 color = LazyPizzaPrimaryColor,
-                                style = MaterialTheme.typography.titleSmall
+                                style = MaterialTheme.typography.titleSmall,
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -184,7 +191,7 @@ fun LazyPizzaTimePickerDialog(
                             onClick = {
                                 onTimeSelected(hour, minute)
                                 onDismiss()
-                            }
+                            },
                         )
                     }
                 }
@@ -202,14 +209,14 @@ private fun TimeFieldColumn(
     value: String,
     label: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isFocused by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(12.dp)
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BasicTextField(
             value = value,
@@ -217,38 +224,43 @@ private fun TimeFieldColumn(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             cursorBrush = SolidColor(LazyPizzaPrimaryColor),
-            textStyle = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.Bold,
-                color = LazyPizzaTextPrimaryColor,
-                textAlign = TextAlign.Center
-            ),
+            textStyle =
+                MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = LazyPizzaTextPrimaryColor,
+                    textAlign = TextAlign.Center,
+                ),
             decorationBox = { innerTextField ->
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(72.dp)
-                        .clip(shape)
-                        .background(
-                            if (isFocused) Color.White else LazyPizzaSurfaceHighestColor
-                        )
-                        .then(
-                            if (isFocused) Modifier.border(1.dp, LazyPizzaPrimaryColor, shape)
-                            else Modifier
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(72.dp)
+                            .clip(shape)
+                            .background(
+                                if (isFocused) Color.White else LazyPizzaSurfaceHighestColor,
+                            ).then(
+                                if (isFocused) {
+                                    Modifier.border(1.dp, LazyPizzaPrimaryColor, shape)
+                                } else {
+                                    Modifier
+                                },
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     innerTextField()
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { isFocused = it.isFocused }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { isFocused = it.isFocused },
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = LazyPizzaTextSecondaryColor
+            color = LazyPizzaTextSecondaryColor,
         )
     }
 }

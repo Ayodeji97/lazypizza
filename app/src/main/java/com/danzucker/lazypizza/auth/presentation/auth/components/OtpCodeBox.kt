@@ -52,7 +52,7 @@ fun OtpCodeBox(
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: (() -> Unit)? = null,
     focusRequester: FocusRequester,
-    shouldRequestFocus: Boolean = false
+    shouldRequestFocus: Boolean = false,
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -77,18 +77,21 @@ fun OtpCodeBox(
     Surface(
         modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(100),
-        color = when {
-            isError -> MaterialTheme.colorScheme.surface
-            isFocused -> MaterialTheme.colorScheme.surface
-            else -> MaterialTheme.colorScheme.surfaceVariant
-        },
-        border = BorderStroke(
-            width = 1.dp,
-            color = when {
-                isError || isFocused -> MaterialTheme.colorScheme.primary
-                else -> Color.Transparent
-            }
-        )
+        color =
+            when {
+                isError -> MaterialTheme.colorScheme.surface
+                isFocused -> MaterialTheme.colorScheme.surface
+                else -> MaterialTheme.colorScheme.surfaceVariant
+            },
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color =
+                    when {
+                        isError || isFocused -> MaterialTheme.colorScheme.primary
+                        else -> Color.Transparent
+                    },
+            ),
     ) {
         BasicTextField(
             value = textFieldValue,
@@ -102,16 +105,16 @@ fun OtpCodeBox(
 
                     // User typed a digit into an empty box
                     newValue.text.length == 1 &&
-                            isValidInput &&
-                            newValue.text.all { it.isDigit() } -> {
+                        isValidInput &&
+                        newValue.text.all { it.isDigit() } -> {
                         textFieldValue = TextFieldValue(newValue.text, TextRange(1))
                         onCodeChange(newValue.text)
                     }
 
                     // User typed a new digit into a filled box — take the new character
                     newValue.text.length == 2 &&
-                            isValidInput &&
-                            newValue.text.last().isDigit() -> {
+                        isValidInput &&
+                        newValue.text.last().isDigit() -> {
                         val replacement = newValue.text.last().toString()
                         textFieldValue = TextFieldValue(replacement, TextRange(1))
                         onCodeChange(replacement)
@@ -120,58 +123,62 @@ fun OtpCodeBox(
                     // Ignore everything else (pastes, letters, etc.)
                 }
             },
-            modifier = Modifier
-                .fillMaxSize()
-                .focusRequester(focusRequester)
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
-                    if (focusState.isFocused) {
-                        onFocused()
-                        // Move cursor to end on focus — no selection to avoid highlight handles
-                        textFieldValue = TextFieldValue(digit, TextRange(digit.length))
-                    }
-                },
-            textStyle = MaterialTheme.typography.titleSmall.copy(
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Normal
-            ),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                        if (focusState.isFocused) {
+                            onFocused()
+                            // Move cursor to end on focus — no selection to avoid highlight handles
+                            textFieldValue = TextFieldValue(digit, TextRange(digit.length))
+                        }
+                    },
+            textStyle =
+                MaterialTheme.typography.titleSmall.copy(
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Normal,
+                ),
             singleLine = true,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = keyboardType,
-                imeAction = imeAction
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    onImeAction?.invoke()
-                },
-                onDone = {
-                    keyboardController?.hide()
-                }
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = keyboardType,
+                    imeAction = imeAction,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onNext = {
+                        onImeAction?.invoke()
+                    },
+                    onDone = {
+                        keyboardController?.hide()
+                    },
+                ),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     if (digit.isEmpty() && !isFocused) {
                         Text(
                             text = placeholder,
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center
-                            ),
-                            color = MaterialTheme.colorScheme.surfaceTint
+                            style =
+                                MaterialTheme.typography.titleSmall.copy(
+                                    fontWeight = FontWeight.Normal,
+                                    textAlign = TextAlign.Center,
+                                ),
+                            color = MaterialTheme.colorScheme.surfaceTint,
                         )
                     }
                     innerTextField()
                 }
-            }
+            },
         )
     }
 }
-
 
 @Preview(name = "Empty")
 @Composable
@@ -184,7 +191,7 @@ private fun OtpCodeBoxEmptyPreview() {
             onCodeChange = {},
             onFocused = {},
             modifier = Modifier.padding(16.dp),
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
     }
 }
@@ -200,7 +207,7 @@ private fun OtpCodeBoxFilledPreview() {
             onCodeChange = {},
             onFocused = {},
             modifier = Modifier.padding(16.dp),
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
     }
 }
@@ -216,7 +223,7 @@ private fun OtpCodeBoxErrorPreview() {
             onCodeChange = {},
             onFocused = {},
             modifier = Modifier.padding(16.dp),
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
     }
 }

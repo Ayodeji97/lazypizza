@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.R
@@ -34,42 +33,44 @@ import com.danzucker.lazypizza.product.presentation.orderhistory.model.OrderUi
 fun LazyPizzaOrderCard(
     order: OrderUi,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = elevationLarge,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = LazyPizzaShadowColor,
-                ambientColor = LazyPizzaShadowColor
-            )
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = elevationLarge,
+                    shape = RoundedCornerShape(12.dp),
+                    spotColor = LazyPizzaShadowColor,
+                    ambientColor = LazyPizzaShadowColor,
+                ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-                .height(IntrinsicSize.Min),   // <- so right column can fill height
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .height(IntrinsicSize.Min),
+            // <- so right column can fill height
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-
             // LEFT SIDE: title, date, items
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
                     text = "Order ${order.orderNumber}",
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = order.date,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.surfaceTint
+                    color = MaterialTheme.colorScheme.surfaceTint,
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -78,7 +79,7 @@ fun LazyPizzaOrderCard(
                     Text(
                         text = item.displayText,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -87,10 +88,11 @@ fun LazyPizzaOrderCard(
 
             // RIGHT SIDE: badge (top) + total (bottom)
             Column(
-                modifier = Modifier
-                    .fillMaxHeight(),
+                modifier =
+                    Modifier
+                        .fillMaxHeight(),
                 horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 OrderStatusBadge(status = order.status)
 
@@ -98,20 +100,18 @@ fun LazyPizzaOrderCard(
                     Text(
                         text = stringResource(R.string.total_amount_placeholder),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.surfaceTint
+                        color = MaterialTheme.colorScheme.surfaceTint,
                     )
                     Text(
                         text = order.totalAmount,
                         style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
         }
     }
 }
-
-
 
 @Preview(
     showBackground = true,
@@ -121,20 +121,22 @@ fun LazyPizzaOrderCard(
 private fun OrderCardPreview() {
     LazyPizzaTheme {
         LazyPizzaOrderCard(
-            order = OrderUi(
-                id = "1",
-                orderNumber = "#12347",
-                date = "September 25, 12:15",
-                items = listOf(
-                    OrderItemUi("Margherita", 1),
-                    OrderItemUi("Margherita", 1),
-                    OrderItemUi("Margherita", 1)
+            order =
+                OrderUi(
+                    id = "1",
+                    orderNumber = "#12347",
+                    date = "September 25, 12:15",
+                    items =
+                        listOf(
+                            OrderItemUi("Margherita", 1),
+                            OrderItemUi("Margherita", 1),
+                            OrderItemUi("Margherita", 1),
+                        ),
+                    totalAmount = "$8.99",
+                    status = OrderStatusUi.IN_PROGRESS,
                 ),
-                totalAmount = "$8.99",
-                status = OrderStatusUi.IN_PROGRESS
-            ),
             modifier = Modifier.padding(40.dp),
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -147,20 +149,22 @@ private fun OrderCardPreview() {
 private fun OrderCardCompletedPreview() {
     LazyPizzaTheme {
         LazyPizzaOrderCard(
-            order = OrderUi(
-                id = "2",
-                orderNumber = "#12346",
-                date = "September 25, 12:15",
-                items = listOf(
-                    OrderItemUi("Margherita", 1),
-                    OrderItemUi("Pepsi", 2),
-                    OrderItemUi("Cookies Ice Cream", 2)
+            order =
+                OrderUi(
+                    id = "2",
+                    orderNumber = "#12346",
+                    date = "September 25, 12:15",
+                    items =
+                        listOf(
+                            OrderItemUi("Margherita", 1),
+                            OrderItemUi("Pepsi", 2),
+                            OrderItemUi("Cookies Ice Cream", 2),
+                        ),
+                    totalAmount = "$25.45",
+                    status = OrderStatusUi.COMPLETED,
                 ),
-                totalAmount = "$25.45",
-                status = OrderStatusUi.COMPLETED
-            ),
             modifier = Modifier.padding(16.dp),
-            onClick = {}
+            onClick = {},
         )
     }
 }

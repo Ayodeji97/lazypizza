@@ -30,25 +30,25 @@ import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.corn
 fun SearchBar(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = cornerRadiusLarge16)
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(cornerRadiusExtraLarge24),
-                spotColor = Color(0x0A03131F),
-                ambientColor = Color(0x0A03131F)
-            )
-            .onFocusChanged {
-                isFocused = it.isFocused
-            },
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = cornerRadiusLarge16)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(cornerRadiusExtraLarge24),
+                    spotColor = Color(0x0A03131F),
+                    ambientColor = Color(0x0A03131F),
+                ).onFocusChanged {
+                    isFocused = it.isFocused
+                },
         maxLines = 1,
         singleLine = true,
         shape = RoundedCornerShape(cornerRadiusExtraLarge24),
@@ -57,7 +57,7 @@ fun SearchBar(
                 Text(
                     text = stringResource(R.string.search_placeholder),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.surfaceTint
+                    color = MaterialTheme.colorScheme.surfaceTint,
                 )
             }
         },
@@ -65,18 +65,19 @@ fun SearchBar(
             Icon(
                 imageVector = SearchIcon,
                 contentDescription = stringResource(R.string.search_icon),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        textStyle = MaterialTheme.typography.bodyLarge
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            ),
+        textStyle = MaterialTheme.typography.bodyLarge,
     )
 }
 
@@ -87,8 +88,9 @@ private fun SearchBarPreview() {
         SearchBar(
             searchText = stringResource(R.string.search_placeholder),
             onSearchTextChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         )
     }
 }

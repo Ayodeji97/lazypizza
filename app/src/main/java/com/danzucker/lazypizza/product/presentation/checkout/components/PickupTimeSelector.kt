@@ -20,17 +20,17 @@ fun PickupTimeSelector(
     scheduledDateTime: String?,
     deviceScreenType: DeviceScreenType,
     onOptionSelected: (PickupTimeOption) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         // Section Title
         Text(
             text = stringResource(R.string.pickup_time_subtitle),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
         )
 
         // Responsive layout based on device screen type
@@ -42,7 +42,7 @@ fun PickupTimeSelector(
                 selectedOption = selectedOption,
                 earliestPickupTime = earliestPickupTime,
                 scheduledDateTime = scheduledDateTime,
-                onOptionSelected = onOptionSelected
+                onOptionSelected = onOptionSelected,
             )
         } else {
             // Horizontal layout for tablets and larger screens
@@ -50,7 +50,7 @@ fun PickupTimeSelector(
                 selectedOption = selectedOption,
                 earliestPickupTime = earliestPickupTime,
                 scheduledDateTime = scheduledDateTime,
-                onOptionSelected = onOptionSelected
+                onOptionSelected = onOptionSelected,
             )
         }
     }

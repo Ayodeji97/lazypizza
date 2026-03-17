@@ -1,7 +1,7 @@
 package com.danzucker.lazypizza.core.domain.util
 
-sealed interface DataError: Error {
-    enum class Network: DataError {
+sealed interface DataError : Error {
+    enum class Network : DataError {
         REQUEST_TIMEOUT,
         BAD_REQUEST,
         UNAUTHORIZED,
@@ -16,10 +16,10 @@ sealed interface DataError: Error {
         INVALID_PHONE_NUMBER,
         INVALID_CODE,
         CODE_EXPIRED,
-        UNKNOWN
+        UNKNOWN,
     }
 
-    enum class Local: DataError {
+    enum class Local : DataError {
         DISK_FULL,
         NOT_FOUND,
     }

@@ -9,7 +9,6 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaCardType
 import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListUi
 
-
 @Composable
 fun LazyPizzaListItem(
     lazyPizzaUi: LazyPizzaProductListUi,
@@ -26,7 +25,7 @@ fun LazyPizzaListItem(
                 lazyPizzaUi = lazyPizzaUi,
                 isMobilePortrait = isMobilePortrait,
                 onClick = onClick,
-                modifier = modifier
+                modifier = modifier,
             )
         }
         LazyPizzaCardType.OTHERS -> {
@@ -38,7 +37,7 @@ fun LazyPizzaListItem(
                 onQuantityChange = onQuantityChange,
                 onDelete = onDelete,
                 quantity = lazyPizzaUi.quantityInCart,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -49,26 +48,28 @@ fun LazyPizzaListItem(
 private fun LazyPizzaListItemPreview() {
     LazyPizzaTheme {
         LazyPizzaListItem(
-            lazyPizzaUi = LazyPizzaProductListUi(
-                id = "1",
-                name = "Margherita",
-                description = "Classic delight with 100% real mozzarella cheese",
-                price = "$5.99",
-                imageUrl = "",
-                isAvailable = true,
-                category = "Vegetarian",
-                rating = 4.5f,
-                reviewsCount = 150,
-                isFavorite = false,
-                cardType = LazyPizzaCardType.PIZZA
-            ),
+            lazyPizzaUi =
+                LazyPizzaProductListUi(
+                    id = "1",
+                    name = "Margherita",
+                    description = "Classic delight with 100% real mozzarella cheese",
+                    price = "$5.99",
+                    imageUrl = "",
+                    isAvailable = true,
+                    category = "Vegetarian",
+                    rating = 4.5f,
+                    reviewsCount = 150,
+                    isFavorite = false,
+                    cardType = LazyPizzaCardType.PIZZA,
+                ),
             onClick = {},
             onAddToCart = {},
             onQuantityChange = {},
             onDelete = {},
             isMobilePortrait = true,
-            modifier = Modifier
-                .padding(30.dp)
+            modifier =
+                Modifier
+                    .padding(30.dp),
         )
     }
 }

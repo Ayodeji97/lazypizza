@@ -34,15 +34,13 @@ import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenTyp
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.MOBILE_PORTRAIT
 import com.danzucker.lazypizza.product.presentation.orderconfirmation.components.OrderInfoCard
 
-
 @Composable
 fun OrderConfirmationScreen(
     orderNumber: String,
     pickupTime: String,
     onBackToMenu: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
@@ -53,20 +51,22 @@ fun OrderConfirmationScreen(
         val isMobilePortrait = deviceScreenType == MOBILE_PORTRAIT
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background),
         ) {
             LazyPizzaBackground(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .shadow(
-                        elevation = 8.dp,
-                        spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .shadow(
+                            elevation = 8.dp,
+                            spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                            ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
+                        ),
                 topStartCornerRadius = 16.dp,
                 topEndCornerRadius = 16.dp,
                 bottomStartCornerRadius = 0.dp,
@@ -74,13 +74,12 @@ fun OrderConfirmationScreen(
                 topPadding = 0.dp,
                 bottomPadding = 0.dp,
                 horizontalStartPadding = 0.dp,
-                horizontalEndPadding = 0.dp
+                horizontalEndPadding = 0.dp,
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-
                     LazyPizzaCenteredTopAppBar(
                         title = stringResource(R.string.order_confirmation_title),
                         titleColor = MaterialTheme.colorScheme.onSurface,
@@ -88,9 +87,9 @@ fun OrderConfirmationScreen(
                         navigationIcon = {
                             BackButton(
                                 onClick = onBackToMenu,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp),
                             )
-                        }
+                        },
                     )
 
                     Spacer(modifier = Modifier.weight(0.5f))
@@ -98,10 +97,11 @@ fun OrderConfirmationScreen(
                         orderNumber = orderNumber,
                         pickupTime = pickupTime,
                         onBackToMenu = onBackToMenu,
-                        modifier = Modifier
-                            .applyIf(!isMobilePortrait) {
-                                fillMaxWidth(0.5f)
-                            }
+                        modifier =
+                            Modifier
+                                .applyIf(!isMobilePortrait) {
+                                    fillMaxWidth(0.5f)
+                                },
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -111,13 +111,12 @@ fun OrderConfirmationScreen(
     }
 }
 
-
 @Composable
 fun OrderConfirmationContent(
     orderNumber: String,
     pickupTime: String,
     onBackToMenu: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -126,7 +125,7 @@ fun OrderConfirmationContent(
         Text(
             text = stringResource(R.string.order_placed_title),
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -134,24 +133,22 @@ fun OrderConfirmationContent(
         Text(
             text = stringResource(R.string.order_placed_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OrderInfoCard(
             orderNumber = orderNumber,
-            pickupTime = pickupTime
+            pickupTime = pickupTime,
         )
 
         SecondaryButton(
             text = stringResource(R.string.back_to_menu_button),
-            onClick = onBackToMenu
+            onClick = onBackToMenu,
         )
     }
 }
-
-
 
 @Preview
 @Composable
@@ -172,7 +169,7 @@ private fun OrderConfirmationScreenPreview() {
         OrderConfirmationContent(
             orderNumber = "#12345",
             pickupTime = "September 25, 12:15",
-            onBackToMenu = {}
+            onBackToMenu = {},
         )
     }
 }

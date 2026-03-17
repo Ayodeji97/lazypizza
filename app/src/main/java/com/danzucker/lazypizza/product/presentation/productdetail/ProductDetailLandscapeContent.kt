@@ -31,18 +31,19 @@ import com.danzucker.lazypizza.product.presentation.models.MiniCardInfo
 fun ProductDetailLandscapeContent(
     state: ProductDetailState,
     onAction: (ProductDetailAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     Row(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surfaceVariant),
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .weight(1f),
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .weight(1f),
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -51,9 +52,10 @@ fun ProductDetailLandscapeContent(
                 RemoteImage(
                     imageUrl = state.pizzaDetail?.imageUrl ?: "",
                     contentDescription = state.pizzaDetail?.name,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    contentScale = ContentScale.Crop,
                 )
             }
 
@@ -77,29 +79,31 @@ fun ProductDetailLandscapeContent(
         // Right side - Toppings
         LazyPizzaBackground(
             bottomStartCornerRadius = 16.dp,
-            modifier = Modifier
-                .weight(1f)
-                .padding(bottom = 16.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(bottom = 16.dp),
         ) {
             Text(
                 text = stringResource(R.string.topping_extras),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyPizzaMiniGridList(
-                miniToppings = state.availableToppings.map { topping ->
-                    MiniCardInfo(
-                        id = topping.id,
-                        title = topping.name,
-                        price = topping.price,
-                        imageUrl = topping.imageUrl,
-                        quantity = state.selectedToppings[topping.id] ?: 0
-                    )
-                },
+                miniToppings =
+                    state.availableToppings.map { topping ->
+                        MiniCardInfo(
+                            id = topping.id,
+                            title = topping.name,
+                            price = topping.price,
+                            imageUrl = topping.imageUrl,
+                            quantity = state.selectedToppings[topping.id] ?: 0,
+                        )
+                    },
                 onToppingClick = { toppingId ->
                     onAction(ProductDetailAction.OnToppingClick(toppingId))
                 },
@@ -107,28 +111,30 @@ fun ProductDetailLandscapeContent(
                     onAction(
                         ProductDetailAction.OnToppingQuantityChange(
                             toppingId,
-                            quantity
-                        )
+                            quantity,
+                        ),
                     )
                 },
-                modifier = Modifier
-                    .weight(6f)
+                modifier =
+                    Modifier
+                        .weight(6f),
             )
 
             StickyBottomBar(
-                buttonText = stringResource(
-                    R.string.add_to_cart_button_text,
-                    state.formattedTotalPrice
-                ),
+                buttonText =
+                    stringResource(
+                        R.string.add_to_cart_button_text,
+                        state.formattedTotalPrice,
+                    ),
                 onButtonClick = {
                     onAction(ProductDetailAction.OnAddToCartClick)
                 },
-                modifier = Modifier
-                    .weight(1f)
+                modifier =
+                    Modifier
+                        .weight(1f),
             )
         }
     }
-
 }
 
 @Preview(widthDp = 840, heightDp = 480)
@@ -136,10 +142,11 @@ fun ProductDetailLandscapeContent(
 private fun ProductDetailLandscapeContentPreview() {
     LazyPizzaTheme {
         ProductDetailLandscapeContent(
-            state = ProductDetailState(
-                pizzaDetail = null
-            ),
-            onAction = {}
+            state =
+                ProductDetailState(
+                    pizzaDetail = null,
+                ),
+            onAction = {},
         )
     }
 }

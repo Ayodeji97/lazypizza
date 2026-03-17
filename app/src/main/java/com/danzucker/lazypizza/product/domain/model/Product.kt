@@ -10,23 +10,25 @@ data class Product(
     val isAvailable: Boolean = true,
     val rating: Float = 0f,
     val reviewsCount: Int = 0,
-    val type: ProductType = ProductType.PIZZA
+    val type: ProductType = ProductType.PIZZA,
 )
 
-enum class ProductCategory(val displayName: String) {
+enum class ProductCategory(
+    val displayName: String,
+) {
     PIZZA("Pizza"),
     DRINKS("Drinks"),
     SAUCES("Sauces"),
-    ICE_CREAM("Ice Cream");
+    ICE_CREAM("Ice Cream"),
+    ;
 
     companion object {
-        fun fromString(value: String): ProductCategory {
-            return entries.find { it.displayName.equals(value, ignoreCase = true) } ?: PIZZA
-        }
+        fun fromString(value: String): ProductCategory =
+            entries.find { it.displayName.equals(value, ignoreCase = true) } ?: PIZZA
     }
 }
 
 enum class ProductType {
     PIZZA,
-    OTHER
+    OTHER,
 }

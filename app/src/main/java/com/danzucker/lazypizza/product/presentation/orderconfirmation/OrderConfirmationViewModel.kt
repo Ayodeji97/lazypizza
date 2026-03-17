@@ -8,21 +8,19 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 class OrderConfirmationViewModel : ViewModel() {
-
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(OrderConfirmationState())
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                /** Load initial data here **/
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = OrderConfirmationState()
-        )
-
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    /** Load initial data here **/
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = OrderConfirmationState(),
+            )
 }

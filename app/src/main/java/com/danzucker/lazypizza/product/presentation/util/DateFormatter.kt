@@ -8,6 +8,7 @@ import java.util.Locale
 import kotlinx.datetime.Instant as KInstant
 
 private val zone: ZoneId = ZoneId.systemDefault()
+
 private fun locale(): Locale = Locale.getDefault()
 
 private val orderFormatter by lazy {
@@ -27,9 +28,11 @@ private val pickupFormatter by lazy {
  * Format: "December 08, 14:30"
  */
 fun formatOrderDate(timestamp: Long): String {
-    val zonedDateTime = KInstant.fromEpochMilliseconds(timestamp)
-        .toJavaInstant()
-        .atZone(zone)
+    val zonedDateTime =
+        KInstant
+            .fromEpochMilliseconds(timestamp)
+            .toJavaInstant()
+            .atZone(zone)
 
     return zonedDateTime.format(orderFormatter)
 }
@@ -40,10 +43,11 @@ fun formatOrderDate(timestamp: Long): String {
  * If future, show date + time: "SEPTEMBER 25, 12:15"
  */
 fun formatPickupTime(timestamp: Long): String {
-    val zonedDateTime = KInstant
-        .fromEpochMilliseconds(timestamp)
-        .toJavaInstant()
-        .atZone(zone)
+    val zonedDateTime =
+        KInstant
+            .fromEpochMilliseconds(timestamp)
+            .toJavaInstant()
+            .atZone(zone)
 
     val now = ZonedDateTime.now(zone)
     val isSameDay = zonedDateTime.toLocalDate() == now.toLocalDate()

@@ -7,13 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,20 +21,20 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 import com.danzucker.lazypizza.core.presentation.util.ObserveAsEvents
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType
 import com.danzucker.lazypizza.core.presentation.util.screensize.DeviceScreenType.Companion.fromWindowSizeClass
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductDetailRoot(
     onNavigateBack: () -> Unit,
-    viewModel: ProductDetailViewModel = koinViewModel()
+    viewModel: ProductDetailViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is ProductDetailEvent.NavigateBack,
-            ProductDetailEvent.NavigateBackToMenu -> onNavigateBack()
+            ProductDetailEvent.NavigateBackToMenu,
+            -> onNavigateBack()
             is ProductDetailEvent.ShowErrorMessage -> {
                 Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT).show()
             }
@@ -52,7 +48,7 @@ fun ProductDetailRoot(
 
     ProductDetailScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
     )
 }
 
@@ -71,29 +67,30 @@ fun ProductDetailScreen(
                         onClick = {
                             onAction(ProductDetailAction.OnBackClick)
                         },
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
                     )
                 },
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
             )
-        }
+        },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             when (fromWindowSizeClass(windowSizeClass = windowClass)) {
                 DeviceScreenType.MOBILE_PORTRAIT -> {
                     ProductDetailPortraitContent(
                         state = state,
-                        onAction = onAction
+                        onAction = onAction,
                     )
                 }
                 else -> {
                     ProductDetailLandscapeContent(
                         state = state,
-                        onAction = onAction
+                        onAction = onAction,
                     )
                 }
             }
@@ -101,14 +98,13 @@ fun ProductDetailScreen(
     }
 }
 
-
 @Preview
 @Composable
 private fun ProductDetailScreenPreview() {
     LazyPizzaTheme {
         ProductDetailScreen(
             state = ProductDetailState(),
-            onAction = {}
+            onAction = {},
         )
     }
 }

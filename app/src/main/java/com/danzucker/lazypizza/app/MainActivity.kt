@@ -5,13 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.danzucker.lazypizza.BuildConfig
 import androidx.lifecycle.lifecycleScope
-import com.danzucker.lazypizza.core.domain.util.Result
 import androidx.navigation.compose.rememberNavController
+import com.danzucker.lazypizza.BuildConfig
 import com.danzucker.lazypizza.app.navigation.NavigationRoot
 import com.danzucker.lazypizza.core.data.FirestoreDataSeeder
 import com.danzucker.lazypizza.core.domain.preferences.AppPreferencesStorage
+import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LazyPizzaTheme {
                 NavigationRoot(
-                    navController = rememberNavController()
+                    navController = rememberNavController(),
                 )
             }
         }

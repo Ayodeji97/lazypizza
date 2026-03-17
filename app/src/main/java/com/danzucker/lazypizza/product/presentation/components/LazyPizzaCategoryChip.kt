@@ -25,36 +25,46 @@ fun LazyPizzaCategoryChip(
 ) {
     Surface(
         onClick = onClick,
-        color = if (selected) {
-            MaterialTheme.colorScheme.primary
-        } else MaterialTheme.colorScheme.surface,
-        contentColor = if (selected) {
-            MaterialTheme.colorScheme.onPrimary
-        } else MaterialTheme.colorScheme.onSurface,
-        shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) {
+        color =
+            if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.surface
+            },
+        contentColor =
+            if (selected) {
                 MaterialTheme.colorScheme.onPrimary
-            } else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-        ),
-        modifier = modifier
-            .height(32.dp)
-            .wrapContentWidth(),
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
+        shape = RoundedCornerShape(8.dp),
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color =
+                    if (selected) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                    },
+            ),
+        modifier =
+            modifier
+                .height(32.dp)
+                .wrapContentWidth(),
     ) {
         Box(
-            modifier = Modifier
-                .padding(horizontal = 12.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-
             )
         }
     }
-
 }
 
 @Preview
@@ -65,7 +75,7 @@ private fun LazyPizzaCategoryListItemPreview() {
             text = "Pizza",
             onClick = { },
             selected = true,
-            modifier = Modifier.padding(30.dp)
+            modifier = Modifier.padding(30.dp),
         )
     }
 }

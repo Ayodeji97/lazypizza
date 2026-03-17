@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
-import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.mappers.toCartItemUi
 import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.Product
 import com.danzucker.lazypizza.product.domain.model.ProductCategory
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,9 +28,8 @@ import kotlin.collections.map
 
 class CartViewModel(
     private val cartRepository: CartRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) : ViewModel() {
-
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(CartState())
@@ -44,20 +43,20 @@ class CartViewModel(
     // Cache all products
     private var allProducts = listOf<Product>()
 
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                /** Load initial data here **/
-                loadAllAvailableAddOns()
-                observeCart()
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CartState()
-        )
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    /** Load initial data here **/
+                    loadAllAvailableAddOns()
+                    observeCart()
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = CartState(),
+            )
 
     fun onAction(action: CartAction) {
         when (action) {
@@ -79,31 +78,31 @@ class CartViewModel(
         }
     }
 
-
     /**
      * Load all available sauces and drinks that can be recommended
      */
     private fun loadAllAvailableAddOns() {
-        productRepository.getProducts()
+        productRepository
+            .getProducts()
             .onEach { result ->
                 when (result) {
                     is Result.Success -> {
                         allProducts = result.data
 
                         // Filter sauces and drinks
-                        val addOns = result.data
-                            .filter {
-                                it.category == ProductCategory.SAUCES ||
+                        val addOns =
+                            result.data
+                                .filter {
+                                    it.category == ProductCategory.SAUCES ||
                                         it.category == ProductCategory.DRINKS
-                            }
-                            .map { product ->
-                                RecommendedAddOnUi(
-                                    id = product.id,
-                                    name = product.name,
-                                    price = product.price,
-                                    imageUrl = product.imageUrl
-                                )
-                            }
+                                }.map { product ->
+                                    RecommendedAddOnUi(
+                                        id = product.id,
+                                        name = product.name,
+                                        price = product.price,
+                                        imageUrl = product.imageUrl,
+                                    )
+                                }
 
                         allAvailableAddOns.clear()
                         allAvailableAddOns.addAll(addOns)
@@ -119,20 +118,20 @@ class CartViewModel(
     private fun observeCart() {
         combine(
             cartRepository.getCartItems(),
-            cartRepository.getCartSummary()
+            cartRepository.getCartSummary(),
         ) { cartItems, cartSummary ->
             cartItems to cartSummary
         }.onEach { (items, summary) ->
             _state.update { currentState ->
                 currentState.copy(
                     isLoadingData = false,
-                    cartItems = items.map { cartItem ->
-                        cartItem.toCartItemUi()
-                    },
+                    cartItems =
+                        items.map { cartItem ->
+                            cartItem.toCartItemUi()
+                        },
                     totalAmount = summary.total,
-                    recommendedAddOns = generateRecommendations(items)
+                    recommendedAddOns = generateRecommendations(items),
                 )
-
             }
         }.launchIn(viewModelScope)
     }
@@ -146,23 +145,27 @@ class CartViewModel(
         val cartItemIds = cartItems.map { it.productId }.toSet()
 
         // Filter out items already in cart
-        val availableForRecommendation = allAvailableAddOns.filter { addOn ->
-            addOn.id !in cartItemIds
-        }
+        val availableForRecommendation =
+            allAvailableAddOns.filter { addOn ->
+                addOn.id !in cartItemIds
+            }
 
         return availableForRecommendation
             .shuffled()
     }
 
-    private fun updateQuantity(itemId: String, newQuantity: Int) {
+    private fun updateQuantity(
+        itemId: String,
+        newQuantity: Int,
+    ) {
         viewModelScope.launch {
             when (cartRepository.updateQuantity(itemId, newQuantity)) {
                 is Result.Success -> Unit
                 is Result.Error -> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResource(R.string.failed_to_update_quantity)
-                        )
+                            UiText.StringResource(R.string.failed_to_update_quantity),
+                        ),
                     )
                 }
             }
@@ -171,13 +174,13 @@ class CartViewModel(
 
     private fun deleteItem(itemId: String) {
         viewModelScope.launch {
-            when(cartRepository.removeFromCart(itemId)) {
+            when (cartRepository.removeFromCart(itemId)) {
                 is Result.Success -> Unit
                 is Result.Error -> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResource(R.string.failed_to_remove_item)
-                        )
+                            UiText.StringResource(R.string.failed_to_remove_item),
+                        ),
                     )
                 }
             }
@@ -199,16 +202,17 @@ class CartViewModel(
             val addOn = allAvailableAddOns.find { it.id == itemId } ?: return@launch
             // Get full product details to get category
             val product = allProducts.find { it.id == itemId } ?: return@launch
-            val cartItem = CartItem(
-                id = itemId,
-                productId = itemId,
-                name = addOn.name,
-                imageUrl = addOn.imageUrl,
-                basePrice = addOn.price,
-                quantity = 1,
-                toppings = emptyList(),
-                category = product.category.displayName
-            )
+            val cartItem =
+                CartItem(
+                    id = itemId,
+                    productId = itemId,
+                    name = addOn.name,
+                    imageUrl = addOn.imageUrl,
+                    basePrice = addOn.price,
+                    quantity = 1,
+                    toppings = emptyList(),
+                    category = product.category.displayName,
+                )
 
             when (cartRepository.addToCart(cartItem)) {
                 is Result.Success -> {
@@ -218,15 +222,15 @@ class CartViewModel(
                      */
                     eventChannel.send(
                         CartEvent.ShowMessage(
-                            UiText.StringResource(R.string.item_added_to_cart_named, arrayOf(addOn.name))
-                        )
+                            UiText.StringResource(R.string.item_added_to_cart_named, arrayOf(addOn.name)),
+                        ),
                     )
                 }
-                is Result.Error-> {
+                is Result.Error -> {
                     eventChannel.send(
                         CartEvent.ShowErrorMessage(
-                            UiText.StringResource(R.string.failed_to_add_item)
-                        )
+                            UiText.StringResource(R.string.failed_to_add_item),
+                        ),
                     )
                 }
             }

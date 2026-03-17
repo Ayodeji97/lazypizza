@@ -4,17 +4,18 @@ import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 
-
 enum class DeviceScreenType {
     MOBILE_PORTRAIT,
     MOBILE_LANDSCAPE,
     TABLET_PORTRAIT,
     TABLET_LANDSCAPE,
-    DESKTOP;
-
+    DESKTOP,
+    ;
 
     fun isTablet() = this == TABLET_PORTRAIT || this == TABLET_LANDSCAPE
+
     fun isPortrait() = this == MOBILE_PORTRAIT
+
     fun isDesktop() = this == DESKTOP
 
     companion object {
@@ -24,15 +25,15 @@ enum class DeviceScreenType {
 
             return when {
                 widthClass == WindowWidthSizeClass.COMPACT &&
-                        heightClass == WindowHeightSizeClass.MEDIUM -> MOBILE_PORTRAIT
+                    heightClass == WindowHeightSizeClass.MEDIUM -> MOBILE_PORTRAIT
                 widthClass == WindowWidthSizeClass.COMPACT &&
-                        heightClass == WindowHeightSizeClass.EXPANDED -> MOBILE_PORTRAIT
+                    heightClass == WindowHeightSizeClass.EXPANDED -> MOBILE_PORTRAIT
                 widthClass == WindowWidthSizeClass.EXPANDED &&
-                        heightClass == WindowHeightSizeClass.COMPACT -> MOBILE_LANDSCAPE
+                    heightClass == WindowHeightSizeClass.COMPACT -> MOBILE_LANDSCAPE
                 widthClass == WindowWidthSizeClass.MEDIUM &&
-                        heightClass == WindowHeightSizeClass.EXPANDED -> TABLET_PORTRAIT
+                    heightClass == WindowHeightSizeClass.EXPANDED -> TABLET_PORTRAIT
                 widthClass == WindowWidthSizeClass.EXPANDED &&
-                        heightClass == WindowHeightSizeClass.MEDIUM -> TABLET_LANDSCAPE
+                    heightClass == WindowHeightSizeClass.MEDIUM -> TABLET_LANDSCAPE
                 else -> DESKTOP
             }
         }

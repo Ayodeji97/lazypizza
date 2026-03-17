@@ -9,19 +9,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreAppPreferencesStorage(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : AppPreferencesStorage {
-
-    override suspend fun hasSeededData(): Boolean {
-        return try {
-            dataStore.data.map { preferences ->
-                preferences[KEY_HAS_SEEDED_DATA] ?: false
-            }.first()
+    override suspend fun hasSeededData(): Boolean =
+        try {
+            dataStore.data
+                .map { preferences ->
+                    preferences[KEY_HAS_SEEDED_DATA] ?: false
+                }.first()
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
-    }
 
     override suspend fun setHasSeededData(value: Boolean) {
         try {

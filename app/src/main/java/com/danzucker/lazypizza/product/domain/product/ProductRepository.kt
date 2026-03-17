@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     fun getProducts(): Flow<Result<List<Product>, DataError.Network>>
+
     suspend fun getProductById(id: String): Result<Product?, DataError.Network>
+
     fun getToppings(): Flow<Result<List<Topping>, DataError.Network>>
+
     fun getProductsByCategory(category: ProductCategory): Flow<Result<List<Product>, DataError.Network>>
 }

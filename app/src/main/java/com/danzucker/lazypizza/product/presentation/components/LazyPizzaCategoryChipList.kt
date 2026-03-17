@@ -16,15 +16,15 @@ fun LazyPizzaCategoryChipList(
     categories: List<String>,
     selectedCategories: Set<String>,
     onCategorySelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-
         items(
             items = categories,
         ) { category ->
@@ -33,25 +33,28 @@ fun LazyPizzaCategoryChipList(
                 onClick = {
                     onCategorySelected(category)
                 },
-                selected = category in selectedCategories
+                selected = category in selectedCategories,
             )
         }
     }
 }
-
 
 @Preview
 @Composable
 private fun LazyPizzaCategoryChipListPreview() {
     LazyPizzaTheme {
         LazyPizzaCategoryChipList(
-            categories = listOf(
-                "All", "Vegetarian", "Non-Vegetarian", "Vegan", "Gluten-Free"
-            ),
+            categories =
+                listOf(
+                    "All",
+                    "Vegetarian",
+                    "Non-Vegetarian",
+                    "Vegan",
+                    "Gluten-Free",
+                ),
             selectedCategories = setOf("Pizza"),
             onCategorySelected = {},
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp),
         )
     }
-
 }

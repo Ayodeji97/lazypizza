@@ -20,34 +20,35 @@ fun StickyBottomBar(
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-                        MaterialTheme.colorScheme.surface
-                    ),
-                    startY = 0f,
-                    endY = 200f
-                )
-            )
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                    MaterialTheme.colorScheme.surface,
+                                ),
+                            startY = 0f,
+                            endY = 200f,
+                        ),
+                ).padding(16.dp),
     ) {
         PrimaryButton(
             text = buttonText,
             onClick = onButtonClick,
             isLoading = isLoading,
-            enabled = enabled
+            enabled = enabled,
         )
     }
 }
-
 
 @Preview
 @Composable

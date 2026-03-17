@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 
-
 @Composable
 fun LazyPizzaBackground(
     modifier: Modifier = Modifier,
@@ -32,33 +31,37 @@ fun LazyPizzaBackground(
     horizontalStartPadding: Dp = 16.dp,
     horizontalEndPadding: Dp = 16.dp,
     centerContent: Boolean = false,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.onPrimary,
-        shape = RoundedCornerShape(
-            topStart = topStartCornerRadius,
-            topEnd = topEndCornerRadius,
-            bottomStart = bottomStartCornerRadius,
-            bottomEnd = bottomEndCornerRadius
-        ),
-        modifier = modifier
-            .fillMaxWidth()
+        shape =
+            RoundedCornerShape(
+                topStart = topStartCornerRadius,
+                topEnd = topEndCornerRadius,
+                bottomStart = bottomStartCornerRadius,
+                bottomEnd = bottomEndCornerRadius,
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = topPadding,
-                    start = horizontalStartPadding,
-                    end = horizontalEndPadding,
-                    bottom = bottomPadding
-                ),
-            horizontalAlignment = if (centerContent) {
-                Alignment.CenterHorizontally
-            } else {
-                Alignment.Start
-            }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = topPadding,
+                        start = horizontalStartPadding,
+                        end = horizontalEndPadding,
+                        bottom = bottomPadding,
+                    ),
+            horizontalAlignment =
+                if (centerContent) {
+                    Alignment.CenterHorizontally
+                } else {
+                    Alignment.Start
+                },
         ) {
             content()
         }
@@ -70,22 +73,23 @@ fun LazyPizzaBackground(
 private fun NoteMarkBackgroundPreview() {
     LazyPizzaTheme {
         LazyPizzaBackground(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    color = Color.DarkGray
-                )
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = Color.DarkGray,
+                    ),
         ) {
             Text(
                 text = "Hello world!",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
 
             Text(
                 text = "Hello world!",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

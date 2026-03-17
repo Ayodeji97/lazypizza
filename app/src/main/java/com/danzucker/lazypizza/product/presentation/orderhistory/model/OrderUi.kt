@@ -9,19 +9,21 @@ data class OrderUi(
     val date: String, // formatted date
     val items: List<OrderItemUi>,
     val totalAmount: String, // formatted price
-    val status: OrderStatusUi
+    val status: OrderStatusUi,
 )
 
 data class OrderItemUi(
     val productName: String,
-    val quantity: Int
+    val quantity: Int,
 ) {
     val displayText: String
         get() = "$quantity x $productName"
 }
 
-enum class OrderStatusUi(val displayName: UiText) {
+enum class OrderStatusUi(
+    val displayName: UiText,
+) {
     IN_PROGRESS(UiText.StringResource(R.string.in_progress_order)),
     COMPLETED(UiText.StringResource(R.string.completed)),
-    CANCELLED(UiText.StringResource(R.string.cancelled))
+    CANCELLED(UiText.StringResource(R.string.cancelled)),
 }

@@ -12,51 +12,37 @@ import timber.log.Timber
 
 class AuthRepositoryImpl(
     private val authManager: AuthManager,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
 ) : AuthRepository {
-
     override suspend fun sendVerificationCode(
         phoneNumber: String,
         activity: Activity,
         onCodeSent: (verificationId: String) -> Unit,
         onVerificationCompleted: () -> Unit,
-        onVerificationFailed: (DataError.Network) -> Unit
-    ): Result<Unit, DataError.Network> {
-        return authManager.sendVerificationCode(
+        onVerificationFailed: (DataError.Network) -> Unit,
+    ): Result<Unit, DataError.Network> =
+        authManager.sendVerificationCode(
             phoneNumber = phoneNumber,
             activity = activity,
             onCodeSent = onCodeSent,
             onVerificationCompleted = onVerificationCompleted,
-            onVerificationFailed = onVerificationFailed
+            onVerificationFailed = onVerificationFailed,
         )
-    }
 
     override suspend fun verifyCode(
         verificationId: String,
-        code: String
-    ): Result<String, DataError.Network> {
-        return authManager.verifyCode(verificationId, code)
-    }
+        code: String,
+    ): Result<String, DataError.Network> = authManager.verifyCode(verificationId, code)
 
-    override suspend fun signInAnonymously(): Result<String, DataError.Network> {
-        return authManager.signInAnonymously()
-    }
+    override suspend fun signInAnonymously(): Result<String, DataError.Network> = authManager.signInAnonymously()
 
-    override fun isAuthenticated(): Boolean {
-        return authManager.isSignedIn
-    }
+    override fun isAuthenticated(): Boolean = authManager.isSignedIn
 
-    override fun isAnonymous(): Boolean {
-        return authManager.isAnonymous
-    }
+    override fun isAnonymous(): Boolean = authManager.isAnonymous
 
-    override fun getCurrentUserId(): String? {
-        return authManager.currentUserId
-    }
+    override fun getCurrentUserId(): String? = authManager.currentUserId
 
-    override fun observeAuthState(): Flow<FirebaseUser?> {
-        return authManager.observeAuthState()
-    }
+    override fun observeAuthState(): Flow<FirebaseUser?> = authManager.observeAuthState()
 
     override suspend fun transferGuestCart(fromUserId: String?): EmptyResult<DataError.Network> {
         val oldUserId = fromUserId ?: authManager.currentUserId
@@ -74,10 +60,13 @@ class AuthRepositoryImpl(
 
         Timber.d("Transferring cart from $oldUserId to $newUserId")
 
-        return when (val result = cartRepository.transferCart(
-            fromUserId = oldUserId,
-            toUserId = newUserId
-        )) {
+        return when (
+            val result =
+                cartRepository.transferCart(
+                    fromUserId = oldUserId,
+                    toUserId = newUserId,
+                )
+        ) {
             is Result.Success -> {
                 Timber.d("Cart transferred successfully")
                 Result.Success(Unit)

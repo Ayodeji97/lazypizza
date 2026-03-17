@@ -27,34 +27,36 @@ import com.danzucker.lazypizza.product.presentation.models.MiniCardInfo
 fun ProductDetailPortraitContent(
     state: ProductDetailState,
     onAction: (ProductDetailAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(
-                        bottomEnd = 12.dp
-                    )
-                )
-                .weight(1f),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape =
+                            RoundedCornerShape(
+                                bottomEnd = 12.dp,
+                            ),
+                    ).weight(1f),
             contentAlignment = Alignment.Center,
         ) {
             RemoteImage(
                 imageUrl = state.pizzaDetail?.imageUrl ?: "",
                 contentDescription = state.pizzaDetail?.name,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                contentScale = ContentScale.Crop,
             )
         }
 
         LazyPizzaBackground(
-            modifier = Modifier.weight(2f)
+            modifier = Modifier.weight(2f),
         ) {
             Text(
                 text = state.pizzaDetail?.name.orEmpty(),
@@ -72,20 +74,21 @@ fun ProductDetailPortraitContent(
             Text(
                 text = stringResource(R.string.topping_extras),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.surfaceTint
+                color = MaterialTheme.colorScheme.surfaceTint,
             )
             Spacer(modifier = Modifier.height(16.dp))
             // Toppings list
             LazyPizzaMiniGridList(
-                miniToppings = state.availableToppings.map { topping ->
-                    MiniCardInfo(
-                        id = topping.id,
-                        title = topping.name,
-                        price = topping.price,
-                        imageUrl = topping.imageUrl,
-                        quantity = state.selectedToppings[topping.id] ?: 0
-                    )
-                },
+                miniToppings =
+                    state.availableToppings.map { topping ->
+                        MiniCardInfo(
+                            id = topping.id,
+                            title = topping.name,
+                            price = topping.price,
+                            imageUrl = topping.imageUrl,
+                            quantity = state.selectedToppings[topping.id] ?: 0,
+                        )
+                    },
                 onToppingClick = { toppingId ->
                     onAction(ProductDetailAction.OnToppingClick(toppingId))
                 },
@@ -93,21 +96,21 @@ fun ProductDetailPortraitContent(
                     onAction(
                         ProductDetailAction.OnToppingQuantityChange(
                             toppingId,
-                            quantity
-                        )
+                            quantity,
+                        ),
                     )
-                }
+                },
             )
         }
         StickyBottomBar(
-            buttonText = stringResource(
-                R.string.add_to_cart_button_text,
-                state.formattedTotalPrice
-            ),
+            buttonText =
+                stringResource(
+                    R.string.add_to_cart_button_text,
+                    state.formattedTotalPrice,
+                ),
             onButtonClick = {
                 onAction(ProductDetailAction.OnAddToCartClick)
-            }
+            },
         )
     }
 }
-

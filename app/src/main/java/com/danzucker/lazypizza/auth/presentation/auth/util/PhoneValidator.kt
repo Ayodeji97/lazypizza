@@ -1,8 +1,6 @@
 package com.danzucker.lazypizza.auth.presentation.auth.util
 
-
 object PhoneValidator {
-
     /**
      * Validates international phone number format according to E.164 standard
      *

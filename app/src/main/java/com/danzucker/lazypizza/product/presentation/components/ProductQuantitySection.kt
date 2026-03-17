@@ -21,24 +21,25 @@ fun ProductQuantitySection(
     onIncreaseClick: () -> Unit,
     modifier: Modifier = Modifier,
     enableIncreaseButton: Boolean = true,
-    enableDecreaseButton: Boolean = true
+    enableDecreaseButton: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = 12.dp,
-                end = 16.dp
-            )
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 12.dp,
+                    end = 16.dp,
+                ),
     ) {
         ProductSelectionSection(
             quantity = quantity,
             onDecreaseClick = onDecreaseClick,
             onIncreaseClick = onIncreaseClick,
             enableIncreaseButton = enableIncreaseButton,
-            enableDecreaseButton = enableDecreaseButton
+            enableDecreaseButton = enableDecreaseButton,
         )
 
         Column(

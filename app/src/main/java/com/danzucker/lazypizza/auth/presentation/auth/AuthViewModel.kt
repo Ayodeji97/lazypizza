@@ -22,9 +22,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AuthViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
-
     private var hasLoadedInitialData = false
     private var countdownJob: Job? = null
 
@@ -32,17 +31,17 @@ class AuthViewModel(
     val events = eventChannel.receiveAsFlow()
 
     private val _state = MutableStateFlow(AuthState())
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = AuthState()
-        )
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = AuthState(),
+            )
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -58,21 +57,26 @@ class AuthViewModel(
 
     private fun handlePhoneNumberChange(phoneNumber: String) {
         val formatted = PhoneValidator.formatPhoneNumber(phoneNumber)
-        _state.update { it.copy(
-            phoneNumber = formatted,
-            errorMessage = null
-        )}
+        _state.update {
+            it.copy(
+                phoneNumber = formatted,
+                errorMessage = null,
+            )
+        }
     }
 
-    private fun handleCodeChange(index: Int, digit: String) {
-        val oldCode = _state.value.verificationCode          // value before change
+    private fun handleCodeChange(
+        index: Int,
+        digit: String,
+    ) {
+        val oldCode = _state.value.verificationCode // value before change
         val newCode = oldCode.toMutableList()
         newCode[index] = digit
 
         _state.update {
             it.copy(
                 verificationCode = newCode,
-                errorMessage = null
+                errorMessage = null,
             )
         }
 
@@ -115,10 +119,12 @@ class AuthViewModel(
                     eventChannel.send(AuthEvent.NavigateToHome)
                 }
                 is Result.Error -> {
-                    _state.update { it.copy(
-                        isLoading = false,
-                        errorMessage = result.error.asUiText()
-                    )}
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.error.asUiText(),
+                        )
+                    }
                     eventChannel.send(AuthEvent.ShowErrorMessage(result.error.asUiText()))
                 }
             }
@@ -140,14 +146,16 @@ class AuthViewModel(
             }
             AuthStep.OTP_INPUT -> {
                 countdownJob?.cancel()
-                _state.update { it.copy(
-                    currentStep = AuthStep.PHONE_INPUT,
-                    verificationCode = List(6) { "" },
-                    verificationId = null,
-                    errorMessage = null,
-                    resendCountdown = 60,
-                    canResend = false
-                )}
+                _state.update {
+                    it.copy(
+                        currentStep = AuthStep.PHONE_INPUT,
+                        verificationCode = List(6) { "" },
+                        verificationId = null,
+                        errorMessage = null,
+                        resendCountdown = 60,
+                        canResend = false,
+                    )
+                }
             }
         }
     }
@@ -157,24 +165,28 @@ class AuthViewModel(
 
         // Validate phone number
         if (!PhoneValidator.isValidPhoneNumber(phoneNumber)) {
-            _state.update { it.copy(
-                errorMessage = UiText.StringResource(R.string.error_invalid_phone_number)
-            )}
+            _state.update {
+                it.copy(
+                    errorMessage = UiText.StringResource(R.string.error_invalid_phone_number),
+                )
+            }
             viewModelScope.launch {
                 eventChannel.send(
-                    AuthEvent.ShowErrorMessage(UiText.StringResource(R.string.error_invalid_phone_number))
+                    AuthEvent.ShowErrorMessage(UiText.StringResource(R.string.error_invalid_phone_number)),
                 )
             }
             return
         }
 
         if (activity == null) {
-            _state.update { it.copy(
-                errorMessage = UiText.StringResource(R.string.error_generic)
-            )}
+            _state.update {
+                it.copy(
+                    errorMessage = UiText.StringResource(R.string.error_generic),
+                )
+            }
             viewModelScope.launch {
                 eventChannel.send(
-                    AuthEvent.ShowErrorMessage(UiText.StringResource(R.string.error_generic))
+                    AuthEvent.ShowErrorMessage(UiText.StringResource(R.string.error_generic)),
                 )
             }
             return
@@ -187,18 +199,20 @@ class AuthViewModel(
                 phoneNumber = phoneNumber,
                 activity = activity,
                 onCodeSent = { verificationId ->
-                    _state.update { it.copy(
-                        verificationId = verificationId,
-                        currentStep = AuthStep.OTP_INPUT,
-                        isLoading = false,
-                        errorMessage = null,
-                        focusedBoxIndex = 0
-                    )}
+                    _state.update {
+                        it.copy(
+                            verificationId = verificationId,
+                            currentStep = AuthStep.OTP_INPUT,
+                            isLoading = false,
+                            errorMessage = null,
+                            focusedBoxIndex = 0,
+                        )
+                    }
                     startResendCountdown()
 
                     viewModelScope.launch {
                         eventChannel.send(
-                            AuthEvent.ShowMessage(UiText.StringResource(R.string.code_sent_message))
+                            AuthEvent.ShowMessage(UiText.StringResource(R.string.code_sent_message)),
                         )
                     }
                 },
@@ -210,14 +224,16 @@ class AuthViewModel(
                     }
                 },
                 onVerificationFailed = { error ->
-                    _state.update { it.copy(
-                        isLoading = false,
-                        errorMessage = error.asUiText()
-                    )}
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = error.asUiText(),
+                        )
+                    }
                     viewModelScope.launch {
                         eventChannel.send(AuthEvent.ShowErrorMessage(error.asUiText()))
                     }
-                }
+                },
             )
         }
     }
@@ -227,16 +243,20 @@ class AuthViewModel(
         val code = _state.value.verificationCode.joinToString("")
 
         if (verificationId == null) {
-            _state.update { it.copy(
-                errorMessage = UiText.StringResource(R.string.error_verification_failed)
-            )}
+            _state.update {
+                it.copy(
+                    errorMessage = UiText.StringResource(R.string.error_verification_failed),
+                )
+            }
             return
         }
 
         if (code.length != 6) {
-            _state.update { it.copy(
-                errorMessage = UiText.StringResource(R.string.error_invalid_code)
-            )}
+            _state.update {
+                it.copy(
+                    errorMessage = UiText.StringResource(R.string.error_invalid_code),
+                )
+            }
             return
         }
 
@@ -258,8 +278,8 @@ class AuthViewModel(
 
                             eventChannel.send(
                                 AuthEvent.ShowMessage(
-                                    UiText.StringResource(R.string.cart_transfer_warning)
-                                )
+                                    UiText.StringResource(R.string.cart_transfer_warning),
+                                ),
                             )
                         }
                     }
@@ -267,11 +287,13 @@ class AuthViewModel(
                     eventChannel.send(AuthEvent.NavigateToHome)
                 }
                 is Result.Error -> {
-                    _state.update { it.copy(
-                        isLoading = false,
-                        errorMessage = result.error.asUiText(),
-                        verificationCode = List(6) { "" } // Clear code on error
-                    )}
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.error.asUiText(),
+                            verificationCode = List(6) { "" }, // Clear code on error
+                        )
+                    }
                     // Error is shown inline below the OTP boxes — no toast needed
                     // Move focus back to first box
                     handleCodeBoxFocused(0)
@@ -282,22 +304,25 @@ class AuthViewModel(
 
     private fun startResendCountdown() {
         countdownJob?.cancel()
-        _state.update { it.copy(
-            resendCountdown = 60,
-            canResend = false
-        )}
+        _state.update {
+            it.copy(
+                resendCountdown = 60,
+                canResend = false,
+            )
+        }
 
-        countdownJob = viewModelScope.launch {
-            repeat(60) {
-                delay(1000)
-                val newCountdown = _state.value.resendCountdown - 1
-                _state.update { it.copy(resendCountdown = newCountdown) }
+        countdownJob =
+            viewModelScope.launch {
+                repeat(60) {
+                    delay(1000)
+                    val newCountdown = _state.value.resendCountdown - 1
+                    _state.update { it.copy(resendCountdown = newCountdown) }
 
-                if (newCountdown == 0) {
-                    _state.update { it.copy(canResend = true) }
+                    if (newCountdown == 0) {
+                        _state.update { it.copy(canResend = true) }
+                    }
                 }
             }
-        }
     }
 
     override fun onCleared() {

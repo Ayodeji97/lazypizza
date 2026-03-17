@@ -9,8 +9,8 @@ import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListU
 import com.danzucker.lazypizza.product.presentation.models.ToppingUi
 import com.danzucker.lazypizza.product.presentation.util.formatAmount
 
-fun Product.toProductListUi(quantityInCart: Int = 0): LazyPizzaProductListUi {
-    return LazyPizzaProductListUi(
+fun Product.toProductListUi(quantityInCart: Int = 0): LazyPizzaProductListUi =
+    LazyPizzaProductListUi(
         id = id,
         name = name,
         description = description,
@@ -22,22 +22,20 @@ fun Product.toProductListUi(quantityInCart: Int = 0): LazyPizzaProductListUi {
         reviewsCount = reviewsCount,
         isFavorite = false, // TODO: Get from favorites repository
         cardType = type.toCardType(),
-        quantityInCart = quantityInCart
+        quantityInCart = quantityInCart,
     )
-}
 
-fun Topping.toToppingUi(): ToppingUi {
-    return ToppingUi(
+fun Topping.toToppingUi(): ToppingUi =
+    ToppingUi(
         id = id,
         name = name,
         price = formatAmount(price),
         imageUrl = imageUrl,
-        maxQuantity = maxQuantity
+        maxQuantity = maxQuantity,
     )
-}
 
-fun LazyPizzaProductListUi.toProduct(): Product {
-    return Product(
+fun LazyPizzaProductListUi.toProduct(): Product =
+    Product(
         id = id,
         name = name,
         description = description,
@@ -47,38 +45,29 @@ fun LazyPizzaProductListUi.toProduct(): Product {
         isAvailable = isAvailable,
         rating = rating,
         reviewsCount = reviewsCount,
-        type = cardType.toProductType()
+        type = cardType.toProductType(),
     )
-}
 
-private fun ProductType.toCardType(): LazyPizzaCardType {
-    return when (this) {
+private fun ProductType.toCardType(): LazyPizzaCardType =
+    when (this) {
         ProductType.PIZZA -> LazyPizzaCardType.PIZZA
         ProductType.OTHER -> LazyPizzaCardType.OTHERS
     }
-}
 
-private fun LazyPizzaCardType.toProductType(): ProductType {
-    return when (this) {
+private fun LazyPizzaCardType.toProductType(): ProductType =
+    when (this) {
         LazyPizzaCardType.PIZZA -> ProductType.PIZZA
         LazyPizzaCardType.OTHERS -> ProductType.OTHER
     }
-}
 
-private fun parsePrice(priceString: String): Double {
-    return priceString.removePrefix("$").toDoubleOrNull() ?: 0.0
-}
+private fun parsePrice(priceString: String): Double = priceString.removePrefix("$").toDoubleOrNull() ?: 0.0
 
 /**
  * Extension to get price as Double from LazyPizzaProductListUi
  */
-fun LazyPizzaProductListUi.getPriceAsDouble(): Double {
-    return parsePrice(price)
-}
+fun LazyPizzaProductListUi.getPriceAsDouble(): Double = parsePrice(price)
 
 /**
  * Extension to get price as Double from ToppingUi
  */
-fun ToppingUi.getPriceAsDouble(): Double {
-    return parsePrice(price)
-}
+fun ToppingUi.getPriceAsDouble(): Double = parsePrice(price)

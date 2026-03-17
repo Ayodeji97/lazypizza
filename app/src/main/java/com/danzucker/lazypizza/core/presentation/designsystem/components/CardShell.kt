@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -29,69 +28,72 @@ fun CardShell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .size(22.dp)
-            .border(
-                width = 1.dp,
-                color = if (enabled) {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                },
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(RoundedCornerShape(8.dp))
-            .background(
-                color = if (enabled) {
-                    MaterialTheme.colorScheme.surface
-                } else {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
-                }
-            )
+        modifier =
+            modifier
+                .size(22.dp)
+                .border(
+                    width = 1.dp,
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                    shape = RoundedCornerShape(8.dp),
+                ).clip(RoundedCornerShape(8.dp))
+                .background(
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.surface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
+                        },
+                ),
     ) {
         IconButton(
             onClick = onClick,
             enabled = enabled,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             content()
         }
     }
 }
-
 
 // Keep for the time being to see if you prefer this style
 @Composable
 fun CardShell1(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Surface(
         onClick = onClick,
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-        ),
-        modifier = modifier
-            .wrapContentWidth(),
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            ),
+        modifier =
+            modifier
+                .wrapContentWidth(),
     ) {
         Box(
-            modifier = Modifier
-                .padding(4.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(4.dp),
+            contentAlignment = Alignment.Center,
         ) {
             content()
         }
     }
 }
-
 
 @Preview
 @Composable
@@ -99,15 +101,16 @@ private fun CardShellPreview() {
     LazyPizzaTheme {
         CardShell(
             onClick = {},
-            modifier = Modifier
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .padding(16.dp),
             content = {
                 Icon(
                     imageVector = DeleteIcon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
-            }
+            },
         )
     }
 }

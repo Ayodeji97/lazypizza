@@ -7,5 +7,5 @@ data class CartItemUi(
     val quantity: Int,
     val unitPrice: Double,
     val totalPrice: Double,
-    val toppings: Map<String, Int> = emptyMap() // topping name to quantity
+    val toppings: Map<String, Int> = emptyMap(), // topping name to quantity
 )

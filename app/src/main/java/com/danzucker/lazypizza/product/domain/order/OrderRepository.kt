@@ -15,10 +15,13 @@ interface OrderRepository {
     suspend fun createOrder(order: Order): Result<String, DataError.Network>
 
     fun getOrders(): Flow<Result<List<Order>, DataError.Network>>
+
     suspend fun getOrderById(orderId: String): Result<Order?, DataError.Network>
+
     suspend fun updateOrderStatus(
         orderId: String,
-        status: OrderStatus
+        status: OrderStatus,
     ): EmptyResult<DataError.Network>
+
     suspend fun cancelOrder(orderId: String): EmptyResult<DataError.Network>
 }

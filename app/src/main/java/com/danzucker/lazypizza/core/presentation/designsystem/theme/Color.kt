@@ -26,20 +26,22 @@ val LazyPizzaOrderStatusGreenColor = Color(0xFF2E7D32)
 val LazyPizzaOrderStatusOrangeColor = Color(0xFFF9A825)
 val LazyPizzaOrderStatusRedColor = Color(0xFFEF5350)
 
-
-
 val ColorScheme.LazyPizzaButtonGradient: Brush
-    get() = Brush.linearGradient(
-        colors = listOf(
-            LazyPizzaGradientSolidColor,
-            LazyPizzaGradientLightColor
+    get() =
+        Brush.linearGradient(
+            colors =
+                listOf(
+                    LazyPizzaGradientSolidColor,
+                    LazyPizzaGradientLightColor,
+                ),
         )
-    )
 
 val ColorScheme.LazyPizzaButtonTransparentGradient: Brush
-    get() = Brush.linearGradient(
-        colors = listOf(
-            Color.Transparent,
-            Color.Transparent
+    get() =
+        Brush.linearGradient(
+            colors =
+                listOf(
+                    Color.Transparent,
+                    Color.Transparent,
+                ),
         )
-    )

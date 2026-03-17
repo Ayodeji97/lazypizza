@@ -15,27 +15,30 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val coreModule = module {
-    single {
-        FirebaseAuth.getInstance()
-    }
-
-    single {
-        FirebaseFirestore.getInstance().apply {
-            firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
-                .setLocalCacheSettings(
-                    PersistentCacheSettings.newBuilder()
-                        .build()
-                )
-                .build()
+val coreModule =
+    module {
+        single {
+            FirebaseAuth.getInstance()
         }
+
+        single {
+            FirebaseFirestore.getInstance().apply {
+                firestoreSettings =
+                    FirebaseFirestoreSettings
+                        .Builder(firestoreSettings)
+                        .setLocalCacheSettings(
+                            PersistentCacheSettings
+                                .newBuilder()
+                                .build(),
+                        ).build()
+            }
+        }
+
+        single<DataStore<Preferences>> {
+            androidContext().appPreferencesDataStore
+        }
+
+        singleOf(::DataStoreAppPreferencesStorage) bind AppPreferencesStorage::class
+
+        singleOf(::FirestoreDataSeeder)
     }
-
-    single<DataStore<Preferences>> {
-        androidContext().appPreferencesDataStore
-    }
-
-    singleOf(::DataStoreAppPreferencesStorage) bind AppPreferencesStorage::class
-
-    singleOf(::FirestoreDataSeeder)
-}

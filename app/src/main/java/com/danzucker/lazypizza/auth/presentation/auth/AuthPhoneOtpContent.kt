@@ -33,7 +33,7 @@ fun AuthPhoneOtpContent(
     state: AuthState,
     onAction: (AuthAction) -> Unit,
     activity: Activity?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Create FocusRequesters for each OTP box
     val focusRequesters = remember { List(6) { FocusRequester() } }
@@ -45,7 +45,7 @@ fun AuthPhoneOtpContent(
         Text(
             text = stringResource(R.string.welcome_title),
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -53,7 +53,7 @@ fun AuthPhoneOtpContent(
         Text(
             text = stringResource(R.string.enter_code_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -63,16 +63,15 @@ fun AuthPhoneOtpContent(
             onPhoneNumberChange = {
                 onAction(AuthAction.OnPhoneNumberChange(it))
             },
-            readOnly = true
+            readOnly = true,
         )
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             state.verificationCode.forEachIndexed { index, digit ->
                 OtpCodeBox(
@@ -93,9 +92,10 @@ fun AuthPhoneOtpContent(
                     },
                     focusRequester = focusRequesters[index],
                     shouldRequestFocus = state.focusedBoxIndex == index,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 4.dp)
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
                 )
             }
         }
@@ -106,9 +106,10 @@ fun AuthPhoneOtpContent(
                 text = state.errorMessage.asString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Start
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                textAlign = TextAlign.Start,
             )
         }
 
@@ -120,7 +121,7 @@ fun AuthPhoneOtpContent(
                 onAction(AuthAction.OnContinueClick(activity))
             },
             enabled = state.canLogin,
-            isLoading = state.isLoading
+            isLoading = state.isLoading,
         )
 
         Spacer(modifier = Modifier.height(9.dp))
@@ -128,12 +129,12 @@ fun AuthPhoneOtpContent(
         TextButton(
             onClick = {
                 onAction(AuthAction.OnContinueWithoutSignIn)
-            }
+            },
         ) {
             Text(
                 text = stringResource(R.string.continue_without_signing),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
 
@@ -143,22 +144,23 @@ fun AuthPhoneOtpContent(
             TextButton(
                 onClick = {
                     onAction(AuthAction.OnResendCodeClick(activity))
-                }
+                },
             ) {
                 Text(
                     stringResource(R.string.code_resend),
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         } else {
-            val formattedTime = formatTime(
-                state.resendCountdown / 60,
-                state.resendCountdown % 60
-            )
+            val formattedTime =
+                formatTime(
+                    state.resendCountdown / 60,
+                    state.resendCountdown % 60,
+                )
             Text(
                 text = stringResource(R.string.code_request_message, formattedTime),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.surfaceTint
+                color = MaterialTheme.colorScheme.surfaceTint,
             )
         }
     }
@@ -167,7 +169,7 @@ fun AuthPhoneOtpContent(
 @Preview(
     name = "AuthPhoneOtpContent",
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 private fun AuthPhoneInputContentPreview() {

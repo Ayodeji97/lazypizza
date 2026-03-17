@@ -4,14 +4,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface NavigationRoute {
-
     @Serializable
     data object Auth : NavigationRoute
+
     @Serializable
     data object ProductList : NavigationRoute
 
     @Serializable
-    data class ProductDetails(val productId: String) : NavigationRoute
+    data class ProductDetails(
+        val productId: String,
+    ) : NavigationRoute
 
     @Serializable
     data object Cart : NavigationRoute
@@ -26,6 +28,6 @@ sealed interface NavigationRoute {
     data class OrderConfirmation(
         val orderId: String,
         val orderNumber: String,
-        val pickupTime: String
+        val pickupTime: String,
     ) : NavigationRoute
 }

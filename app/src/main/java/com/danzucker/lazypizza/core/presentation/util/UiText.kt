@@ -8,12 +8,14 @@ import androidx.compose.ui.res.stringResource
 
 @Stable
 sealed interface UiText {
-    data class DynamicString(val value: String) : UiText
+    data class DynamicString(
+        val value: String,
+    ) : UiText
 
     @Stable
     data class StringResource(
         @StringRes val resId: Int,
-        val args: Array<Any> = arrayOf()
+        val args: Array<Any> = arrayOf(),
     ) : UiText {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -37,8 +39,8 @@ sealed interface UiText {
     @Stable
     data class Combined(
         val format: String,
-        val uiTexts: Array<UiText>
-    ): UiText {
+        val uiTexts: Array<UiText>,
+    ) : UiText {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
@@ -59,37 +61,37 @@ sealed interface UiText {
     }
 
     @Composable
-    fun asString(): String {
-        return when (this) {
+    fun asString(): String =
+        when (this) {
             is DynamicString -> value
             is StringResource -> stringResource(resId, *args)
             is Combined -> {
-                val strings = uiTexts.map { uiText ->
-                    when(uiText) {
-                        is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
-                        is DynamicString -> uiText.value
-                        is StringResource -> stringResource(uiText.resId, *uiText.args)
+                val strings =
+                    uiTexts.map { uiText ->
+                        when (uiText) {
+                            is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
+                            is DynamicString -> uiText.value
+                            is StringResource -> stringResource(uiText.resId, *uiText.args)
+                        }
                     }
-                }
                 String.format(format, *strings.toTypedArray())
             }
         }
-    }
 
-    fun asString(context: Context): String {
-        return when(this) {
+    fun asString(context: Context): String =
+        when (this) {
             is DynamicString -> value
             is StringResource -> context.getString(resId, *args)
             is Combined -> {
-                val strings = uiTexts.map { uiText ->
-                    when(uiText) {
-                        is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
-                        is DynamicString -> uiText.value
-                        is StringResource -> context.getString(uiText.resId, *uiText.args)
+                val strings =
+                    uiTexts.map { uiText ->
+                        when (uiText) {
+                            is Combined -> throw IllegalArgumentException("Can't nest combined UiTexts.")
+                            is DynamicString -> uiText.value
+                            is StringResource -> context.getString(uiText.resId, *uiText.args)
+                        }
                     }
-                }
                 String.format(format, *strings.toTypedArray())
             }
         }
-    }
 }

@@ -11,5 +11,5 @@ data class CartSummary(
     val subtotal: Double = items.sumOf { it.totalPrice },
 //    val tax: Double = subtotal * 0.13, // 13% tax
 //    val deliveryFee: Double = 5.00,
-    val total: Double = subtotal
+    val total: Double = subtotal,
 )

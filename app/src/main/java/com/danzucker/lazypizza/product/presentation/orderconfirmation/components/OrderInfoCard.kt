@@ -28,68 +28,70 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun OrderInfoCard(
     orderNumber: String,
     pickupTime: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
         shape = RoundedCornerShape(12.dp),
         color = Color.Transparent,
-        border = BorderStroke(
-            color = MaterialTheme.colorScheme.outlineVariant,
-            width = 1.dp
-        )
+        border =
+            BorderStroke(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                width = 1.dp,
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .padding(16.dp),
         ) {
-
             OrderInfoRow(
                 label = stringResource(R.string.order_number_label).uppercase(),
-                value = orderNumber
+                value = orderNumber,
             )
             Spacer(modifier = Modifier.height(6.dp))
 
             OrderInfoRow(
                 label = stringResource(R.string.pickup_time_label).uppercase(),
-                value = pickupTime
+                value = pickupTime,
             )
         }
     }
 }
 
-
 @Composable
 fun OrderInfoRow(
     label: String,
     value: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium
-            ),
-            color = MaterialTheme.colorScheme.surfaceTint
+            style =
+                MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                ),
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
 
         Text(
             text = value,
-            style = MaterialTheme.typography.labelSmall.copy(
-                letterSpacing = 0.sp
-            ),
-            color = MaterialTheme.colorScheme.onSurface
+            style =
+                MaterialTheme.typography.labelSmall.copy(
+                    letterSpacing = 0.sp,
+                ),
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
-
 
 @Preview
 @Composable
@@ -98,8 +100,9 @@ fun OrderInfoCardPreview() {
         OrderInfoCard(
             orderNumber = "#12345",
             pickupTime = "September 25, 12:15",
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 32.dp)
+            modifier =
+                Modifier
+                    .padding(horizontal = 16.dp, vertical = 32.dp),
         )
     }
 }
