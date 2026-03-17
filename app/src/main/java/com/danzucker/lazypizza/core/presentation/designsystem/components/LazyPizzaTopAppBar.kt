@@ -29,7 +29,6 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.presentation.designsystem.PhoneFilledIcon
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeExtraSmall4
-import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeMedium16
 import com.danzucker.lazypizza.core.presentation.designsystem.values.Dimens.sizeSmallMedium12
 
 @Composable
@@ -49,7 +48,7 @@ fun LazyPizzaTopAppBar(
         title = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 startContent?.invoke()
                 Spacer(modifier = Modifier.width(sizeExtraSmall4))
@@ -58,28 +57,29 @@ fun LazyPizzaTopAppBar(
                         text = title,
                         style = MaterialTheme.typography.headlineMedium,
                         color = titleColor,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 if (!customerPhoneNumber.isNullOrEmpty()) {
                     IconButton(
                         onClick = onCustomerPhoneNumberClick,
-                        modifier = Modifier.size(sizeSmallMedium12)
+                        modifier = Modifier.size(sizeSmallMedium12),
                     ) {
                         Icon(
                             imageVector = PhoneFilledIcon,
                             contentDescription = stringResource(R.string.phone_icon_description),
-                            tint = MaterialTheme.colorScheme.surfaceTint
+                            tint = MaterialTheme.colorScheme.surfaceTint,
                         )
                     }
                     Text(
                         text = customerPhoneNumber,
                         style = MaterialTheme.typography.bodyLarge,
                         color = titleColor,
-                        modifier = Modifier
-                            .clickable(
-                                onClick = onCustomerPhoneNumberClick
-                            )
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    onClick = onCustomerPhoneNumberClick,
+                                ),
                     )
                     Spacer(modifier = Modifier.width(sizeExtraSmall4))
                 }
@@ -91,11 +91,12 @@ fun LazyPizzaTopAppBar(
         navigationIcon = {
             navigationIcon?.invoke()
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = containerColor,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        scrollBehavior = scrollBehavior
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = containerColor,
+                scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -108,12 +109,12 @@ private fun LazyPizzaTopAppBarPreview() {
                 Image(
                     painter = painterResource(R.drawable.lazy_pizza_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(18.dp),
                 )
             },
             title = stringResource(R.string.lazy_pizza),
             customerPhoneNumber = "123-456-7890",
-            onCustomerPhoneNumberClick = { }
+            onCustomerPhoneNumberClick = { },
         )
     }
 }

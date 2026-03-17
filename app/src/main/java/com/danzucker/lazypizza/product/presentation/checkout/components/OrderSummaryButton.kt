@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,45 +34,46 @@ fun OrderSummaryButton(
     modifier: Modifier = Modifier,
     deviceScreenType: DeviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
     isLoading: Boolean = false,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     val isMobilePortrait = deviceScreenType == DeviceScreenType.MOBILE_PORTRAIT
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-                        MaterialTheme.colorScheme.surface
-                    ),
-                    startY = 0f,
-                    endY = 200f
-                )
-            )
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                    MaterialTheme.colorScheme.surface,
+                                ),
+                            startY = 0f,
+                            endY = 200f,
+                        ),
+                ).padding(16.dp),
     ) {
         if (isMobilePortrait) {
             OrderSummaryMobileLayout(
                 totalAmount = totalAmount,
                 onPlaceOrder = onPlaceOrder,
                 isLoading = isLoading,
-                enabled = enabled
+                enabled = enabled,
             )
         } else {
             OrderSummaryWideLayout(
                 totalAmount = totalAmount,
                 onPlaceOrder = onPlaceOrder,
                 isLoading = isLoading,
-                enabled = enabled
+                enabled = enabled,
             )
         }
     }
 }
-
 
 @Composable
 private fun OrderSummaryMobileLayout(
@@ -81,31 +81,33 @@ private fun OrderSummaryMobileLayout(
     onPlaceOrder: () -> Unit,
     isLoading: Boolean,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = stringResource(R.string.order_total_label),
-                style = MaterialTheme.typography.displaySmall.copy(
-                    lineHeight = 20.sp
-                ),
-                color = MaterialTheme.colorScheme.surfaceTint
+                style =
+                    MaterialTheme.typography.displaySmall.copy(
+                        lineHeight = 20.sp,
+                    ),
+                color = MaterialTheme.colorScheme.surfaceTint,
             )
             Text(
                 text = formatAmount(totalAmount),
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp
-                ),
-                color = MaterialTheme.colorScheme.onSurface
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                    ),
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
 
@@ -114,7 +116,7 @@ private fun OrderSummaryMobileLayout(
             onClick = onPlaceOrder,
             isLoading = isLoading,
             enabled = enabled,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -125,32 +127,34 @@ private fun OrderSummaryWideLayout(
     onPlaceOrder: () -> Unit,
     isLoading: Boolean,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = stringResource(R.string.order_total_label),
-                style = MaterialTheme.typography.displaySmall.copy(
-                    lineHeight = 20.sp
-                ),
-                color = MaterialTheme.colorScheme.surfaceTint
+                style =
+                    MaterialTheme.typography.displaySmall.copy(
+                        lineHeight = 20.sp,
+                    ),
+                color = MaterialTheme.colorScheme.surfaceTint,
             )
             Text(
                 text = formatAmount(totalAmount),
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp
-                ),
-                color = MaterialTheme.colorScheme.onSurface
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                    ),
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
 
@@ -159,25 +163,24 @@ private fun OrderSummaryWideLayout(
             onClick = onPlaceOrder,
             isLoading = isLoading,
             enabled = enabled,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }
-
 
 @Preview(name = "Mobile Portrait")
 @Composable
 private fun OrderSummaryButtonMobilePreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(200.dp))
                 OrderSummaryButton(
                     totalAmount = 25.45,
                     onPlaceOrder = {},
-                    deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT
+                    deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
                 )
             }
         }
@@ -189,7 +192,7 @@ private fun OrderSummaryButtonMobilePreview() {
 private fun OrderSummaryButtonMobileLoadingPreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(200.dp))
@@ -197,7 +200,7 @@ private fun OrderSummaryButtonMobileLoadingPreview() {
                     totalAmount = 25.45,
                     onPlaceOrder = {},
                     deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
-                    isLoading = true
+                    isLoading = true,
                 )
             }
         }
@@ -209,14 +212,14 @@ private fun OrderSummaryButtonMobileLoadingPreview() {
 private fun OrderSummaryButtonWidePreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(200.dp))
                 OrderSummaryButton(
                     totalAmount = 25.45,
                     onPlaceOrder = {},
-                    deviceScreenType = DeviceScreenType.TABLET_PORTRAIT
+                    deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
                 )
             }
         }
@@ -228,7 +231,7 @@ private fun OrderSummaryButtonWidePreview() {
 private fun OrderSummaryButtonWideLoadingPreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             Column {
                 Spacer(modifier = Modifier.height(200.dp))
@@ -236,7 +239,7 @@ private fun OrderSummaryButtonWideLoadingPreview() {
                     totalAmount = 25.45,
                     onPlaceOrder = {},
                     deviceScreenType = DeviceScreenType.TABLET_PORTRAIT,
-                    isLoading = true
+                    isLoading = true,
                 )
             }
         }

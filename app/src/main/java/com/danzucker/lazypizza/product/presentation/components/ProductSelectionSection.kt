@@ -21,27 +21,29 @@ fun ProductSelectionSection(
     onIncreaseClick: () -> Unit,
     modifier: Modifier = Modifier,
     enableIncreaseButton: Boolean = true,
-    enableDecreaseButton: Boolean = true
+    enableDecreaseButton: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier
+        modifier = modifier,
     ) {
         CardShell(
             onClick = onDecreaseClick,
-            enabled = enableDecreaseButton
+            enabled = enableDecreaseButton,
         ) {
             Icon(
                 imageVector = MinusIcon,
                 contentDescription = null,
-                tint = if (enableDecreaseButton) {
-                    MaterialTheme.colorScheme.surfaceTint
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                },
-                modifier = Modifier
-                    .size(14.dp)
+                tint =
+                    if (enableDecreaseButton) {
+                        MaterialTheme.colorScheme.surfaceTint
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
+                modifier =
+                    Modifier
+                        .size(14.dp),
             )
         }
 
@@ -53,18 +55,20 @@ fun ProductSelectionSection(
 
         CardShell(
             onClick = onIncreaseClick,
-            enabled = enableIncreaseButton
+            enabled = enableIncreaseButton,
         ) {
             Icon(
                 imageVector = PlusIcon,
                 contentDescription = null,
-                tint = if (enableIncreaseButton) {
-                    MaterialTheme.colorScheme.surfaceTint
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                },
-                modifier = Modifier
-                    .size(14.dp)
+                tint =
+                    if (enableIncreaseButton) {
+                        MaterialTheme.colorScheme.surfaceTint
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
+                modifier =
+                    Modifier
+                        .size(14.dp),
             )
         }
     }

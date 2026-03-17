@@ -26,49 +26,54 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun CommentsTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Text(
             text = stringResource(R.string.comments_subtitle),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 92.dp), // Minimum height as per requirements
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 92.dp),
+            // Minimum height as per requirements
             placeholder = {
                 Text(
                     text = stringResource(R.string.add_comment_hint),
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
-                    color = MaterialTheme.colorScheme.surfaceTint
+                    style =
+                        MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Normal,
+                        ),
+                    color = MaterialTheme.colorScheme.surfaceTint,
                 )
             },
-            textStyle = MaterialTheme.typography.titleSmall.copy(
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Normal
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            textStyle =
+                MaterialTheme.typography.titleSmall.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Normal,
+                ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
             shape = RoundedCornerShape(12.dp),
             maxLines = Int.MAX_VALUE, // Allow unlimited lines for auto-expansion
-            singleLine = false
+            singleLine = false,
         )
     }
 }
@@ -78,12 +83,12 @@ fun CommentsTextField(
 private fun CommentsTextFieldEmptyPreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             CommentsTextField(
                 value = "",
                 onValueChange = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -94,12 +99,12 @@ private fun CommentsTextFieldEmptyPreview() {
 private fun CommentsTextFieldShortTextPreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             CommentsTextField(
                 value = "Please add extra napkins",
                 onValueChange = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -110,12 +115,15 @@ private fun CommentsTextFieldShortTextPreview() {
 private fun CommentsTextFieldLongTextPreview() {
     LazyPizzaTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             CommentsTextField(
-                value = "Please add extra napkins and make sure the pizza is well done. Also, I would like the delivery to be made at the back entrance. Please ring the doorbell twice. Thank you!",
+                value =
+                    "Please add extra napkins and make sure the pizza is well done. " +
+                        "Also, I would like the delivery to be made at the back entrance. " +
+                        "Please ring the doorbell twice. Thank you!",
                 onValueChange = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }

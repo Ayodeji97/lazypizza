@@ -26,9 +26,8 @@ private const val USER_ORDERS_COLLECTION = "orders"
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirebaseOrderRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private val authManager: AuthManager = AuthManager()
+    private val authManager: AuthManager = AuthManager(),
 ) : OrderRepository {
-
     /**
      * Create a new order with transaction safety
      *
@@ -53,26 +52,29 @@ class FirebaseOrderRepository(
             }
 
             val orderId = firestore.collection(ORDERS_COLLECTION).document().id
-            val orderWithId = order.copy(
-                id = orderId,
-                userId = userId
-            )
+            val orderWithId =
+                order.copy(
+                    id = orderId,
+                    userId = userId,
+                )
 
             // Use batch write for atomicity
             val batch = firestore.batch()
 
             // 1. Create in main orders collection
-            val mainOrderRef = firestore
-                .collection(ORDERS_COLLECTION)
-                .document(orderId)
+            val mainOrderRef =
+                firestore
+                    .collection(ORDERS_COLLECTION)
+                    .document(orderId)
             batch.set(mainOrderRef, orderWithId.toFirestoreMap())
 
             // 2. Create reference in user's orders subcollection
-            val userOrderRef = firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_ORDERS_COLLECTION)
-                .document(orderId)
+            val userOrderRef =
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(userId)
+                    .collection(USER_ORDERS_COLLECTION)
+                    .document(orderId)
             batch.set(userOrderRef, orderWithId.toFirestoreMap())
 
             // Commit batch
@@ -80,7 +82,6 @@ class FirebaseOrderRepository(
 
             Timber.d("Order created successfully: $orderId")
             Result.Success(orderId)
-
         } catch (e: Exception) {
             Timber.e(e, "Failed to create order")
             Result.Error(DataError.Network.UNKNOWN)
@@ -91,8 +92,9 @@ class FirebaseOrderRepository(
      * Get all orders for the current user with real-time updates
      * Orders are sorted by creation date (newest first)
      */
-    override fun getOrders(): Flow<Result<List<Order>, DataError.Network>> {
-        return authManager.observeAuthState()
+    override fun getOrders(): Flow<Result<List<Order>, DataError.Network>> =
+        authManager
+            .observeAuthState()
             .distinctUntilChanged { old, new -> old?.uid == new?.uid }
             .flatMapLatest { user ->
                 if (user == null || user.isAnonymous) {
@@ -103,51 +105,53 @@ class FirebaseOrderRepository(
                     observeOrdersForUser(user.uid)
                 }
             }
-    }
 
+    private fun observeOrdersForUser(userId: String): Flow<Result<List<Order>, DataError.Network>> =
+        callbackFlow {
+            val listener =
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(userId)
+                    .collection(USER_ORDERS_COLLECTION)
+                    .orderBy("createdAt", Query.Direction.DESCENDING)
+                    .addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            Timber.e(error, "Error observing orders for user $userId")
+                            trySend(Result.Error(DataError.Network.UNKNOWN))
+                            return@addSnapshotListener
+                        }
 
-    private fun observeOrdersForUser(userId: String): Flow<Result<List<Order>, DataError.Network>> = callbackFlow {
-        val listener = firestore
-            .collection(USERS_COLLECTION)
-            .document(userId)
-            .collection(USER_ORDERS_COLLECTION)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Timber.e(error, "Error observing orders for user $userId")
-                    trySend(Result.Error(DataError.Network.UNKNOWN))
-                    return@addSnapshotListener
-                }
+                        val orders =
+                            snapshot?.documents?.mapNotNull { doc ->
+                                try {
+                                    Order.fromFirestoreMap(doc.data ?: emptyMap())
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Error parsing order document: ${doc.id}")
+                                    null
+                                }
+                            } ?: emptyList()
 
-                val orders = snapshot?.documents?.mapNotNull { doc ->
-                    try {
-                        Order.fromFirestoreMap(doc.data ?: emptyMap())
-                    } catch (e: Exception) {
-                        Timber.e(e, "Error parsing order document: ${doc.id}")
-                        null
+                        Timber.d("Orders updated: ${orders.size} orders")
+                        trySend(Result.Success(orders))
                     }
-                } ?: emptyList()
 
-                Timber.d("Orders updated: ${orders.size} orders")
-                trySend(Result.Success(orders))
+            awaitClose {
+                Timber.d("Closing orders observer for user $userId")
+                listener.remove()
             }
-
-        awaitClose {
-            Timber.d("Closing orders observer for user $userId")
-            listener.remove()
         }
-    }
 
     /**
      * Get a specific order by ID (one-time fetch)
      */
     override suspend fun getOrderById(orderId: String): Result<Order?, DataError.Network> {
         return try {
-            val doc = firestore
-                .collection(ORDERS_COLLECTION)
-                .document(orderId)
-                .get()
-                .await()
+            val doc =
+                firestore
+                    .collection(ORDERS_COLLECTION)
+                    .document(orderId)
+                    .get()
+                    .await()
 
             if (!doc.exists()) {
                 Timber.w("Order not found: $orderId")
@@ -156,7 +160,6 @@ class FirebaseOrderRepository(
 
             val order = Order.fromFirestoreMap(doc.data ?: emptyMap())
             Result.Success(order)
-
         } catch (e: Exception) {
             Timber.e(e, "Failed to get order: $orderId")
             Result.Error(DataError.Network.UNKNOWN)
@@ -169,7 +172,7 @@ class FirebaseOrderRepository(
      */
     override suspend fun updateOrderStatus(
         orderId: String,
-        status: OrderStatus
+        status: OrderStatus,
     ): EmptyResult<DataError.Network> {
         return try {
             val userId = authManager.currentUserId
@@ -181,30 +184,32 @@ class FirebaseOrderRepository(
             val batch = firestore.batch()
             val now = System.currentTimeMillis()
 
-            val updates = mapOf(
-                "status" to status.name,
-                "updatedAt" to now
-            )
+            val updates =
+                mapOf(
+                    "status" to status.name,
+                    "updatedAt" to now,
+                )
 
             // Update main orders collection
-            val mainOrderRef = firestore
-                .collection(ORDERS_COLLECTION)
-                .document(orderId)
+            val mainOrderRef =
+                firestore
+                    .collection(ORDERS_COLLECTION)
+                    .document(orderId)
             batch.update(mainOrderRef, updates)
 
             // Update user orders subcollection
-            val userOrderRef = firestore
-                .collection(USERS_COLLECTION)
-                .document(userId)
-                .collection(USER_ORDERS_COLLECTION)
-                .document(orderId)
+            val userOrderRef =
+                firestore
+                    .collection(USERS_COLLECTION)
+                    .document(userId)
+                    .collection(USER_ORDERS_COLLECTION)
+                    .document(orderId)
             batch.update(userOrderRef, updates)
 
             batch.commit().await()
 
             Timber.d("Order status updated: $orderId -> $status")
             Result.Success(Unit)
-
         } catch (e: Exception) {
             Timber.e(e, "Failed to update order status: $orderId")
             Result.Error(DataError.Network.UNKNOWN)
@@ -214,7 +219,6 @@ class FirebaseOrderRepository(
     /**
      * Cancel an order
      */
-    override suspend fun cancelOrder(orderId: String): EmptyResult<DataError.Network> {
-        return updateOrderStatus(orderId, OrderStatus.CANCELLED)
-    }
+    override suspend fun cancelOrder(orderId: String): EmptyResult<DataError.Network> =
+        updateOrderStatus(orderId, OrderStatus.CANCELLED)
 }

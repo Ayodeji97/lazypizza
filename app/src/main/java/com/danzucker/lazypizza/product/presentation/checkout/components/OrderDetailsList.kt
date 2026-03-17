@@ -22,14 +22,14 @@ fun OrderDetailsList(
     onQuantityChange: (String, Int) -> Unit,
     onDeleteItem: (String) -> Unit,
     deviceScreenType: DeviceScreenType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     val isMobilePortrait = deviceScreenType == DeviceScreenType.MOBILE_PORTRAIT
     if (isMobilePortrait) {
         Column(
-            modifier = modifier
-        ) {  // Single column for mobile
+            modifier = modifier,
+        ) {
+            // Single column for mobile
             items.forEach { item ->
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyPizzaListItem(
@@ -41,15 +41,16 @@ fun OrderDetailsList(
                     },
                     onDelete = { onDeleteItem(item.id) },
                     isMobilePortrait = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
     } else {
         Column(
             modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {  // 2-column grid for tablets
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // 2-column grid for tablets
             items.chunked(2).forEach { rowItems ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     rowItems.forEach { item ->
@@ -62,7 +63,7 @@ fun OrderDetailsList(
                             },
                             onDelete = { onDeleteItem(item.id) },
                             isMobilePortrait = false,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     }
                     if (rowItems.size == 1) {
@@ -83,7 +84,7 @@ private fun OrderDetailsListPreview() {
             onProductClick = {},
             onDeleteItem = {},
             onQuantityChange = { _, _ -> },
-            deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT
+            deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
         )
     }
 }

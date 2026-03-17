@@ -19,25 +19,24 @@ import kotlinx.coroutines.flow.update
 
 class OrderHistoryViewModel(
     private val orderRepository: OrderRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
-
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(OrderHistoryState())
 
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                loadData()
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = OrderHistoryState()
-        )
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    loadData()
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = OrderHistoryState(),
+            )
 
     fun onAction(action: OrderHistoryAction) {
         when (action) {
@@ -58,14 +57,22 @@ class OrderHistoryViewModel(
 
         combine(
             authRepository.observeAuthState(),
-            orderRepository.getOrders()
+            orderRepository.getOrders(),
         ) { user, ordersResult ->
             val isAuthenticated = user != null && !user.isAnonymous
-            val orders = when (ordersResult) {
-                is Result.Success -> ordersResult.data.map { it.toOrderUi() }
-                is Result.Error -> emptyList()
-            }
-            val errorMessage = if (ordersResult is Result.Error) UiText.StringResource(R.string.failed_to_load_orders) else null
+            val orders =
+                when (ordersResult) {
+                    is Result.Success -> ordersResult.data.map { it.toOrderUi() }
+                    is Result.Error -> emptyList()
+                }
+            val errorMessage =
+                if (ordersResult is Result.Error) {
+                    UiText.StringResource(
+                        R.string.failed_to_load_orders,
+                    )
+                } else {
+                    null
+                }
             Triple(isAuthenticated, orders, errorMessage)
         }.onEach { (isAuthenticated, orders, errorMessage) ->
             _state.update {
@@ -73,10 +80,9 @@ class OrderHistoryViewModel(
                     isAuthenticated = isAuthenticated,
                     orders = orders,
                     isLoadingData = false,
-                    errorMessage = errorMessage
+                    errorMessage = errorMessage,
                 )
             }
         }.launchIn(viewModelScope)
     }
-
 }

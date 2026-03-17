@@ -29,7 +29,7 @@ import kotlin.coroutines.suspendCoroutine
  * - Phone authentication with OTP verification
  */
 class AuthManager(
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
 ) {
     /**
      * Current user ID (or null if not signed in)
@@ -55,16 +55,18 @@ class AuthManager(
     /**
      * Observe authentication state changes
      */
-    fun observeAuthState(): Flow<FirebaseUser?> = callbackFlow {
-        val listener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser)
-        }
-        auth.addAuthStateListener(listener)
+    fun observeAuthState(): Flow<FirebaseUser?> =
+        callbackFlow {
+            val listener =
+                FirebaseAuth.AuthStateListener { auth ->
+                    trySend(auth.currentUser)
+                }
+            auth.addAuthStateListener(listener)
 
-        awaitClose {
-            auth.removeAuthStateListener(listener)
+            awaitClose {
+                auth.removeAuthStateListener(listener)
+            }
         }
-    }
 
     /**
      * Sign in anonymously
@@ -77,15 +79,14 @@ class AuthManager(
      * - Guest checkout
      * - Pre-registration experience
      */
-    suspend fun signInAnonymously(): Result<String, DataError.Network> {
-        return try {
+    suspend fun signInAnonymously(): Result<String, DataError.Network> =
+        try {
             val result = auth.signInAnonymously().await()
             Result.Success(result.user?.uid ?: "")
         } catch (e: Exception) {
             Timber.d("Error signing in anonymously: $e")
             Result.Error(DataError.Network.UNKNOWN)
         }
-    }
 
     /**
      * Ensure user is authenticated
@@ -93,11 +94,12 @@ class AuthManager(
      *
      * Call this before any Firestore operations that require auth
      */
-    suspend fun ensureAuthenticated(): Result<String, DataError.Network> {
-        return if (isSignedIn) {
+    suspend fun ensureAuthenticated(): Result<String, DataError.Network> =
+        if (isSignedIn) {
             Result.Success(currentUserId!!)
-        } else signInAnonymously()
-    }
+        } else {
+            signInAnonymously()
+        }
 
     /**
      * Send phone verification code
@@ -113,70 +115,76 @@ class AuthManager(
         activity: Activity,
         onCodeSent: (verificationId: String) -> Unit,
         onVerificationCompleted: () -> Unit,
-        onVerificationFailed: (DataError.Network) -> Unit
-    ): Result<Unit, DataError.Network> = suspendCoroutine { continuation ->
+        onVerificationFailed: (DataError.Network) -> Unit,
+    ): Result<Unit, DataError.Network> =
+        suspendCoroutine { continuation ->
 
-        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Timber.d("Auto-verification completed, signing in user...")
-                auth.signInWithCredential(credential)
-                    .addOnSuccessListener { authResult ->
-                        Timber.d("Auto-verification sign-in successful: ${authResult.user?.uid}")
-                        onVerificationCompleted()
-                        continuation.resume(Result.Success(Unit))
+            val callbacks =
+                object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                        Timber.d("Auto-verification completed, signing in user...")
+                        auth
+                            .signInWithCredential(credential)
+                            .addOnSuccessListener { authResult ->
+                                Timber.d("Auto-verification sign-in successful: ${authResult.user?.uid}")
+                                onVerificationCompleted()
+                                continuation.resume(Result.Success(Unit))
+                            }.addOnFailureListener { e ->
+                                Timber.e(e, "Auto-verification sign-in failed")
+                                val error =
+                                    when (e) {
+                                        is FirebaseAuthInvalidCredentialsException ->
+                                            DataError.Network.INVALID_PHONE_NUMBER
+                                        is FirebaseTooManyRequestsException ->
+                                            DataError.Network.TOO_MANY_REQUESTS
+                                        else -> DataError.Network.UNKNOWN
+                                    }
+                                onVerificationFailed(error)
+                                continuation.resume(Result.Error(error))
+                            }
                     }
-                    .addOnFailureListener { e ->
-                        Timber.e(e, "Auto-verification sign-in failed")
-                        val error = when (e) {
-                            is FirebaseAuthInvalidCredentialsException ->
-                                DataError.Network.INVALID_PHONE_NUMBER
-                            is FirebaseTooManyRequestsException ->
-                                DataError.Network.TOO_MANY_REQUESTS
-                            else -> DataError.Network.UNKNOWN
-                        }
+
+                    override fun onVerificationFailed(e: FirebaseException) {
+                        Timber.d("Phone verification failed: ${e.message}")
+
+                        val error =
+                            when (e) {
+                                is FirebaseAuthInvalidCredentialsException ->
+                                    DataError.Network.INVALID_PHONE_NUMBER
+                                is FirebaseTooManyRequestsException ->
+                                    DataError.Network.TOO_MANY_REQUESTS
+                                is FirebaseAuthException ->
+                                    when (e.errorCode) {
+                                        // you can refine here if you want
+                                        else -> DataError.Network.UNKNOWN
+                                    }
+                                else -> DataError.Network.UNKNOWN
+                            }
                         onVerificationFailed(error)
                         continuation.resume(Result.Error(error))
                     }
-            }
 
-            override fun onVerificationFailed(e: FirebaseException) {
-                Timber.d("Phone verification failed: ${e.message}")
-
-                val error = when (e) {
-                    is FirebaseAuthInvalidCredentialsException ->
-                        DataError.Network.INVALID_PHONE_NUMBER
-                    is FirebaseTooManyRequestsException ->
-                        DataError.Network.TOO_MANY_REQUESTS
-                    is FirebaseAuthException -> when (e.errorCode) {
-                        // you can refine here if you want
-                        else -> DataError.Network.UNKNOWN
+                    override fun onCodeSent(
+                        verificationId: String,
+                        token: PhoneAuthProvider.ForceResendingToken,
+                    ) {
+                        Timber.d("Verification code sent. ID: $verificationId")
+                        onCodeSent(verificationId)
+                        continuation.resume(Result.Success(Unit))
                     }
-                    else -> DataError.Network.UNKNOWN
                 }
-                onVerificationFailed(error)
-                continuation.resume(Result.Error(error))
-            }
 
-            override fun onCodeSent(
-                verificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
-                Timber.d("Verification code sent. ID: $verificationId")
-                onCodeSent(verificationId)
-                continuation.resume(Result.Success(Unit))
-            }
+            val options =
+                PhoneAuthOptions
+                    .newBuilder(auth)
+                    .setPhoneNumber(phoneNumber)
+                    .setTimeout(60L, TimeUnit.SECONDS)
+                    .setActivity(activity)
+                    .setCallbacks(callbacks)
+                    .build()
+
+            PhoneAuthProvider.verifyPhoneNumber(options)
         }
-
-        val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity)
-            .setCallbacks(callbacks)
-            .build()
-
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
 
     /**
      * Verify OTP code and sign in
@@ -186,30 +194,32 @@ class AuthManager(
      */
     suspend fun verifyCode(
         verificationId: String,
-        code: String
-    ): Result<String, DataError.Network> {
-        return try {
+        code: String,
+    ): Result<String, DataError.Network> =
+        try {
             val credential = PhoneAuthProvider.getCredential(verificationId, code)
             val result = auth.signInWithCredential(credential).await()
             Result.Success(result.user?.uid ?: "")
         } catch (e: Exception) {
             Timber.d("Phone verification failed: ${e.message}")
-            val error = when (e) {
-                is FirebaseAuthInvalidCredentialsException ->
-                    DataError.Network.INVALID_CODE
-                is FirebaseTooManyRequestsException ->
-                    DataError.Network.TOO_MANY_REQUESTS
-                is FirebaseAuthException -> when (e.errorCode) {
-                    "ERROR_SESSION_EXPIRED",
-                    "ERROR_CODE_EXPIRED" -> DataError.Network.CODE_EXPIRED
+            val error =
+                when (e) {
+                    is FirebaseAuthInvalidCredentialsException ->
+                        DataError.Network.INVALID_CODE
+                    is FirebaseTooManyRequestsException ->
+                        DataError.Network.TOO_MANY_REQUESTS
+                    is FirebaseAuthException ->
+                        when (e.errorCode) {
+                            "ERROR_SESSION_EXPIRED",
+                            "ERROR_CODE_EXPIRED",
+                            -> DataError.Network.CODE_EXPIRED
+                            else -> DataError.Network.UNKNOWN
+                        }
                     else -> DataError.Network.UNKNOWN
                 }
-                else -> DataError.Network.UNKNOWN
-            }
 
             Result.Error(error)
         }
-    }
 
     /**
      * Sign out current user

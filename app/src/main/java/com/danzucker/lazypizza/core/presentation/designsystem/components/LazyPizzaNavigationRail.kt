@@ -33,12 +33,12 @@ fun LazyPizzaNavigationRail(
     items: List<BottomNavItem>,
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavigationRail(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.surfaceTint
+        contentColor = MaterialTheme.colorScheme.surfaceTint,
     ) {
         Spacer(modifier = Modifier.weight(1f)) // push items to center
         items.forEachIndexed { index, item ->
@@ -53,43 +53,45 @@ fun LazyPizzaNavigationRail(
                                 Badge(
                                     containerColor = LazyPizzaGradientSolidColor,
                                     contentColor = MaterialTheme.colorScheme.surface,
-                                    modifier = Modifier
-                                        .applyIf(selectedIndex != index) {
-                                            offset(x = (4).dp, y = (-4).dp)
-                                        }
+                                    modifier =
+                                        Modifier
+                                            .applyIf(selectedIndex != index) {
+                                                offset(x = (4).dp, y = (-4).dp)
+                                            },
                                 ) {
                                     Text(
                                         text = item.badgeCount.toString(),
-                                        style = MaterialTheme.typography.headlineSmall
+                                        style = MaterialTheme.typography.headlineSmall,
                                     )
                                 }
-                            }
+                            },
                         ) {
                             NavigationIcon(
                                 item = item,
-                                isSelected = selectedIndex == index
+                                isSelected = selectedIndex == index,
                             )
                         }
                     } else {
                         NavigationIcon(
                             item = item,
-                            isSelected = selectedIndex == index
+                            isSelected = selectedIndex == index,
                         )
                     }
                 },
                 label = {
                     Text(
                         text = item.label,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                 },
-                colors = NavigationRailItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unselectedIconColor = MaterialTheme.colorScheme.surfaceTint,
-                    unselectedTextColor = MaterialTheme.colorScheme.surfaceTint,
-                    indicatorColor = Color.Transparent
-                )
+                colors =
+                    NavigationRailItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unselectedIconColor = MaterialTheme.colorScheme.surfaceTint,
+                        unselectedTextColor = MaterialTheme.colorScheme.surfaceTint,
+                        indicatorColor = Color.Transparent,
+                    ),
             )
         }
         Spacer(modifier = Modifier.weight(1f)) // push items to center
@@ -100,39 +102,40 @@ fun LazyPizzaNavigationRail(
 fun NavigationIcon(
     item: BottomNavItem,
     isSelected: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(28.dp)
-            .applyIf(isSelected) {
-                background(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = CircleShape
-                )
-            }
+        modifier =
+            modifier
+                .size(28.dp)
+                .applyIf(isSelected) {
+                    background(
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape,
+                    )
+                },
     ) {
         Icon(
             imageVector = item.icon,
-            contentDescription = item.label
+            contentDescription = item.label,
         )
     }
 }
-
 
 @Preview
 @Composable
 private fun LazyPizzaNavigationRailPreview() {
     LazyPizzaTheme {
         LazyPizzaNavigationRail(
-            items = listOf(
-                BottomNavItem(label = "Menu", icon = MenuIcon),
-                BottomNavItem(label = "Cart", icon = CartIcon, badgeCount = 3),
-                BottomNavItem(label = "History", icon = HistoryIcon)
-            ),
+            items =
+                listOf(
+                    BottomNavItem(label = "Menu", icon = MenuIcon),
+                    BottomNavItem(label = "Cart", icon = CartIcon, badgeCount = 3),
+                    BottomNavItem(label = "History", icon = HistoryIcon),
+                ),
             selectedIndex = 1,
-            onItemSelected = {}
+            onItemSelected = {},
         )
     }
 }

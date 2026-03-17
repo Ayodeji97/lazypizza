@@ -18,19 +18,20 @@ fun LazyPizzaMiniGridList(
     miniToppings: List<MiniCardInfo>,
     onToppingClick: (String) -> Unit,
     onQuantityChange: (String, Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
     ) {
         items(
             items = miniToppings,
-            key = { it.id }
+            key = { it.id },
         ) { miniTopping ->
             LazyPizzaMiniCard(
                 miniCardInfo = miniTopping,
@@ -45,22 +46,22 @@ fun LazyPizzaMiniGridList(
     }
 }
 
-
 @Preview
 @Composable
 private fun LazyPizzaMiniGridListPreview() {
     LazyPizzaTheme {
         LazyPizzaMiniGridList(
-            miniToppings = List(16) {
-                MiniCardInfo(
-                    id = it.toString(),
-                    title = "Topping $it",
-                    price = "$${(1..5).random()}.99",
-                    imageUrl = "",
-                )
-            },
+            miniToppings =
+                List(16) {
+                    MiniCardInfo(
+                        id = it.toString(),
+                        title = "Topping $it",
+                        price = "$${(1..5).random()}.99",
+                        imageUrl = "",
+                    )
+                },
             onToppingClick = {},
-            onQuantityChange = { _, _ -> }
+            onQuantityChange = { _, _ -> },
         )
     }
 }

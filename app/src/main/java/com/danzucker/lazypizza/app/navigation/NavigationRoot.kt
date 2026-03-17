@@ -11,15 +11,11 @@ import com.danzucker.lazypizza.product.presentation.orderconfirmation.OrderConfi
 import com.danzucker.lazypizza.product.presentation.productdetail.ProductDetailRoot
 
 @Composable
-fun NavigationRoot(
-    navController: NavHostController,
-) {
-
+fun NavigationRoot(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.ProductList
+        startDestination = NavigationRoute.ProductList,
     ) {
-
         // Auth Screen
         composable<NavigationRoute.Auth> {
             AuthRoot(
@@ -31,7 +27,7 @@ fun NavigationRoot(
                 },
                 onNavigateBack = {
                     navController.navigateUp()
-                }
+                },
             )
         }
 
@@ -41,8 +37,8 @@ fun NavigationRoot(
                 onNavigateToProductDetails = { productId ->
                     navController.navigate(
                         NavigationRoute.ProductDetails(
-                            productId = productId
-                        )
+                            productId = productId,
+                        ),
                     )
                 },
                 onNavigateToAuth = {
@@ -50,13 +46,13 @@ fun NavigationRoot(
                 },
                 onNavigateToCheckout = {
                     navController.navigate(NavigationRoute.Checkout)
-                }
+                },
             )
         }
 
         composable<NavigationRoute.ProductDetails> {
             ProductDetailRoot(
-                onNavigateBack = navController::navigateUp
+                onNavigateBack = navController::navigateUp,
             )
         }
 
@@ -68,13 +64,13 @@ fun NavigationRoot(
                         NavigationRoute.OrderConfirmation(
                             orderId = orderId,
                             orderNumber = orderNumber,
-                            pickupTime = pickupTime
-                        )
+                            pickupTime = pickupTime,
+                        ),
                     ) {
                         // Remove Checkout from back stack
                         popUpTo(NavigationRoute.Checkout) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
@@ -91,7 +87,7 @@ fun NavigationRoot(
                             inclusive = true
                         }
                     }
-                }
+                },
             )
         }
     }

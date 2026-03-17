@@ -7,7 +7,7 @@ data class OrderHistoryState(
     val isAuthenticated: Boolean = false,
     val isLoadingData: Boolean = false,
     val orders: List<OrderUi> = emptyList(),
-    val errorMessage: UiText? = null
+    val errorMessage: UiText? = null,
 ) {
     val hasOrders: Boolean
         get() = orders.isNotEmpty()

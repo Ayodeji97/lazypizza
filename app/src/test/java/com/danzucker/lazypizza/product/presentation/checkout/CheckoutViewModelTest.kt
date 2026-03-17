@@ -28,7 +28,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CheckoutViewModelTest : BaseViewModelTest() {
-
     private lateinit var cartRepository: CartRepository
     private lateinit var orderRepository: OrderRepository
     private lateinit var productRepository: ProductRepository
@@ -58,394 +57,453 @@ class CheckoutViewModelTest : BaseViewModelTest() {
     // ──────────────────────────────────────────────
 
     @Test
-    fun onPickupTimeSelected_earliest_setsPickupOptionToEarliestAndClearsScheduledTime() = runTest {
-        // Switch to SCHEDULED first to set a scheduled time, then switch back
-        viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.SCHEDULED))
-        viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.EARLIEST))
+    fun onPickupTimeSelected_earliest_setsPickupOptionToEarliestAndClearsScheduledTime() =
+        runTest {
+            // Switch to SCHEDULED first to set a scheduled time, then switch back
+            viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.SCHEDULED))
+            viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.EARLIEST))
 
-        assertEquals(PickupTimeOption.EARLIEST, viewModel.state.value.pickupTimeOption)
-        assertTrue(viewModel.state.value.scheduledDateTime == null)
-    }
+            assertEquals(PickupTimeOption.EARLIEST, viewModel.state.value.pickupTimeOption)
+            assertTrue(viewModel.state.value.scheduledDateTime == null)
+        }
 
     @Test
-    fun onPickupTimeSelected_scheduled_setsPickupOptionAndSendsShowDatePickerEvent() = runTest {
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.SCHEDULED))
+    fun onPickupTimeSelected_scheduled_setsPickupOptionAndSendsShowDatePickerEvent() =
+        runTest {
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPickupTimeSelected(PickupTimeOption.SCHEDULED))
 
-            assertEquals(CheckoutEvent.ShowDatePicker, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                assertEquals(CheckoutEvent.ShowDatePicker, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+            // Subscribe to state to get the live value (stateIn returns initialValue when unsubscribed)
+            viewModel.state.test {
+                assertEquals(PickupTimeOption.SCHEDULED, awaitItem().pickupTimeOption)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-        // Subscribe to state to get the live value (stateIn returns initialValue when unsubscribed)
-        viewModel.state.test {
-            assertEquals(PickupTimeOption.SCHEDULED, awaitItem().pickupTimeOption)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
 
     // ──────────────────────────────────────────────
     // OnScheduleTimeClick
     // ──────────────────────────────────────────────
 
     @Test
-    fun onScheduleTimeClick_sendsShowDatePickerEvent() = runTest {
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnScheduleTimeClick)
+    fun onScheduleTimeClick_sendsShowDatePickerEvent() =
+        runTest {
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnScheduleTimeClick)
 
-            assertEquals(CheckoutEvent.ShowDatePicker, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                assertEquals(CheckoutEvent.ShowDatePicker, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnToggleOrderDetails
     // ──────────────────────────────────────────────
 
     @Test
-    fun onToggleOrderDetails_expandsOnFirstCallAndCollapsesOnSecond() = runTest {
-        viewModel.state.test {
-            assertFalse(awaitItem().isOrderDetailsExpanded) // initial
+    fun onToggleOrderDetails_expandsOnFirstCallAndCollapsesOnSecond() =
+        runTest {
+            viewModel.state.test {
+                assertFalse(awaitItem().isOrderDetailsExpanded) // initial
 
-            viewModel.onAction(CheckoutAction.OnToggleOrderDetails)
-            assertTrue(awaitItem().isOrderDetailsExpanded)
+                viewModel.onAction(CheckoutAction.OnToggleOrderDetails)
+                assertTrue(awaitItem().isOrderDetailsExpanded)
 
-            viewModel.onAction(CheckoutAction.OnToggleOrderDetails)
-            assertFalse(awaitItem().isOrderDetailsExpanded)
+                viewModel.onAction(CheckoutAction.OnToggleOrderDetails)
+                assertFalse(awaitItem().isOrderDetailsExpanded)
 
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnCommentChange
     // ──────────────────────────────────────────────
 
     @Test
-    fun onCommentChange_updatesCommentInState() = runTest {
-        viewModel.state.test {
-            awaitItem() // consume initial
+    fun onCommentChange_updatesCommentInState() =
+        runTest {
+            viewModel.state.test {
+                awaitItem() // consume initial
 
-            viewModel.onAction(CheckoutAction.OnCommentChange("Extra spicy please"))
-            assertEquals("Extra spicy please", awaitItem().comment)
+                viewModel.onAction(CheckoutAction.OnCommentChange("Extra spicy please"))
+                assertEquals("Extra spicy please", awaitItem().comment)
 
-            cancelAndIgnoreRemainingEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnBackPressed
     // ──────────────────────────────────────────────
 
     @Test
-    fun onBackPressed_sendsNavigateBackEvent() = runTest {
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnBackPressed)
+    fun onBackPressed_sendsNavigateBackEvent() =
+        runTest {
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnBackPressed)
 
-            assertEquals(CheckoutEvent.NavigateBack, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                assertEquals(CheckoutEvent.NavigateBack, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnPlaceOrder — guard conditions
     // ──────────────────────────────────────────────
 
     @Test
-    fun onPlaceOrder_emptyCart_sendsShowErrorWithoutCallingOrderRepository() = runTest {
-        // Default setup has empty cart, so orderItems in _state is empty
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+    fun onPlaceOrder_emptyCart_sendsShowErrorWithoutCallingOrderRepository() =
+        runTest {
+            // Default setup has empty cart, so orderItems in _state is empty
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onPlaceOrder_notAuthenticated_sendsShowErrorEvent() = runTest {
-        every { authRepository.isAuthenticated() } returns false
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+    fun onPlaceOrder_notAuthenticated_sendsShowErrorEvent() =
+        runTest {
+            every { authRepository.isAuthenticated() } returns false
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
 
-        // Collect state to trigger onStart → observeCart() → populate _state.orderItems
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            // Collect state to trigger onStart → observeCart() → populate _state.orderItems
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onPlaceOrder_anonymousUser_sendsShowErrorEvent() = runTest {
-        every { authRepository.isAuthenticated() } returns true
-        every { authRepository.isAnonymous() } returns true
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+    fun onPlaceOrder_anonymousUser_sendsShowErrorEvent() =
+        runTest {
+            every { authRepository.isAuthenticated() } returns true
+            every { authRepository.isAnonymous() } returns true
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnPlaceOrder — happy path
     // ──────────────────────────────────────────────
 
     @Test
-    fun onPlaceOrder_success_navigatesToOrderConfirmationWithCorrectOrderId() = runTest {
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { orderRepository.createOrder(any()) } returns Result.Success("order-abc")
-        coEvery { cartRepository.clearCart() } returns Result.Success(Unit)
+    fun onPlaceOrder_success_navigatesToOrderConfirmationWithCorrectOrderId() =
+        runTest {
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { orderRepository.createOrder(any()) } returns Result.Success("order-abc")
+            coEvery { cartRepository.clearCart() } returns Result.Success(Unit)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
 
-            val event = awaitItem()
-            assertTrue(event is CheckoutEvent.NavigateToOrderConfirmation)
-            assertEquals("order-abc", (event as CheckoutEvent.NavigateToOrderConfirmation).orderId)
-            cancelAndIgnoreRemainingEvents()
+                val event = awaitItem()
+                assertTrue(event is CheckoutEvent.NavigateToOrderConfirmation)
+                assertEquals("order-abc", (event as CheckoutEvent.NavigateToOrderConfirmation).orderId)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onPlaceOrder_success_resetsIsPlacingOrderToFalseAfterCompletion() = runTest {
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { orderRepository.createOrder(any()) } returns Result.Success("order-xyz")
-        coEvery { cartRepository.clearCart() } returns Result.Success(Unit)
+    fun onPlaceOrder_success_resetsIsPlacingOrderToFalseAfterCompletion() =
+        runTest {
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { orderRepository.createOrder(any()) } returns Result.Success("order-xyz")
+            coEvery { cartRepository.clearCart() } returns Result.Success(Unit)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
-            advanceUntilIdle()
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
+                advanceUntilIdle()
 
-            assertFalse(viewModel.state.value.isPlacingOrder)
-            cancelAndIgnoreRemainingEvents()
+                assertFalse(viewModel.state.value.isPlacingOrder)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onPlaceOrder_orderRepositoryError_sendsShowErrorAndResetsIsPlacingOrder() = runTest {
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { orderRepository.createOrder(any()) } returns Result.Error(DataError.Network.SERVER_ERROR)
+    fun onPlaceOrder_orderRepositoryError_sendsShowErrorAndResetsIsPlacingOrder() =
+        runTest {
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { orderRepository.createOrder(any()) } returns Result.Error(DataError.Network.SERVER_ERROR)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnPlaceOrder)
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnPlaceOrder)
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            assertFalse(viewModel.state.value.isPlacingOrder)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                assertFalse(viewModel.state.value.isPlacingOrder)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnQuantityChange
     // ──────────────────────────────────────────────
 
     @Test
-    fun onQuantityChange_itemExistsAndRepoSucceeds_noEventEmitted() = runTest {
-        val cartItem = makeCartItem(id = "item-1")
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { cartRepository.updateQuantity("item-1", 3) } returns Result.Success(Unit)
+    fun onQuantityChange_itemExistsAndRepoSucceeds_noEventEmitted() =
+        runTest {
+            val cartItem = makeCartItem(id = "item-1")
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { cartRepository.updateQuantity("item-1", 3) } returns Result.Success(Unit)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnQuantityChange("item-1", 3))
-            expectNoEvents()
-            cancelAndIgnoreRemainingEvents()
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnQuantityChange("item-1", 3))
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onQuantityChange_repoReturnsError_sendsShowErrorEvent() = runTest {
-        val cartItem = makeCartItem(id = "item-1")
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { cartRepository.updateQuantity("item-1", 3) } returns Result.Error(DataError.Network.SERVER_ERROR)
+    fun onQuantityChange_repoReturnsError_sendsShowErrorEvent() =
+        runTest {
+            val cartItem = makeCartItem(id = "item-1")
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { cartRepository.updateQuantity("item-1", 3) } returns Result.Error(DataError.Network.SERVER_ERROR)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnQuantityChange("item-1", 3))
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnQuantityChange("item-1", 3))
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnDeleteItem
     // ──────────────────────────────────────────────
 
     @Test
-    fun onDeleteItem_itemExistsAndRepoSucceeds_noEventEmitted() = runTest {
-        val cartItem = makeCartItem(id = "item-1")
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { cartRepository.removeFromCart("item-1") } returns Result.Success(Unit)
+    fun onDeleteItem_itemExistsAndRepoSucceeds_noEventEmitted() =
+        runTest {
+            val cartItem = makeCartItem(id = "item-1")
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { cartRepository.removeFromCart("item-1") } returns Result.Success(Unit)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnDeleteItem("item-1"))
-            expectNoEvents()
-            cancelAndIgnoreRemainingEvents()
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnDeleteItem("item-1"))
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onDeleteItem_repoReturnsError_sendsShowErrorEvent() = runTest {
-        val cartItem = makeCartItem(id = "item-1")
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
-        coEvery { cartRepository.removeFromCart("item-1") } returns Result.Error(DataError.Network.SERVER_ERROR)
+    fun onDeleteItem_repoReturnsError_sendsShowErrorEvent() =
+        runTest {
+            val cartItem = makeCartItem(id = "item-1")
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+            coEvery { cartRepository.removeFromCart("item-1") } returns Result.Error(DataError.Network.SERVER_ERROR)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnDeleteItem("item-1"))
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnDeleteItem("item-1"))
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // OnAddRecommendedItem
     // ──────────────────────────────────────────────
 
     @Test
-    fun onAddRecommendedItem_productNotInAllProducts_sendsShowErrorEvent() = runTest {
-        // Default: productRepository returns empty list → allProducts is empty
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+    fun onAddRecommendedItem_productNotInAllProducts_sendsShowErrorEvent() =
+        runTest {
+            // Default: productRepository returns empty list → allProducts is empty
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnAddRecommendedItem("nonexistent-id"))
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnAddRecommendedItem("nonexistent-id"))
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onAddRecommendedItem_repoSucceeds_sendsShowMessageEvent() = runTest {
-        val drinkProduct = makeProduct(id = "drink-1", category = ProductCategory.DRINKS)
-        every { productRepository.getProducts() } returns flowOf(Result.Success(listOf(drinkProduct)))
-        coEvery { cartRepository.addToCart(any()) } returns Result.Success(Unit)
+    fun onAddRecommendedItem_repoSucceeds_sendsShowMessageEvent() =
+        runTest {
+            val drinkProduct = makeProduct(id = "drink-1", category = ProductCategory.DRINKS)
+            every { productRepository.getProducts() } returns flowOf(Result.Success(listOf(drinkProduct)))
+            coEvery { cartRepository.addToCart(any()) } returns Result.Success(Unit)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnAddRecommendedItem("drink-1"))
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnAddRecommendedItem("drink-1"))
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowMessage)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowMessage)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onAddRecommendedItem_repoReturnsError_sendsShowErrorEvent() = runTest {
-        val drinkProduct = makeProduct(id = "drink-1", category = ProductCategory.DRINKS)
-        every { productRepository.getProducts() } returns flowOf(Result.Success(listOf(drinkProduct)))
-        coEvery { cartRepository.addToCart(any()) } returns Result.Error(DataError.Network.SERVER_ERROR)
+    fun onAddRecommendedItem_repoReturnsError_sendsShowErrorEvent() =
+        runTest {
+            val drinkProduct = makeProduct(id = "drink-1", category = ProductCategory.DRINKS)
+            every { productRepository.getProducts() } returns flowOf(Result.Success(listOf(drinkProduct)))
+            coEvery { cartRepository.addToCart(any()) } returns Result.Error(DataError.Network.SERVER_ERROR)
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        viewModel.events.test {
-            viewModel.onAction(CheckoutAction.OnAddRecommendedItem("drink-1"))
+            viewModel.events.test {
+                viewModel.onAction(CheckoutAction.OnAddRecommendedItem("drink-1"))
 
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     // ──────────────────────────────────────────────
     // onDateSelected / onTimeSelected
     // ──────────────────────────────────────────────
 
     @Test
-    fun onDateSelected_sendsShowTimePickerEvent() = runTest {
-        viewModel.events.test {
-            viewModel.onDateSelected(System.currentTimeMillis())
+    fun onDateSelected_sendsShowTimePickerEvent() =
+        runTest {
+            viewModel.events.test {
+                viewModel.onDateSelected(System.currentTimeMillis())
 
-            assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onTimeSelected_selectedTimeInPast_sendsShowErrorAndResetsToEarliest() = runTest {
-        viewModel.events.test {
-            // Call onDateSelected inside the collector so ShowTimePicker is received, not lost
-            viewModel.onDateSelected(1_000L) // epoch + 1s → far in the past
-            assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
+    fun onTimeSelected_selectedTimeInPast_sendsShowErrorAndResetsToEarliest() =
+        runTest {
+            viewModel.events.test {
+                // Call onDateSelected inside the collector so ShowTimePicker is received, not lost
+                viewModel.onDateSelected(1_000L) // epoch + 1s → far in the past
+                assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
 
-            viewModel.onTimeSelected(0, 0)
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                viewModel.onTimeSelected(0, 0)
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
+            // pickupTimeOption and scheduledDateTime both reset to defaults — match initialValue so readable directly
+            assertEquals(PickupTimeOption.EARLIEST, viewModel.state.value.pickupTimeOption)
+            assertTrue(viewModel.state.value.scheduledDateTime == null)
         }
-        // pickupTimeOption and scheduledDateTime both reset to defaults — match initialValue so readable directly
-        assertEquals(PickupTimeOption.EARLIEST, viewModel.state.value.pickupTimeOption)
-        assertTrue(viewModel.state.value.scheduledDateTime == null)
-    }
 
     @Test
-    fun onTimeSelected_timeOutsideOperatingHours_sendsShowErrorEvent() = runTest {
-        val futureDateMillis = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L
+    fun onTimeSelected_timeOutsideOperatingHours_sendsShowErrorEvent() =
+        runTest {
+            val futureDateMillis = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L
 
-        viewModel.events.test {
-            viewModel.onDateSelected(futureDateMillis)
-            assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
+            viewModel.events.test {
+                viewModel.onDateSelected(futureDateMillis)
+                assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
 
-            // 22:00 is past the 21:45 cutoff
-            viewModel.onTimeSelected(22, 0)
-            assertTrue(awaitItem() is CheckoutEvent.ShowError)
-            cancelAndIgnoreRemainingEvents()
+                // 22:00 is past the 21:45 cutoff
+                viewModel.onTimeSelected(22, 0)
+                assertTrue(awaitItem() is CheckoutEvent.ShowError)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun onTimeSelected_validFutureTimeWithinOperatingHours_setsScheduledDateTimeInState() = runTest {
-        val futureDateMillis = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L
+    fun onTimeSelected_validFutureTimeWithinOperatingHours_setsScheduledDateTimeInState() =
+        runTest {
+            val futureDateMillis = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L
 
-        viewModel.events.test {
-            viewModel.onDateSelected(futureDateMillis)
-            assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
+            viewModel.events.test {
+                viewModel.onDateSelected(futureDateMillis)
+                assertEquals(CheckoutEvent.ShowTimePicker, awaitItem())
 
-            // 12:00 noon is well within 10:15–21:45 — no event expected
-            viewModel.onTimeSelected(12, 0)
-            expectNoEvents()
-            cancelAndIgnoreRemainingEvents()
+                // 12:00 noon is well within 10:15–21:45 — no event expected
+                viewModel.onTimeSelected(12, 0)
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+            // Subscribe to state to read the live value
+            viewModel.state.test {
+                val state = awaitItem()
+                assertNotNull(state.scheduledDateTime)
+                assertEquals(PickupTimeOption.SCHEDULED, state.pickupTimeOption)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-        // Subscribe to state to read the live value
-        viewModel.state.test {
-            val state = awaitItem()
-            assertNotNull(state.scheduledDateTime)
-            assertEquals(PickupTimeOption.SCHEDULED, state.pickupTimeOption)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
 
     // ──────────────────────────────────────────────
     // canPlaceOrder derived property
@@ -457,15 +515,19 @@ class CheckoutViewModelTest : BaseViewModelTest() {
     }
 
     @Test
-    fun canPlaceOrder_itemsInCartAndNotPlacingOrder_isTrue() = runTest {
-        val cartItem = makeCartItem()
-        every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
-        every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
+    fun canPlaceOrder_itemsInCartAndNotPlacingOrder_isTrue() =
+        runTest {
+            val cartItem = makeCartItem()
+            every { cartRepository.getCartItems() } returns flowOf(listOf(cartItem))
+            every { cartRepository.getCartSummary() } returns flowOf(CartSummary(listOf(cartItem)))
 
-        viewModel.state.test { advanceUntilIdle(); cancelAndIgnoreRemainingEvents() }
+            viewModel.state.test {
+                advanceUntilIdle()
+                cancelAndIgnoreRemainingEvents()
+            }
 
-        assertTrue(viewModel.state.value.canPlaceOrder)
-    }
+            assertTrue(viewModel.state.value.canPlaceOrder)
+        }
 
     // ──────────────────────────────────────────────
     // Helpers

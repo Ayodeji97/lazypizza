@@ -24,17 +24,18 @@ fun LazyPizzaAlertDialog(
     confirmText: String = stringResource(R.string.ok),
     dismissText: String = stringResource(R.string.cancel),
     onDismissClick: () -> Unit = {},
-    onConfirmClick: () -> Unit = {}
+    onConfirmClick: () -> Unit = {},
 ) {
     AlertDialog(
-        modifier = modifier
-            .fillMaxWidth(0.9f),
+        modifier =
+            modifier
+                .fillMaxWidth(0.9f),
         onDismissRequest = onDismissClick,
         properties = DialogProperties(usePlatformDefaultWidth = false),
         confirmButton = {
             PrimarySmallButton(
                 text = confirmText,
-                onClick = onConfirmClick
+                onClick = onConfirmClick,
             )
         },
         dismissButton = {
@@ -47,13 +48,13 @@ fun LazyPizzaAlertDialog(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.displayLarge
+                style = MaterialTheme.typography.displayLarge,
             )
         },
         text = {
             body?.let {
                 Text(
-                    text = body
+                    text = body,
                 )
             }
         },
@@ -64,13 +65,14 @@ fun LazyPizzaAlertDialog(
 
 @Preview(
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 private fun LazyPizzaAlertDialogPreview() {
     LazyPizzaTheme {
         LazyPizzaAlertDialog(
-            title = "Are you sure you want\n" +
+            title =
+                "Are you sure you want\n" +
                     "to log out?",
         )
     }

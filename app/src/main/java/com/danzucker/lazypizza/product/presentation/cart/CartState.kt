@@ -7,7 +7,7 @@ data class CartState(
     val cartItems: List<CartItemUi> = emptyList(),
     val recommendedAddOns: List<RecommendedAddOnUi> = emptyList(),
     val totalAmount: Double = 0.0,
-    val isLoadingData: Boolean = false
+    val isLoadingData: Boolean = false,
 ) {
     val hasProducts: Boolean = cartItems.isNotEmpty()
 }

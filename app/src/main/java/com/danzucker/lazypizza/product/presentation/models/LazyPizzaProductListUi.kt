@@ -12,9 +12,10 @@ data class LazyPizzaProductListUi(
     val reviewsCount: Int,
     val isFavorite: Boolean,
     val cardType: LazyPizzaCardType,
-    val quantityInCart: Int = 0
+    val quantityInCart: Int = 0,
 )
 
 enum class LazyPizzaCardType {
-    PIZZA, OTHERS
+    PIZZA,
+    OTHERS,
 }

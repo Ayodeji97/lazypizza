@@ -13,12 +13,12 @@ interface AuthRepository {
         activity: Activity,
         onCodeSent: (verificationId: String) -> Unit,
         onVerificationCompleted: () -> Unit,
-        onVerificationFailed: (DataError.Network) -> Unit
+        onVerificationFailed: (DataError.Network) -> Unit,
     ): Result<Unit, DataError.Network>
 
     suspend fun verifyCode(
         verificationId: String,
-        code: String
+        code: String,
     ): Result<String, DataError.Network>
 
     suspend fun signInAnonymously(): Result<String, DataError.Network>
@@ -30,6 +30,7 @@ interface AuthRepository {
     fun getCurrentUserId(): String?
 
     fun observeAuthState(): Flow<FirebaseUser?>
+
     suspend fun transferGuestCart(fromUserId: String?): EmptyResult<DataError.Network>
 
     fun signOut()

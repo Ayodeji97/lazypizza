@@ -37,19 +37,20 @@ import com.danzucker.lazypizza.product.presentation.models.LazyPizzaProductListU
 fun CheckoutPortraitContent(
     state: CheckoutState,
     onAction: (CheckoutAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         // Scrollable content
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Pickup Time Section
             VerticalPickupTimeOptions(
@@ -58,7 +59,7 @@ fun CheckoutPortraitContent(
                 scheduledDateTime = state.scheduledDateTime,
                 onOptionSelected = { option ->
                     onAction(CheckoutAction.OnPickupTimeSelected(option))
-                }
+                },
             )
 
             // Order Details Section (Collapsible)
@@ -75,7 +76,7 @@ fun CheckoutPortraitContent(
                 onDeleteItem = { productId ->
                     onAction(CheckoutAction.OnDeleteItem(productId))
                 },
-                deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT
+                deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
             )
 
             // Recommended Add-ons Section
@@ -84,7 +85,7 @@ fun CheckoutPortraitContent(
                     recommendedAddOns = state.recommendedAddOns,
                     onAddClick = { addOnId ->
                         onAction(CheckoutAction.OnAddRecommendedItem(addOnId))
-                    }
+                    },
                 )
             }
 
@@ -93,7 +94,7 @@ fun CheckoutPortraitContent(
                 value = state.comment,
                 onValueChange = { comment ->
                     onAction(CheckoutAction.OnCommentChange(comment))
-                }
+                },
             )
         }
 
@@ -103,7 +104,7 @@ fun CheckoutPortraitContent(
             onPlaceOrder = { onAction(CheckoutAction.OnPlaceOrder) },
             deviceScreenType = DeviceScreenType.MOBILE_PORTRAIT,
             isLoading = state.isPlacingOrder,
-            enabled = state.canPlaceOrder
+            enabled = state.canPlaceOrder,
         )
     }
 }
@@ -113,65 +114,68 @@ fun CheckoutPortraitContent(
 fun CheckoutPortraitContentPreview() {
     LazyPizzaTheme {
         CheckoutPortraitContent(
-            state = CheckoutState(
-                pickupTimeOption = PickupTimeOption.EARLIEST,
-                earliestPickupTime = "12:15",
-                scheduledDateTime = null,
-                orderItems = listOf(
-                    LazyPizzaProductListUi(
-                        id = "1",
-                        name = "Margherita",
-                        description = "Classic pizza",
-                        price = "$8.99",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Pizza",
-                        rating = 4.5f,
-                        reviewsCount = 150,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.PIZZA,
-                        quantityInCart = 2
-                    ),
-                    LazyPizzaProductListUi(
-                        id = "2",
-                        name = "Pepsi",
-                        description = "Refreshing beverage",
-                        price = "$1.99",
-                        imageUrl = "",
-                        isAvailable = true,
-                        category = "Beverage",
-                        rating = 4.0f,
-                        reviewsCount = 50,
-                        isFavorite = false,
-                        cardType = LazyPizzaCardType.OTHERS,
-                        quantityInCart = 2
-                    )
+            state =
+                CheckoutState(
+                    pickupTimeOption = PickupTimeOption.EARLIEST,
+                    earliestPickupTime = "12:15",
+                    scheduledDateTime = null,
+                    orderItems =
+                        listOf(
+                            LazyPizzaProductListUi(
+                                id = "1",
+                                name = "Margherita",
+                                description = "Classic pizza",
+                                price = "$8.99",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Pizza",
+                                rating = 4.5f,
+                                reviewsCount = 150,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.PIZZA,
+                                quantityInCart = 2,
+                            ),
+                            LazyPizzaProductListUi(
+                                id = "2",
+                                name = "Pepsi",
+                                description = "Refreshing beverage",
+                                price = "$1.99",
+                                imageUrl = "",
+                                isAvailable = true,
+                                category = "Beverage",
+                                rating = 4.0f,
+                                reviewsCount = 50,
+                                isFavorite = false,
+                                cardType = LazyPizzaCardType.OTHERS,
+                                quantityInCart = 2,
+                            ),
+                        ),
+                    isOrderDetailsExpanded = true,
+                    recommendedAddOns =
+                        listOf(
+                            RecommendedAddOnUi(
+                                id = "r1",
+                                name = "BBQ Sauce",
+                                price = 0.59,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r2",
+                                name = "Garlic Sauce",
+                                price = 0.59,
+                                imageUrl = "",
+                            ),
+                            RecommendedAddOnUi(
+                                id = "r3",
+                                name = "Vanilla Ice Cream",
+                                price = 2.49,
+                                imageUrl = "",
+                            ),
+                        ),
+                    comment = "",
+                    totalAmount = 25.45,
                 ),
-                isOrderDetailsExpanded = true,
-                recommendedAddOns = listOf(
-                    RecommendedAddOnUi(
-                        id = "r1",
-                        name = "BBQ Sauce",
-                        price = 0.59,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r2",
-                        name = "Garlic Sauce",
-                        price = 0.59,
-                        imageUrl = ""
-                    ),
-                    RecommendedAddOnUi(
-                        id = "r3",
-                        name = "Vanilla Ice Cream",
-                        price = 2.49,
-                        imageUrl = ""
-                    )
-                ),
-                comment = "",
-                totalAmount = 25.45
-            ),
-            onAction = {}
+            onAction = {},
         )
     }
 }

@@ -2,7 +2,6 @@ package com.danzucker.lazypizza.product.domain.model
 
 import kotlin.collections.map
 
-
 /**
  * Domain model for an order
  *
@@ -23,26 +22,27 @@ data class Order(
     val total: Double = 0.0,
     val status: OrderStatus = OrderStatus.IN_PROGRESS,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 ) {
     /**
      * Firebase Firestore representation
      */
-    fun toFirestoreMap(): Map<String, Any> = mapOf(
-        "id" to id,
-        "orderNumber" to orderNumber,
-        "userId" to userId,
-        "items" to items.map { it.toFirestoreMap() },
-        "pickupTime" to pickupTime,
-        "pickupTimeMillis" to pickupTimeMillis,
-        "comment" to comment,
-        "subtotal" to subtotal,
-        "tax" to tax,
-        "total" to total,
-        "status" to status.name,
-        "createdAt" to createdAt,
-        "updatedAt" to updatedAt
-    )
+    fun toFirestoreMap(): Map<String, Any> =
+        mapOf(
+            "id" to id,
+            "orderNumber" to orderNumber,
+            "userId" to userId,
+            "items" to items.map { it.toFirestoreMap() },
+            "pickupTime" to pickupTime,
+            "pickupTimeMillis" to pickupTimeMillis,
+            "comment" to comment,
+            "subtotal" to subtotal,
+            "tax" to tax,
+            "total" to total,
+            "status" to status.name,
+            "createdAt" to createdAt,
+            "updatedAt" to updatedAt,
+        )
 
     companion object {
         /**
@@ -53,8 +53,9 @@ data class Order(
             val itemsData = data["items"] as? List<Map<String, Any>> ?: emptyList()
 
             val statusString = data["status"] as? String
-            val status = enumValues<OrderStatus>().firstOrNull { it.name == statusString }
-                ?: OrderStatus.IN_PROGRESS
+            val status =
+                enumValues<OrderStatus>().firstOrNull { it.name == statusString }
+                    ?: OrderStatus.IN_PROGRESS
 
             return Order(
                 id = data["id"] as? String ?: "",
@@ -69,7 +70,7 @@ data class Order(
                 total = (data["total"] as? Number)?.toDouble() ?: 0.0,
                 status = status,
                 createdAt = (data["createdAt"] as? Number)?.toLong() ?: System.currentTimeMillis(),
-                updatedAt = (data["updatedAt"] as? Number)?.toLong() ?: System.currentTimeMillis()
+                updatedAt = (data["updatedAt"] as? Number)?.toLong() ?: System.currentTimeMillis(),
             )
         }
 

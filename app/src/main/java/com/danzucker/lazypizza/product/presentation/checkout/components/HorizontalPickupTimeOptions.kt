@@ -24,18 +24,18 @@ fun HorizontalPickupTimeOptions(
     earliestPickupTime: String,
     scheduledDateTime: String?,
     onOptionSelected: (PickupTimeOption) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.pickup_time_subtitle),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Earliest available time option
 
@@ -43,14 +43,14 @@ fun HorizontalPickupTimeOptions(
                 text = stringResource(R.string.earliest_available_time),
                 selected = selectedOption == PickupTimeOption.EARLIEST,
                 onClick = { onOptionSelected(PickupTimeOption.EARLIEST) },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
 
             PickupTimeRadioButton(
                 text = stringResource(R.string.schedule_time),
                 selected = selectedOption == PickupTimeOption.SCHEDULED,
                 onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
 
@@ -63,9 +63,6 @@ fun HorizontalPickupTimeOptions(
     }
 }
 
-
-
-
 @Preview(name = "Tablet - Horizontal Layout", widthDp = 840, showBackground = true)
 @Composable
 private fun PickupTimeSelectorTabletPreview() {
@@ -74,7 +71,7 @@ private fun PickupTimeSelectorTabletPreview() {
             selectedOption = PickupTimeOption.EARLIEST,
             earliestPickupTime = "12:15",
             scheduledDateTime = null,
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -87,7 +84,7 @@ private fun PickupTimeSelectorTabletScheduledPreview() {
             selectedOption = PickupTimeOption.SCHEDULED,
             earliestPickupTime = "12:15",
             scheduledDateTime = "November 25, 18:30",
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }

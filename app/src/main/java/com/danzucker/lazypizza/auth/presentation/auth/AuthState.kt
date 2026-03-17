@@ -12,13 +12,14 @@ data class AuthState(
     val errorMessage: UiText? = null,
     val resendCountdown: Int = 60,
     val canResend: Boolean = false,
-    val verificationId: String? = null
+    val verificationId: String? = null,
 ) {
     val canLogin: Boolean
-        get() = when (currentStep) {
-            AuthStep.PHONE_INPUT -> PhoneValidator.isValidPhoneNumber(phoneNumber) && !isLoading
-            AuthStep.OTP_INPUT -> verificationCode.all { it.isNotEmpty() } && !isLoading
-        }
+        get() =
+            when (currentStep) {
+                AuthStep.PHONE_INPUT -> PhoneValidator.isValidPhoneNumber(phoneNumber) && !isLoading
+                AuthStep.OTP_INPUT -> verificationCode.all { it.isNotEmpty() } && !isLoading
+            }
 
     val isCodeComplete: Boolean
         get() = verificationCode.all { it.isNotEmpty() }
@@ -26,5 +27,5 @@ data class AuthState(
 
 enum class AuthStep {
     PHONE_INPUT,
-    OTP_INPUT
+    OTP_INPUT,
 }

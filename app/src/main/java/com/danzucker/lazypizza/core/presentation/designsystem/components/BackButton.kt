@@ -19,16 +19,17 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 @Composable
 fun BackButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier
-            .size(32.dp)
-            .background(
-                color = MaterialTheme.colorScheme.inverseSurface,
-                shape = CircleShape
-            )
+        modifier =
+            modifier
+                .size(32.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    shape = CircleShape,
+                ),
     ) {
         Icon(
             imageVector = BackIcon,
@@ -43,8 +44,9 @@ private fun BackButtonPreview() {
     LazyPizzaTheme {
         BackButton(
             onClick = {},
-            modifier = Modifier
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .padding(16.dp),
         )
     }
 }

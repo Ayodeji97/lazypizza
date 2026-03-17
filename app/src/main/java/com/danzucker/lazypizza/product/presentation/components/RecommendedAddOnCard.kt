@@ -38,47 +38,51 @@ import com.danzucker.lazypizza.product.presentation.util.formatAmount
 fun RecommendedAddOnCard(
     addOn: RecommendedAddOnUi,
     onAddClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.surface
-        ),
-        modifier = modifier
-            .width(160.dp)
-            .wrapContentHeight()
-            .shadow(
-                elevation = elevationLarge,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = LazyPizzaShadowColor,
-                ambientColor = LazyPizzaShadowColor
-            )
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.surface,
+            ),
+        modifier =
+            modifier
+                .width(160.dp)
+                .wrapContentHeight()
+                .shadow(
+                    elevation = elevationLarge,
+                    shape = RoundedCornerShape(12.dp),
+                    spotColor = LazyPizzaShadowColor,
+                    ambientColor = LazyPizzaShadowColor,
+                ),
     ) {
         Column {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    ),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ),
+                contentAlignment = Alignment.Center,
             ) {
                 RemoteImage(
                     imageUrl = addOn.imageUrl,
                     contentDescription = addOn.name,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
 
             Column(
-                modifier = Modifier
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
                     text = addOn.name,
@@ -90,24 +94,25 @@ fun RecommendedAddOnCard(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 ) {
                     Text(
                         text = formatAmount(addOn.price),
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
 
                     CardShell(
                         onClick = onAddClick,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(22.dp),
                     ) {
                         Icon(
                             imageVector = PlusIcon,
                             contentDescription = "Add to cart",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(16.dp),
                         )
                     }
                 }
@@ -121,14 +126,15 @@ fun RecommendedAddOnCard(
 private fun RecommendedAddOnCardPreview() {
     LazyPizzaTheme {
         RecommendedAddOnCard(
-            addOn = RecommendedAddOnUi(
-                id = "1",
-                name = "BBQ Sauce",
-                price = 0.59,
-                imageUrl = ""
-            ),
+            addOn =
+                RecommendedAddOnUi(
+                    id = "1",
+                    name = "BBQ Sauce",
+                    price = 0.59,
+                    imageUrl = "",
+                ),
             onAddClick = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }

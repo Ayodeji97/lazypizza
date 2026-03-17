@@ -23,41 +23,38 @@ fun LazyPizzaProductListUi.toOrderItem(): OrderItem {
         totalPrice = priceDouble * quantityInCart,
         imageUrl = imageUrl,
         toppings = emptyList(),
-        category = category
+        category = category,
     )
 }
 
 /**
  * Convert Order domain model to OrderUi presentation model
  */
-fun Order.toOrderUi(): OrderUi {
-    return OrderUi(
+fun Order.toOrderUi(): OrderUi =
+    OrderUi(
         id = id,
         orderNumber = orderNumber,
         date = formatOrderDate(createdAt),
         items = items.map { it.toOrderItemUi() },
         totalAmount = formatAmount(total),
-        status = status.toOrderStatusUi()
+        status = status.toOrderStatusUi(),
     )
-}
 
 /**
  * Convert OrderItem to OrderItemUi
  */
-fun OrderItem.toOrderItemUi(): OrderItemUi {
-    return OrderItemUi(
+fun OrderItem.toOrderItemUi(): OrderItemUi =
+    OrderItemUi(
         quantity = quantity,
-        productName = productName
+        productName = productName,
     )
-}
 
 /**
  * Convert OrderStatus to OrderStatusUi
  */
-fun OrderStatus.toOrderStatusUi(): OrderStatusUi {
-    return when (this) {
+fun OrderStatus.toOrderStatusUi(): OrderStatusUi =
+    when (this) {
         OrderStatus.IN_PROGRESS -> OrderStatusUi.IN_PROGRESS
         OrderStatus.COMPLETED -> OrderStatusUi.COMPLETED
         OrderStatus.CANCELLED -> OrderStatusUi.CANCELLED
     }
-}

@@ -6,5 +6,5 @@ data class MiniCardInfo(
     val price: String,
     val imageUrl: String,
     val quantity: Int = 0,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
 )

@@ -38,7 +38,6 @@ fun OtpCodeBox1(
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: (() -> Unit)? = null,
 ) {
-
     var isFocused by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -53,46 +52,50 @@ fun OtpCodeBox1(
             if (!isFocused && digit.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
+                    style =
+                        MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Normal,
+                        ),
                 )
             }
         },
-        modifier = modifier
-            .size(width = 56.dp, height = 48.dp)
-            .onFocusChanged {
-                isFocused = it.isFocused
-                if (it.isFocused) {
-                    onFocused()
-                }
-            },
-        textStyle = MaterialTheme.typography.titleSmall.copy(
-            fontWeight = FontWeight.Normal
-        ),
+        modifier =
+            modifier
+                .size(width = 56.dp, height = 48.dp)
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                    if (it.isFocused) {
+                        onFocused()
+                    }
+                },
+        textStyle =
+            MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
         singleLine = true,
         isError = isError,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        keyboardActions = KeyboardActions(
-            onAny = {
-                onImeAction?.invoke()
-                if (imeAction == ImeAction.Done) {
-                    keyboardController?.hide()
-                }
-            }
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onAny = {
+                    onImeAction?.invoke()
+                    if (imeAction == ImeAction.Done) {
+                        keyboardController?.hide()
+                    }
+                },
+            ),
         shape = RoundedCornerShape(100),
         colors = lazyPizzaOtpCodeTextFieldColors(),
     )
 }
 
-
 @Composable
-fun lazyPizzaOtpCodeTextFieldColors(): TextFieldColors {
-    return OutlinedTextFieldDefaults.colors(
+fun lazyPizzaOtpCodeTextFieldColors(): TextFieldColors =
+    OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         focusedBorderColor = Color.Transparent,
@@ -103,4 +106,3 @@ fun lazyPizzaOtpCodeTextFieldColors(): TextFieldColors {
         errorCursorColor = MaterialTheme.colorScheme.primary,
         errorBorderColor = MaterialTheme.colorScheme.primary,
     )
-}

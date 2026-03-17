@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.firebase.google.service)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -25,7 +26,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -54,7 +55,6 @@ dependencies {
     // DI - Koin
     implementation(libs.bundles.koin)
 
-
     // Splashscreen for managing app launch screens
     implementation(libs.androidx.core.splashscreen)
 
@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.bundles.firebase)
     implementation(libs.bundles.datastore)
 
-
     // Coroutines for Firebase
     implementation(libs.kotlinx.coroutines.play.services)
 
@@ -80,14 +79,12 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-
     // Material Icons
     implementation(libs.material.icons.core)
 
     // Logging
     implementation(libs.timber)
     implementation(libs.androidx.compose.foundation)
-
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
@@ -105,4 +102,8 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
+}
+
+ktlint {
+    version.set("1.5.0")
 }

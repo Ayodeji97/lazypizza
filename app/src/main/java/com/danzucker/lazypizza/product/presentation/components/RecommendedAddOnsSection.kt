@@ -24,70 +24,71 @@ import com.danzucker.lazypizza.product.presentation.cart.model.RecommendedAddOnU
 fun RecommendedAddOnsSection(
     recommendedAddOns: List<RecommendedAddOnUi>,
     onAddClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (recommendedAddOns.isEmpty()) return
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Text(
             text = stringResource(R.string.recommended_to_add_to_your_order).uppercase(),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.surfaceTint,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             items(
                 items = recommendedAddOns,
-                key = { it.id }
+                key = { it.id },
             ) { addOn ->
                 RecommendedAddOnCard(
                     addOn = addOn,
                     onAddClick = {
                         onAddClick(addOn.id)
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-
 @Preview
 @Composable
 private fun RecommendedAddOnsSectionPreview() {
     LazyPizzaTheme {
         RecommendedAddOnsSection(
-            recommendedAddOns = listOf(
-                RecommendedAddOnUi(
-                    id = "1",
-                    name = "BBQ Sauce",
-                    price = 0.59,
-                    imageUrl = ""
+            recommendedAddOns =
+                listOf(
+                    RecommendedAddOnUi(
+                        id = "1",
+                        name = "BBQ Sauce",
+                        price = 0.59,
+                        imageUrl = "",
+                    ),
+                    RecommendedAddOnUi(
+                        id = "2",
+                        name = "Garlic Sauce",
+                        price = 0.59,
+                        imageUrl = "",
+                    ),
+                    RecommendedAddOnUi(
+                        id = "3",
+                        name = "Vanilla Shake",
+                        price = 2.49,
+                        imageUrl = "",
+                    ),
                 ),
-                RecommendedAddOnUi(
-                    id = "2",
-                    name = "Garlic Sauce",
-                    price = 0.59,
-                    imageUrl = ""
-                ),
-                RecommendedAddOnUi(
-                    id = "3",
-                    name = "Vanilla Shake",
-                    price = 2.49,
-                    imageUrl = ""
-                )
-            ),
-            onAddClick = {}
+            onAddClick = {},
         )
     }
 }

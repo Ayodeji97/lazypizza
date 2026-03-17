@@ -8,5 +8,5 @@ data class PizzaDetailUi(
     val imageUrl: String,
     val imageResId: Int, // For local resources - fall back option
     val ingredients: String,
-    val category: String
+    val category: String,
 )

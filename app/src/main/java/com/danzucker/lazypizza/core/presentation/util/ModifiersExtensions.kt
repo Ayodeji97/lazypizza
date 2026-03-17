@@ -17,25 +17,27 @@ import androidx.compose.ui.unit.Dp
  * 3. This function can only be use only inside a composable function.
  */
 
-
 @Composable
 fun Modifier.negativePadding(horizontal: Dp): Modifier {
     val density = LocalDensity.current
-    val px = with(density) {
-        horizontal.roundToPx()
-    }
+    val px =
+        with(density) {
+            horizontal.roundToPx()
+        }
     return layout { measurable, constraints ->
-        val placeable = measurable.measure(
-            constraints = constraints.copy(
-                minWidth = constraints.minWidth + 2 * px,
-                maxWidth = constraints.maxWidth + 2 * px
+        val placeable =
+            measurable.measure(
+                constraints =
+                    constraints.copy(
+                        minWidth = constraints.minWidth + 2 * px,
+                        maxWidth = constraints.maxWidth + 2 * px,
+                    ),
             )
-        )
 
         layout(placeable.width, placeable.height) {
             placeable.place(
                 x = 0,
-                y = 0
+                y = 0,
             )
         }
     }
@@ -43,10 +45,10 @@ fun Modifier.negativePadding(horizontal: Dp): Modifier {
 
 inline fun Modifier.applyIf(
     condition: Boolean,
-    modifier: Modifier.() -> Modifier
-): Modifier = if (condition) {
-    this.then(modifier())
-} else {
-    this
-}
-
+    modifier: Modifier.() -> Modifier,
+): Modifier =
+    if (condition) {
+        this.then(modifier())
+    } else {
+        this
+    }

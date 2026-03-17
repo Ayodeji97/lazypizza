@@ -39,11 +39,12 @@ fun LazyPizzaCenteredTopAppBar(
         navigationIcon = {
             navigationIcon?.invoke()
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = containerColor,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        scrollBehavior = scrollBehavior
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = containerColor,
+                scrolledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
 

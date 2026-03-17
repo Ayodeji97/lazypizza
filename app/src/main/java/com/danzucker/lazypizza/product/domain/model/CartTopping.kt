@@ -8,23 +8,23 @@ data class CartTopping(
     val id: String,
     val name: String,
     val price: Double,
-    val quantity: Int
+    val quantity: Int,
 ) {
-    fun toFirestoreMap(): Map<String, Any> = mapOf(
-        "id" to id,
-        "name" to name,
-        "price" to price,
-        "quantity" to quantity
-    )
+    fun toFirestoreMap(): Map<String, Any> =
+        mapOf(
+            "id" to id,
+            "name" to name,
+            "price" to price,
+            "quantity" to quantity,
+        )
 
     companion object {
-        fun fromFirestoreMap(data: Map<String, Any>): CartTopping {
-            return CartTopping(
+        fun fromFirestoreMap(data: Map<String, Any>): CartTopping =
+            CartTopping(
                 id = data["id"] as? String ?: "",
                 name = data["name"] as? String ?: "",
                 price = (data["price"] as? Number)?.toDouble() ?: 0.0,
-                quantity = (data["quantity"] as? Number)?.toInt() ?: 0
+                quantity = (data["quantity"] as? Number)?.toInt() ?: 0,
             )
-        }
     }
 }

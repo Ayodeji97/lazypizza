@@ -3,7 +3,6 @@
 package com.danzucker.lazypizza.product.presentation.orderhistory
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,7 +34,7 @@ import org.koin.androidx.compose.koinViewModel
 fun OrderHistoryRoot(
     onNavigateToAuth: () -> Unit,
     onNavigateToMenu: () -> Unit,
-    viewModel: OrderHistoryViewModel = koinViewModel()
+    viewModel: OrderHistoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -47,7 +46,7 @@ fun OrderHistoryRoot(
                 OrderHistoryAction.GoToMenu -> onNavigateToMenu()
                 else -> viewModel.onAction(action)
             }
-        }
+        },
     )
 }
 
@@ -62,22 +61,24 @@ fun OrderHistoryScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             LazyPizzaCenteredTopAppBar(
-                title = stringResource(R.string.order_history_title)
+                title = stringResource(R.string.order_history_title),
             )
-        }
+        },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             when {
                 state.isLoadingData -> {
                     CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(),
-                        color = MaterialTheme.colorScheme.primary
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(),
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
 
@@ -88,7 +89,7 @@ fun OrderHistoryScreen(
                         buttonText = stringResource(R.string.signed_in_button),
                         onButtonClick = { onAction(OrderHistoryAction.SignIn) },
                         isLoading = false,
-                        enabled = true
+                        enabled = true,
                     )
                 }
 
@@ -99,7 +100,7 @@ fun OrderHistoryScreen(
                         buttonText = stringResource(R.string.go_to_menu_btn),
                         onButtonClick = { onAction(OrderHistoryAction.GoToMenu) },
                         isLoading = false,
-                        enabled = true
+                        enabled = true,
                     )
                 }
 
@@ -107,25 +108,24 @@ fun OrderHistoryScreen(
                     OrderHistoryList(
                         orders = state.orders,
                         deviceScreenType = deviceScreenType,
-                        modifier = Modifier
+                        modifier = Modifier,
                     )
                 }
             }
         }
-
     }
 }
-
 
 @Preview(name = "Unauthorized")
 @Composable
 private fun OrderHistoryUnauthorizedPreview() {
     LazyPizzaTheme {
         OrderHistoryScreen(
-            state = OrderHistoryState(
-                isAuthenticated = false
-            ),
-            onAction = {}
+            state =
+                OrderHistoryState(
+                    isAuthenticated = false,
+                ),
+            onAction = {},
         )
     }
 }
@@ -135,11 +135,12 @@ private fun OrderHistoryUnauthorizedPreview() {
 private fun OrderHistoryEmptyPreview() {
     LazyPizzaTheme {
         OrderHistoryScreen(
-            state = OrderHistoryState(
-                isAuthenticated = true,
-                orders = emptyList()
-            ),
-            onAction = {}
+            state =
+                OrderHistoryState(
+                    isAuthenticated = true,
+                    orders = emptyList(),
+                ),
+            onAction = {},
         )
     }
 }
@@ -149,43 +150,47 @@ private fun OrderHistoryEmptyPreview() {
 private fun OrderHistoryWithOrdersPreview() {
     LazyPizzaTheme {
         OrderHistoryScreen(
-            state = OrderHistoryState(
-                isAuthenticated = true,
-                orders = listOf(
-                    OrderUi(
-                        id = "1",
-                        orderNumber = "#12347",
-                        date = "September 25, 12:15",
-                        items = listOf(OrderItemUi("Margherita", 1)),
-                        totalAmount = "$8.99",
-                        status = OrderStatusUi.IN_PROGRESS
-                    ),
-                    OrderUi(
-                        id = "2",
-                        orderNumber = "#12346",
-                        date = "September 25, 12:15",
-                        items = listOf(
-                            OrderItemUi("Margherita", 1),
-                            OrderItemUi("Pepsi", 2),
-                            OrderItemUi("Cookies Ice Cream", 2)
+            state =
+                OrderHistoryState(
+                    isAuthenticated = true,
+                    orders =
+                        listOf(
+                            OrderUi(
+                                id = "1",
+                                orderNumber = "#12347",
+                                date = "September 25, 12:15",
+                                items = listOf(OrderItemUi("Margherita", 1)),
+                                totalAmount = "$8.99",
+                                status = OrderStatusUi.IN_PROGRESS,
+                            ),
+                            OrderUi(
+                                id = "2",
+                                orderNumber = "#12346",
+                                date = "September 25, 12:15",
+                                items =
+                                    listOf(
+                                        OrderItemUi("Margherita", 1),
+                                        OrderItemUi("Pepsi", 2),
+                                        OrderItemUi("Cookies Ice Cream", 2),
+                                    ),
+                                totalAmount = "$25.45",
+                                status = OrderStatusUi.COMPLETED,
+                            ),
+                            OrderUi(
+                                id = "3",
+                                orderNumber = "#12345",
+                                date = "September 25, 12:15",
+                                items =
+                                    listOf(
+                                        OrderItemUi("Margherita", 1),
+                                        OrderItemUi("Cookies Ice Cream", 2),
+                                    ),
+                                totalAmount = "$11.78",
+                                status = OrderStatusUi.COMPLETED,
+                            ),
                         ),
-                        totalAmount = "$25.45",
-                        status = OrderStatusUi.COMPLETED
-                    ),
-                    OrderUi(
-                        id = "3",
-                        orderNumber = "#12345",
-                        date = "September 25, 12:15",
-                        items = listOf(
-                            OrderItemUi("Margherita", 1),
-                            OrderItemUi("Cookies Ice Cream", 2)
-                        ),
-                        totalAmount = "$11.78",
-                        status = OrderStatusUi.COMPLETED
-                    )
-                )
-            ),
-            onAction = {}
+                ),
+            onAction = {},
         )
     }
 }

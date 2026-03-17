@@ -35,27 +35,29 @@ import org.koin.compose.koinInject
 fun MainScaffold(
     onNavigateToProductDetails: (String) -> Unit,
     onNavigateToAuth: () -> Unit,
-    onNavigateToCheckout: () -> Unit
+    onNavigateToCheckout: () -> Unit,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     val cartRepository: CartRepository = koinInject()
-    val cartItemCount by cartRepository.getCartItemsCount()
+    val cartItemCount by cartRepository
+        .getCartItemsCount()
         .collectAsStateWithLifecycle(initialValue = 0)
 
     val windowClass = currentWindowAdaptiveInfo().windowSizeClass
     val deviceScreenType = fromWindowSizeClass(windowSizeClass = windowClass)
     val isWideScreen = deviceScreenType != DeviceScreenType.MOBILE_PORTRAIT
 
-    val navItems = listOf(
-        BottomNavItem(label = "Menu", icon = MenuIcon),
-        BottomNavItem(
-            label = "Cart",
-            icon = CartIcon,
-            badgeCount = if (cartItemCount > 0) cartItemCount else null
-        ),
-        BottomNavItem(label = "History", icon = HistoryIcon)
-    )
+    val navItems =
+        listOf(
+            BottomNavItem(label = "Menu", icon = MenuIcon),
+            BottomNavItem(
+                label = "Cart",
+                icon = CartIcon,
+                badgeCount = if (cartItemCount > 0) cartItemCount else null,
+            ),
+            BottomNavItem(label = "History", icon = HistoryIcon),
+        )
 
     if (isWideScreen) {
         // Wide screen layout with NavigationRail
@@ -63,24 +65,27 @@ fun MainScaffold(
             LazyPizzaNavigationRail(
                 items = navItems,
                 selectedIndex = selectedTabIndex,
-                onItemSelected = { selectedTabIndex = it }
+                onItemSelected = { selectedTabIndex = it },
             )
 
             // Content area - each screen manages its own Scaffold/layout
             Box(modifier = Modifier.fillMaxSize()) {
                 when (selectedTabIndex) {
-                    0 -> ProductListRoot(
-                        onNavigateToProductDetails = onNavigateToProductDetails,
-                        onNavigateToAuth = onNavigateToAuth
-                    )
-                    1 -> CartRoot(
-                        onNavigateToMenu = { selectedTabIndex = 0 },
-                        onNavigateToCheckout = onNavigateToCheckout
-                    )
-                    2 -> OrderHistoryRoot(
-                        onNavigateToAuth = onNavigateToAuth,
-                        onNavigateToMenu = { selectedTabIndex = 0 }
-                    )
+                    0 ->
+                        ProductListRoot(
+                            onNavigateToProductDetails = onNavigateToProductDetails,
+                            onNavigateToAuth = onNavigateToAuth,
+                        )
+                    1 ->
+                        CartRoot(
+                            onNavigateToMenu = { selectedTabIndex = 0 },
+                            onNavigateToCheckout = onNavigateToCheckout,
+                        )
+                    2 ->
+                        OrderHistoryRoot(
+                            onNavigateToAuth = onNavigateToAuth,
+                            onNavigateToMenu = { selectedTabIndex = 0 },
+                        )
                 }
             }
         }
@@ -93,30 +98,34 @@ fun MainScaffold(
                 LazyPizzaBottomNavigationBar(
                     items = navItems,
                     selectedIndex = selectedTabIndex,
-                    onItemSelected = { selectedTabIndex = it }
+                    onItemSelected = { selectedTabIndex = it },
                 )
-            }
+            },
         ) { innerPadding ->
             // Each screen manages its own Scaffold with top bar
             // They just need to respect the bottom padding from innerPadding
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
             ) {
                 when (selectedTabIndex) {
-                    0 -> ProductListRoot(
-                        onNavigateToProductDetails = onNavigateToProductDetails,
-                        onNavigateToAuth = onNavigateToAuth
-                    )
-                    1 -> CartRoot(
-                        onNavigateToMenu = { selectedTabIndex = 0 },
-                        onNavigateToCheckout = onNavigateToCheckout
-                    )
-                    2 -> OrderHistoryRoot(
-                        onNavigateToAuth = onNavigateToAuth,
-                        onNavigateToMenu = { selectedTabIndex = 0 }
-                    )
+                    0 ->
+                        ProductListRoot(
+                            onNavigateToProductDetails = onNavigateToProductDetails,
+                            onNavigateToAuth = onNavigateToAuth,
+                        )
+                    1 ->
+                        CartRoot(
+                            onNavigateToMenu = { selectedTabIndex = 0 },
+                            onNavigateToCheckout = onNavigateToCheckout,
+                        )
+                    2 ->
+                        OrderHistoryRoot(
+                            onNavigateToAuth = onNavigateToAuth,
+                            onNavigateToMenu = { selectedTabIndex = 0 },
+                        )
                 }
             }
         }

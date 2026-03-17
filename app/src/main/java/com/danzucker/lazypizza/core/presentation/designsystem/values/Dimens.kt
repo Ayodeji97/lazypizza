@@ -4,7 +4,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Dimens {
-
     // Padding
     val paddingExtraSmall4 = 4.dp
     val paddingSmall6 = 6.dp
@@ -50,8 +49,6 @@ object Dimens {
     // Stroke widths
     val strokeWidthSmall = 1.dp
     val strokeWidthMedium12 = 2.dp
-
-
 
     // Font sizes
     val fontSizeExtraSmall4 = 4.sp

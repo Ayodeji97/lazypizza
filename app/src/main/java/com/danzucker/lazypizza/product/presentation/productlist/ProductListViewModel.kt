@@ -6,14 +6,16 @@ import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.auth.domain.AuthRepository
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
-import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.model.CartItem
 import com.danzucker.lazypizza.product.domain.model.ProductCategory
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.presentation.mappers.getPriceAsDouble
 import com.danzucker.lazypizza.product.presentation.mappers.toProductListUi
-import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.*
-import timber.log.Timber
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.ItemAddedToCart
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.NavigateToAuth
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.OpenPhoneDialer
+import com.danzucker.lazypizza.product.presentation.productlist.ProductListEvent.ShowErrorMessage
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,33 +26,33 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ProductListViewModel(
     private val cartRepository: CartRepository,
     private val productRepository: ProductRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
-
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(ProductListState())
 
     private val eventChannel = Channel<ProductListEvent>()
     val events = eventChannel.receiveAsFlow()
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                /** Load initial data here **/
-                loadProducts()
-                observeAuthState()
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ProductListState()
-        )
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    /** Load initial data here **/
+                    loadProducts()
+                    observeAuthState()
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = ProductListState(),
+            )
 
     fun onAction(action: ProductListAction) {
         when (action) {
@@ -90,17 +92,17 @@ class ProductListViewModel(
     }
 
     private fun observeAuthState() {
-        authRepository.observeAuthState()
+        authRepository
+            .observeAuthState()
             .onEach { user ->
                 _state.update {
                     it.copy(
                         isAuthenticated = user != null,
                         isAnonymous = user?.isAnonymous ?: false,
-                        userPhoneNumber = user?.phoneNumber
+                        userPhoneNumber = user?.phoneNumber,
                     )
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     private fun handleUserIconClick() {
@@ -135,13 +137,15 @@ class ProductListViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoadingData = true) }
 
-            productRepository.getProducts()
+            productRepository
+                .getProducts()
                 .onEach { result ->
                     when (result) {
                         is Result.Success -> {
-                            val products = result.data.map { product ->
-                                product.toProductListUi(quantityInCart = 0)
-                            }
+                            val products =
+                                result.data.map { product ->
+                                    product.toProductListUi(quantityInCart = 0)
+                                }
                             val categories = ProductCategory.entries.map { it.displayName }
 
                             _state.update {
@@ -157,8 +161,8 @@ class ProductListViewModel(
                             _state.update { it.copy(isLoadingData = false) }
                             eventChannel.send(
                                 ShowErrorMessage(
-                                    UiText.StringResource(R.string.failed_to_load_products)
-                                )
+                                    UiText.StringResource(R.string.failed_to_load_products),
+                                ),
                             )
                         }
                     }
@@ -170,14 +174,15 @@ class ProductListViewModel(
         val currentState = _state.value
         val query = currentState.searchQuery.lowercase()
 
-        val filtered = currentState.allProducts.filter { product ->
-            if (query.isBlank()) {
-                true
-            } else {
-                product.name.lowercase().contains(query) ||
+        val filtered =
+            currentState.allProducts.filter { product ->
+                if (query.isBlank()) {
+                    true
+                } else {
+                    product.name.lowercase().contains(query) ||
                         product.description.lowercase().contains(query)
+                }
             }
-        }
         _state.update { it.copy(filteredProducts = filtered) }
     }
 
@@ -198,26 +203,30 @@ class ProductListViewModel(
     private fun addToCartFromList(productId: String) {
         viewModelScope.launch {
             val product = _state.value.allProducts.find { it.id == productId } ?: return@launch
-            val cartItem = CartItem(
-                id = product.id,
-                productId = productId,
-                name = product.name,
-                imageUrl = product.imageUrl,
-                basePrice = product.getPriceAsDouble(),
-                quantity = 1,
-                toppings = emptyList(),
-                category = product.category
-            )
+            val cartItem =
+                CartItem(
+                    id = product.id,
+                    productId = productId,
+                    name = product.name,
+                    imageUrl = product.imageUrl,
+                    basePrice = product.getPriceAsDouble(),
+                    quantity = 1,
+                    toppings = emptyList(),
+                    category = product.category,
+                )
             when (cartRepository.addToCart(cartItem)) {
                 is Result.Success -> {
                     updateLocalCartQuantity(
                         productId = productId,
-                        quantity = 1
+                        quantity = 1,
                     )
                     eventChannel.send(ItemAddedToCart)
                 }
 
-                is Result.Error -> eventChannel.send(ShowErrorMessage(UiText.StringResource(R.string.failed_to_add_to_cart)))
+                is Result.Error ->
+                    eventChannel.send(
+                        ShowErrorMessage(UiText.StringResource(R.string.failed_to_add_to_cart)),
+                    )
             }
         }
     }
@@ -227,7 +236,10 @@ class ProductListViewModel(
      *
      * Note: This is UI-only update. Actual cart sync happens via CartViewModel
      */
-    private fun updateQuantityInList(productId: String, newQuantity: Int) {
+    private fun updateQuantityInList(
+        productId: String,
+        newQuantity: Int,
+    ) {
         if (newQuantity < 0) return
 
         viewModelScope.launch {
@@ -241,20 +253,23 @@ class ProductListViewModel(
      * Update local product list UI to reflect cart changes
      * This provides immediate visual feedback while cart syncs in background
      */
-    private fun updateLocalCartQuantity(productId: String, quantity: Int) {
+    private fun updateLocalCartQuantity(
+        productId: String,
+        quantity: Int,
+    ) {
         _state.update { currentState ->
-            val updatedProducts = currentState.allProducts.map { product ->
-                if (product.id == productId) {
-                    product.copy(quantityInCart = quantity)
-                } else {
-                    product
+            val updatedProducts =
+                currentState.allProducts.map { product ->
+                    if (product.id == productId) {
+                        product.copy(quantityInCart = quantity)
+                    } else {
+                        product
+                    }
                 }
-            }
             currentState.copy(allProducts = updatedProducts)
         }
         filterProducts()
     }
-
 
     /**
      * Remove from cart (quantity becomes 0)

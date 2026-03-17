@@ -6,5 +6,5 @@ data class Topping(
     val price: Double = 0.0,
     val imageUrl: String = "",
     val maxQuantity: Int = 3,
-    val isAvailable: Boolean = true
+    val isAvailable: Boolean = true,
 )

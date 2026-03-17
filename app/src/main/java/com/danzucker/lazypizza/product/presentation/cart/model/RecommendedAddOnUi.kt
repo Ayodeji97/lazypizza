@@ -4,5 +4,5 @@ data class RecommendedAddOnUi(
     val id: String,
     val name: String,
     val price: Double,
-    val imageUrl: String
+    val imageUrl: String,
 )

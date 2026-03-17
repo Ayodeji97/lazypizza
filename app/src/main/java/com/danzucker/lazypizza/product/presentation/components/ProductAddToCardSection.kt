@@ -21,38 +21,42 @@ import com.danzucker.lazypizza.R
 fun ProductAddToCardSection(
     price: String,
     onAddToCart: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = 12.dp,
-                end = 16.dp
-            )
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 12.dp,
+                    end = 16.dp,
+                ),
     ) {
         Text(
             text = price,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         TextButton(
             onClick = onAddToCart,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.01f),
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.secondary
-            ),
-            contentPadding = PaddingValues(
-                horizontal = 24.dp,
-                vertical = 8.dp
-            )
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.01f),
+                    contentColor = MaterialTheme.colorScheme.primary,
+                ),
+            border =
+                BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.secondary,
+                ),
+            contentPadding =
+                PaddingValues(
+                    horizontal = 24.dp,
+                    vertical = 8.dp,
+                ),
         ) {
             Text(
                 text = stringResource(R.string.add_to_cart),

@@ -6,5 +6,5 @@ data class ToppingUi(
     val price: String,
     val imageUrl: String,
     val quantity: Int = 0,
-    val maxQuantity: Int = 3
+    val maxQuantity: Int = 3,
 )

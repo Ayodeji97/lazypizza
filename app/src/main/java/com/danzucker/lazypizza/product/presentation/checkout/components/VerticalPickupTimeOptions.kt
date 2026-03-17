@@ -21,31 +21,31 @@ fun VerticalPickupTimeOptions(
     earliestPickupTime: String,
     scheduledDateTime: String?,
     onOptionSelected: (PickupTimeOption) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = stringResource(R.string.pickup_time_subtitle),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
         )
 
         // Earliest available time option
         PickupTimeRadioButton(
             text = stringResource(R.string.earliest_available_time),
             selected = selectedOption == PickupTimeOption.EARLIEST,
-            onClick = { onOptionSelected(PickupTimeOption.EARLIEST) }
+            onClick = { onOptionSelected(PickupTimeOption.EARLIEST) },
         )
 
         // Schedule time option
         PickupTimeRadioButton(
             text = stringResource(R.string.schedule_time),
             selected = selectedOption == PickupTimeOption.SCHEDULED,
-            onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) }
+            onClick = { onOptionSelected(PickupTimeOption.SCHEDULED) },
         )
 
         // Show confirmed scheduled time, or fall back to earliest available time
@@ -56,7 +56,6 @@ fun VerticalPickupTimeOptions(
     }
 }
 
-
 @Preview(name = "Phone - Vertical Layout")
 @Composable
 private fun PickupTimeSelectorPhonePreview() {
@@ -65,7 +64,7 @@ private fun PickupTimeSelectorPhonePreview() {
             selectedOption = PickupTimeOption.EARLIEST,
             earliestPickupTime = "12:15",
             scheduledDateTime = null,
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -78,7 +77,7 @@ private fun PickupTimeSelectorPhoneScheduledPreview() {
             selectedOption = PickupTimeOption.SCHEDULED,
             earliestPickupTime = "12:15",
             scheduledDateTime = "November 25, 18:30",
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }

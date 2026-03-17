@@ -25,7 +25,6 @@ fun AuthPhoneInputContent(
     activity: Activity?,
     modifier: Modifier = Modifier,
 ) {
-
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,14 +32,14 @@ fun AuthPhoneInputContent(
         Text(
             text = stringResource(R.string.welcome_title),
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(R.string.welcome_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -49,7 +48,7 @@ fun AuthPhoneInputContent(
             phoneNumber = state.phoneNumber,
             onPhoneNumberChange = {
                 onAction(AuthAction.OnPhoneNumberChange(it))
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -58,7 +57,7 @@ fun AuthPhoneInputContent(
             text = stringResource(R.string.continue_btn),
             onClick = { onAction(AuthAction.OnContinueClick(activity)) },
             enabled = state.canLogin,
-            isLoading = state.isLoading
+            isLoading = state.isLoading,
         )
 
         Spacer(modifier = Modifier.height(9.dp))
@@ -66,12 +65,12 @@ fun AuthPhoneInputContent(
         TextButton(
             onClick = {
                 onAction(AuthAction.OnContinueWithoutSignIn)
-            }
+            },
         ) {
             Text(
                 text = stringResource(R.string.continue_without_signing),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -85,7 +84,7 @@ private fun AuthPhoneInputContentPreview() {
             state = AuthState(),
             onAction = {},
             modifier = Modifier,
-            activity = null
+            activity = null,
         )
     }
 }

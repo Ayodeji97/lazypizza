@@ -27,42 +27,49 @@ import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaThe
 fun OrderDetailsHeader(
     isExpanded: Boolean,
     onExpandToggle: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     val rotationAngle by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
-        label = "Arrow rotation"
+        label = "Arrow rotation",
     )
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onExpandToggle)
-            .padding(vertical = 4.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onExpandToggle)
+                .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = stringResource(R.string.order_details_subtitle),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
 
         OrderDetailsIconShell(
             onClick = onExpandToggle,
-            color = Color.Transparent
+            color = Color.Transparent,
         ) {
             Icon(
-                imageVector = if (isExpanded) {
-                    ArrowUpIcon
-                } else ArrowDownIcon,
+                imageVector =
+                    if (isExpanded) {
+                        ArrowUpIcon
+                    } else {
+                        ArrowDownIcon
+                    },
                 tint = MaterialTheme.colorScheme.surfaceTint,
-                contentDescription = if (isExpanded) {
-                    stringResource(R.string.up_arrow)
-                } else stringResource(R.string.down_arrow),
-                modifier = Modifier
-                    .rotate(rotationAngle)
+                contentDescription =
+                    if (isExpanded) {
+                        stringResource(R.string.up_arrow)
+                    } else {
+                        stringResource(R.string.down_arrow)
+                    },
+                modifier =
+                    Modifier
+                        .rotate(rotationAngle),
             )
         }
     }
@@ -74,7 +81,7 @@ private fun OrderDetailsHeaderPreview() {
     LazyPizzaTheme {
         OrderDetailsHeader(
             isExpanded = true,
-            onExpandToggle = {}
+            onExpandToggle = {},
         )
     }
 }

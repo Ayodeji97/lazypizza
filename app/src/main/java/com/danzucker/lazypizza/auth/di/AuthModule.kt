@@ -9,8 +9,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val authModule = module {
-    singleOf(::AuthManager)
-    singleOf(::AuthRepositoryImpl) bind AuthRepository::class
-    viewModelOf(::AuthViewModel)
-}
+val authModule =
+    module {
+        singleOf(::AuthManager)
+        singleOf(::AuthRepositoryImpl) bind AuthRepository::class
+        viewModelOf(::AuthViewModel)
+    }

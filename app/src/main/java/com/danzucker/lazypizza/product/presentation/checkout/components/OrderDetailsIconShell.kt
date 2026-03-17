@@ -25,24 +25,24 @@ fun OrderDetailsIconShell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surface,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .size(22.dp)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(RoundedCornerShape(8.dp))
-            .background(
-                color = color
-            )
+        modifier =
+            modifier
+                .size(22.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(8.dp),
+                ).clip(RoundedCornerShape(8.dp))
+                .background(
+                    color = color,
+                ),
     ) {
         IconButton(
             onClick = onClick,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             content()
         }
@@ -55,15 +55,16 @@ private fun OrderDetailsIconShellPreview() {
     LazyPizzaTheme {
         OrderDetailsIconShell(
             onClick = {},
-            modifier = Modifier
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .padding(16.dp),
             content = {
                 Icon(
                     imageVector = DeleteIcon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
-            }
+            },
         )
     }
 }

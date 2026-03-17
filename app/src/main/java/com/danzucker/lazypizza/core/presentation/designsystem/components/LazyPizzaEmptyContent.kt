@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.danzucker.lazypizza.core.presentation.designsystem.button.PrimarySmallButton
 import com.danzucker.lazypizza.core.presentation.designsystem.theme.LazyPizzaTheme
 
-
 @Composable
 fun LazyPizzaEmptyScreen(
     title: String,
@@ -26,9 +25,10 @@ fun LazyPizzaEmptyScreen(
     enabled: Boolean = true,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.weight(1f))
         LazyPizzaEmptyContent(
@@ -37,11 +37,12 @@ fun LazyPizzaEmptyScreen(
             buttonText = buttonText,
             onButtonClick = onButtonClick,
             isLoading = isLoading,
-            enabled = enabled
+            enabled = enabled,
         )
         Spacer(modifier = Modifier.weight(2f))
     }
 }
+
 @Composable
 fun LazyPizzaEmptyContent(
     title: String,
@@ -54,18 +55,18 @@ fun LazyPizzaEmptyContent(
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.surfaceTint
+            color = MaterialTheme.colorScheme.surfaceTint,
         )
         Spacer(modifier = Modifier.height(20.dp))
         PrimarySmallButton(
@@ -73,23 +74,22 @@ fun LazyPizzaEmptyContent(
             onClick = onButtonClick,
             isLoading = isLoading,
             enabled = enabled,
-            modifier = Modifier
+            modifier = Modifier,
         )
     }
-    
 }
 
 @Preview
 @Composable
 private fun LazyPizzaEmptyScreenPreView() {
-    LazyPizzaTheme { 
+    LazyPizzaTheme {
         LazyPizzaEmptyContent(
             title = "Not Sign In",
             description = "Please sign in to continue",
             buttonText = "Sign In",
             onButtonClick = {},
             isLoading = false,
-            enabled = true
+            enabled = true,
         )
     }
 }

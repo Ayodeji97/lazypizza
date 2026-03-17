@@ -23,14 +23,15 @@ fun AuthPhoneOtpSection(
     onAction: (AuthAction) -> Unit,
     activity: Activity?,
     isMobilePortrait: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.weight(0.5f))
@@ -39,21 +40,21 @@ fun AuthPhoneOtpSection(
             state = state,
             onAction = onAction,
             activity = activity,
-            modifier = Modifier
-                .applyIf(!isMobilePortrait) {
-                    fillMaxWidth(0.5f)
-                }
+            modifier =
+                Modifier
+                    .applyIf(!isMobilePortrait) {
+                        fillMaxWidth(0.5f)
+                    },
         )
 
         Spacer(modifier = Modifier.weight(1f))
     }
 }
 
-
 @Preview(
     name = "AuthPhoneOtpSection",
     showBackground = true,
-    showSystemUi = true
+    showSystemUi = true,
 )
 @Composable
 private fun AuthPhoneOtpSectionPreview() {
@@ -62,7 +63,7 @@ private fun AuthPhoneOtpSectionPreview() {
             state = AuthState(),
             onAction = {},
             isMobilePortrait = true,
-            activity = null
+            activity = null,
         )
     }
 }

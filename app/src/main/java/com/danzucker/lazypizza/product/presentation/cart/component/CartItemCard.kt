@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,64 +41,68 @@ fun CartItemCard(
     onQuantityChange: (Int) -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-    isMobilePortrait: Boolean = true
+    isMobilePortrait: Boolean = true,
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.surface
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = elevationLarge,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = LazyPizzaShadowColor,
-                ambientColor = LazyPizzaShadowColor
-            )
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.surface,
+            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = elevationLarge,
+                    shape = RoundedCornerShape(12.dp),
+                    spotColor = LazyPizzaShadowColor,
+                    ambientColor = LazyPizzaShadowColor,
+                ),
     ) {
         val imageSize = if (isMobilePortrait) 120.dp else 140.dp
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Box(
-                modifier = Modifier
-                    .size(imageSize)
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .padding(2.dp),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(imageSize)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ).padding(2.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 RemoteImage(
                     imageUrl = cartItem.imageUrl,
                     contentDescription = cartItem.name,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .heightIn(min = imageSize)
-                    .padding(vertical = 12.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .heightIn(min = imageSize)
+                        .padding(vertical = 12.dp),
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.Top,
                 ) {
                     Column {
                         Text(
                             text = cartItem.name,
                             style = MaterialTheme.typography.displayMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
 
                         if (cartItem.toppings.isNotEmpty()) {
@@ -108,9 +111,9 @@ fun CartItemCard(
                                 .sortedBy { it.key }
                                 .forEach { (topping, quantity) ->
                                     Text(
-                                        text = "$quantity × $topping",  // Each on own line
+                                        text = "$quantity × $topping", // Each on own line
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.surfaceTint
+                                        color = MaterialTheme.colorScheme.surfaceTint,
                                     )
                                 }
                         }
@@ -121,7 +124,7 @@ fun CartItemCard(
                             imageVector = DeleteIcon,
                             contentDescription = "Delete item",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(14.dp)
+                            modifier = Modifier.size(14.dp),
                         )
                     }
                 }
@@ -144,38 +147,39 @@ fun CartItemCard(
                         onQuantityChange(cartItem.quantity + 1)
                     },
                     enableDecreaseButton = cartItem.quantity > 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 )
             }
         }
     }
 }
 
-
 @Preview
 @Composable
 fun CartItemCardPreview(modifier: Modifier = Modifier) {
     LazyPizzaTheme {
         CartItemCard(
-            cartItem = CartItemUi(
-                id = "1",
-                name = "Pizza",
-                imageUrl = "",
-                unitPrice = 10.0,
-                totalPrice = 20.0,
-                quantity = 2,
-                toppings = mapOf(
-                    "Pepperoni" to 2,
-                    "Mushrooms" to 4,
-                    "Sausage" to 1,
-                )
-            ),
+            cartItem =
+                CartItemUi(
+                    id = "1",
+                    name = "Pizza",
+                    imageUrl = "",
+                    unitPrice = 10.0,
+                    totalPrice = 20.0,
+                    quantity = 2,
+                    toppings =
+                        mapOf(
+                            "Pepperoni" to 2,
+                            "Mushrooms" to 4,
+                            "Sausage" to 1,
+                        ),
+                ),
             onQuantityChange = {},
             onDelete = {},
             modifier = modifier,
-            isMobilePortrait = false
+            isMobilePortrait = false,
         )
     }
 }
-

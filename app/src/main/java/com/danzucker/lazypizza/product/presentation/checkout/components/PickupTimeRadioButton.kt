@@ -22,39 +22,41 @@ fun PickupTimeRadioButton(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         shape = RoundedCornerShape(100),
         color = Color.Transparent,
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             GradientRadioButton(
                 selected = selected,
-                onClick = null // Click handled by Surface
+                onClick = null, // Click handled by Surface
             )
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 12.dp)
+                modifier = Modifier.padding(start = 12.dp),
             )
         }
     }
 }
-
 
 @Preview(name = "Selected")
 @Composable
@@ -63,12 +65,10 @@ private fun PickupTimeRadioButtonPreview() {
         PickupTimeRadioButton(
             text = "Earliest available time",
             selected = true,
-            onClick = {}
+            onClick = {},
         )
-
     }
 }
-
 
 @Preview(name = "Unselected")
 @Composable
@@ -78,7 +78,7 @@ private fun PickupTimeRadioButtonUnselectedPreview() {
             PickupTimeRadioButton(
                 text = "Earliest available time",
                 selected = false,
-                onClick = {}
+                onClick = {},
             )
         }
     }

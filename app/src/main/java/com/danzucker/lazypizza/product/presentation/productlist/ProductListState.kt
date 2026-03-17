@@ -14,7 +14,7 @@ data class ProductListState(
     val showLogoutDialog: Boolean = false,
     val isAuthenticated: Boolean = false,
     val isAnonymous: Boolean = false,
-    val userPhoneNumber: String? = null
+    val userPhoneNumber: String? = null,
 ) {
     val hasProducts: Boolean
         get() = filteredProducts.isNotEmpty()

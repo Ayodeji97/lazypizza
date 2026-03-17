@@ -14,14 +14,13 @@ data class CheckoutState(
     val comment: String = "",
     val totalAmount: Double = 0.0,
     val isPlacingOrder: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 ) {
     val canPlaceOrder: Boolean
         get() = orderItems.isNotEmpty() && !isPlacingOrder
 }
 
-
 enum class PickupTimeOption {
     EARLIEST,
-    SCHEDULED
+    SCHEDULED,
 }

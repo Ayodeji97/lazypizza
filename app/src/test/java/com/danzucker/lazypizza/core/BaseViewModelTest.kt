@@ -10,7 +10,6 @@ import org.junit.Before
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class BaseViewModelTest {
-
     protected val testDispatcher = UnconfinedTestDispatcher()
 
     @Before

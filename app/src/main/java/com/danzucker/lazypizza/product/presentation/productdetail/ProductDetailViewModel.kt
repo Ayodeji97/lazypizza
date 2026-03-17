@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.danzucker.lazypizza.R
 import com.danzucker.lazypizza.core.domain.util.Result
 import com.danzucker.lazypizza.core.presentation.util.UiText
-import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.domain.cart.CartRepository
 import com.danzucker.lazypizza.product.domain.mappers.toCartTopping
 import com.danzucker.lazypizza.product.domain.model.CartItem
+import com.danzucker.lazypizza.product.domain.product.ProductRepository
 import com.danzucker.lazypizza.product.presentation.mappers.toToppingData
 import com.danzucker.lazypizza.product.presentation.mappers.toToppingUi
 import com.danzucker.lazypizza.product.presentation.models.PizzaDetailUi
@@ -28,28 +28,27 @@ import kotlinx.coroutines.launch
 class ProductDetailViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val cartRepository: CartRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) : ViewModel() {
-
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(ProductDetailState())
 
     private val eventChannel = Channel<ProductDetailEvent>()
     val events = eventChannel.receiveAsFlow()
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                /** Load initial data here **/
-                loadProductDetail()
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ProductDetailState()
-        )
+    val state =
+        _state
+            .onStart {
+                if (!hasLoadedInitialData) {
+                    /** Load initial data here **/
+                    loadProductDetail()
+                    hasLoadedInitialData = true
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = ProductDetailState(),
+            )
 
     fun onAction(action: ProductDetailAction) {
         when (action) {
@@ -86,19 +85,21 @@ class ProductDetailViewModel(
                         return@launch
                     }
 
-                    val pizza = PizzaDetailUi(
-                        id = product.id,
-                        name = product.name,
-                        description = product.description,
-                        basePrice = product.price,
-                        imageUrl = product.imageUrl,
-                        imageResId = R.drawable.margherita, // Fallback
-                        ingredients = product.description,
-                        category = product.category.displayName
-                    )
+                    val pizza =
+                        PizzaDetailUi(
+                            id = product.id,
+                            name = product.name,
+                            description = product.description,
+                            basePrice = product.price,
+                            imageUrl = product.imageUrl,
+                            imageResId = R.drawable.margherita, // Fallback
+                            ingredients = product.description,
+                            category = product.category.displayName,
+                        )
 
                     // Load toppings
-                    productRepository.getToppings()
+                    productRepository
+                        .getToppings()
                         .onEach { toppingsResult ->
                             when (toppingsResult) {
                                 is Result.Success -> {
@@ -109,7 +110,7 @@ class ProductDetailViewModel(
                                             pizzaDetail = pizza,
                                             availableToppings = toppings,
                                             basePizzaPrice = pizza.basePrice,
-                                            totalPrice = pizza.basePrice
+                                            totalPrice = pizza.basePrice,
                                         )
                                     }
                                 }
@@ -122,7 +123,6 @@ class ProductDetailViewModel(
                 is Result.Error -> {
                     _state.update { it.copy(isLoadingData = false) }
                 }
-
             }
         }
     }
@@ -140,34 +140,38 @@ class ProductDetailViewModel(
         }
     }
 
-    private fun updateToppingQuantity(toppingId: String, newQuantity: Int) {
+    private fun updateToppingQuantity(
+        toppingId: String,
+        newQuantity: Int,
+    ) {
         val topping = _state.value.availableToppings.find { it.id == toppingId } ?: return
 
         val validQuantity = newQuantity.coerceIn(0, topping.maxQuantity)
 
         _state.update { currentState ->
-            val updatedToppings = if (validQuantity == 0) {
-                currentState.selectedToppings - toppingId
-            } else {
-                currentState.selectedToppings + (toppingId to validQuantity)
-            }
+            val updatedToppings =
+                if (validQuantity == 0) {
+                    currentState.selectedToppings - toppingId
+                } else {
+                    currentState.selectedToppings + (toppingId to validQuantity)
+                }
 
             currentState.copy(
                 selectedToppings = updatedToppings,
-                totalPrice = calculateTotalPrice(
-                    currentState.basePizzaPrice,
-                    currentState.availableToppings,
-                    updatedToppings
-                )
+                totalPrice =
+                    calculateTotalPrice(
+                        currentState.basePizzaPrice,
+                        currentState.availableToppings,
+                        updatedToppings,
+                    ),
             )
         }
-
     }
 
     private fun calculateTotalPrice(
         basePrice: Double,
         allToppings: List<ToppingUi>,
-        selectedToppings: Map<String, Int>
+        selectedToppings: Map<String, Int>,
     ): Double {
         var total = basePrice
         selectedToppings.forEach { (toppingId, quantity) ->
@@ -185,45 +189,50 @@ class ProductDetailViewModel(
             val currentState = _state.value
             val pizza = currentState.pizzaDetail ?: return@launch
 
-            val toppingsData = currentState.selectedToppings.mapNotNull { (toppingId, quantity) ->
-                val topping = currentState.availableToppings.find { it.id == toppingId }
-                topping?.let { toppingUi ->
-                    toppingId to toppingUi.toToppingData(quantity)
-                }
-            }.toMap()
+            val toppingsData =
+                currentState.selectedToppings
+                    .mapNotNull { (toppingId, quantity) ->
+                        val topping = currentState.availableToppings.find { it.id == toppingId }
+                        topping?.let { toppingUi ->
+                            toppingId to toppingUi.toToppingData(quantity)
+                        }
+                    }.toMap()
 
-            val cartToppings = toppingsData.map { (toppingId, toppingData) ->
-                toppingData.toCartTopping(toppingId)
-            }
+            val cartToppings =
+                toppingsData.map { (toppingId, toppingData) ->
+                    toppingData.toCartTopping(toppingId)
+                }
 
             val cartItemId = CartItem.generateId(productId = pizza.id, cartToppings)
 
-            val cartItem = CartItem(
-                id = cartItemId,
-                productId = pizza.id,
-                name = pizza.name,
-                imageUrl = pizza.imageUrl,
-                basePrice = pizza.basePrice,
-                quantity = 1, // adding one quantity at a time
-                toppings = cartToppings,
-                category = pizza.category
-            )
+            val cartItem =
+                CartItem(
+                    id = cartItemId,
+                    productId = pizza.id,
+                    name = pizza.name,
+                    imageUrl = pizza.imageUrl,
+                    basePrice = pizza.basePrice,
+                    quantity = 1, // adding one quantity at a time
+                    toppings = cartToppings,
+                    category = pizza.category,
+                )
 
             when (cartRepository.addToCart(item = cartItem)) {
-                is Result.Success -> eventChannel.send(
-                    ProductDetailEvent.ShowMessage(
-                        UiText.StringResource(
-                            R.string.item_added_to_cart
-                        )
+                is Result.Success ->
+                    eventChannel.send(
+                        ProductDetailEvent.ShowMessage(
+                            UiText.StringResource(
+                                R.string.item_added_to_cart,
+                            ),
+                        ),
                     )
-                )
-                is Result.Error -> eventChannel.send(
-                    ProductDetailEvent.ShowErrorMessage(
-                        UiText.StringResource(R.string.failed_to_add_to_cart)
+                is Result.Error ->
+                    eventChannel.send(
+                        ProductDetailEvent.ShowErrorMessage(
+                            UiText.StringResource(R.string.failed_to_add_to_cart),
+                        ),
                     )
-                )
             }
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.danzucker.lazypizza.core.presentation.designsystem.button
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,62 +28,66 @@ fun PrimarySmallButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
-
     Box(
-        modifier = modifier
-            .background(
-                brush = if (enabled && !isLoading) {
-                    MaterialTheme.colorScheme.LazyPizzaButtonGradient
-                } else {
-                    MaterialTheme.colorScheme.LazyPizzaButtonTransparentGradient
-                },
-                shape = RoundedCornerShape(100)
-            )
+        modifier =
+            modifier
+                .background(
+                    brush =
+                        if (enabled && !isLoading) {
+                            MaterialTheme.colorScheme.LazyPizzaButtonGradient
+                        } else {
+                            MaterialTheme.colorScheme.LazyPizzaButtonTransparentGradient
+                        },
+                    shape = RoundedCornerShape(100),
+                ),
     ) {
         Button(
             onClick = onClick,
             enabled = enabled && !isLoading,
             modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-            ),
-            contentPadding = PaddingValues(
-                horizontal = paddingLarge24,
-                vertical = paddingSmallMedium12
-            )
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                ),
+            contentPadding =
+                PaddingValues(
+                    horizontal = paddingLarge24,
+                    vertical = paddingSmallMedium12,
+                ),
         ) {
-
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(15.dp),
+                    modifier =
+                        Modifier
+                            .size(15.dp),
                     strokeWidth = 1.5.dp,
-                    color = if (enabled) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                    }
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        },
                 )
             } else {
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleSmall,
-                    color = if (enabled) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                    }
+                    color =
+                        if (enabled) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        },
                 )
             }
         }
     }
 }
-
 
 @Preview
 @Composable
@@ -95,8 +98,9 @@ private fun PrimarySmallButtonPreview() {
             onClick = {},
             enabled = true,
             isLoading = false,
-            modifier = Modifier
-                .padding(20.dp)
+            modifier =
+                Modifier
+                    .padding(20.dp),
         )
     }
 }
