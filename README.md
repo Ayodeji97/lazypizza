@@ -7,7 +7,11 @@ An Android pizza ordering app built with Kotlin and Jetpack Compose. Browse the 
 ## Demo
 
 <!-- Add demo video link or embed below -->
-> 📹 **Video** —
+> 📹 **Video** 
+
+
+https://github.com/user-attachments/assets/c29f7556-0e81-40ba-8ab0-f2bec5f95d8b
+
 
 ### Screenshots
 
